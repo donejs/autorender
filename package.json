@@ -1,0 +1,32 @@
+{
+  "name": "steal-can-autorender",
+  "version": "0.0.1",
+  "description": "Autorender CanJS projects",
+  "main": "steal-can-autorender.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stealjs/steal-can-autorender.git"
+  },
+  "keywords": [
+    "StealJS",
+    "CanJS"
+  ],
+  "author": "Bitovi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stealjs/steal-can-autorender/issues"
+  },
+  "devDependencies": {
+    "can": "git://github.com/bitovi/canjs#place-my-order2",
+    "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13",
+    "grunt-contrib-copy": "^0.8.0"
+  },
+  "dependencies": {
+    "steal": "^0.10.5"
+  },
+  "homepage": "https://github.com/stealjs/steal-can-autorender"
+}

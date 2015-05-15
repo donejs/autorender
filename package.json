@@ -1,8 +1,8 @@
 {
-  "name": "steal-can-autorender",
+  "name": "done-autorender",
   "version": "0.0.2",
   "description": "Autorender CanJS projects",
-  "main": "steal-can-autorender.js",
+  "main": "autorender.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

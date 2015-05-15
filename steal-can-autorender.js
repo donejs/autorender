@@ -72,46 +72,6 @@ define(["@loader", "module", "can/view/stache/intermediate_and_imports"], functi
 			eachChild(body, remove);
 			eachChild(can.$("body", frag)[0], appendTo(body));
 		});
-	},
-	renderNode = function(url){
-		var state = new this.viewModel;
-		state.attr(can.route.deparam(url));
-		var doc = new document.constructor;
-
-		var renderPromise = can.view.renderAsync(this.render, state, {}, doc)
-		.then(function(result){
-			var html = doc.body.innerHTML;
-
-			triggerInBody("removed");
-			doc.documentElement.removeChild(doc.body);
-
-			return {
-				html: html,
-				data: result.data
-			};
-		});
-
-		function triggerInBody(event) {
-			// Do cleanup here.
-			function traverse(el){
-				var cur = el.firstChild;
-				while(cur) {
-					can.trigger(cur, event);
-					traverse(cur);
-					cur = cur.nextSibling;
-				}
-			}
-
-			var cur = doc.body.firstChild;
-			while(cur) {
-				traverse(cur);
-				can.trigger(cur, event);
-				cur = cur.nextSibling;
-			}
-		}
-
-
-		return renderPromise;
 	};
 
 	function translate(load){
@@ -135,7 +95,6 @@ define(["@loader", "module", "can/view/stache/intermediate_and_imports"], functi
 			"\trender: stache(" + JSON.stringify(intermediateAndImports.intermediate) + "),\n" +
 			"\tstart: " + start.toString() + ",\n" +
 			"\trerender: " + rerender.toString() + ",\n" +
-			"\trenderNode: " + renderNode.toString() + ",\n" +
 			can.map(ases, function(from, name){
 				return "\t" + name + ": " + name +"['default'] || " + name;
 			}).join(",\n") +

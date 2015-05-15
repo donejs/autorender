@@ -1,6 +1,6 @@
 {
   "name": "steal-can-autorender",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Autorender CanJS projects",
   "main": "steal-can-autorender.js",
   "scripts": {

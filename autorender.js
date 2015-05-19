@@ -1,27 +1,29 @@
-define(["@loader", "module", "can/view/stache/intermediate_and_imports"], function(loader, module, getIntermediateAndImports){
+define(["@loader", "module", "can/view/stache/intermediate_and_imports"],
+	   function(loader, module, getIntermediateAndImports){
 
-  var main;
+	var main;
 
-  var isNode = typeof process === "object" &&
-    {}.toString.call(process) === "[object process]";
+	var isNode = typeof process === "object" &&
+		{}.toString.call(process) === "[object process]";
 
-  if(!isNode) {
-    steal.done().then(setup);
-  }
+	if(!isNode) {
+		steal.done().then(setup);
+		defineReattach();
+	}
 
-  function setup(){
-    loader.import(loader.main).then(function(r){
-      main = r;
-      liveReload();
-    });
-  }
+	function setup(){
+		loader.import(loader.main).then(function(r){
+			main = r;
+			liveReload();
+		});
+	}
 
-  function liveReload(){
-    if(!loader.has("live-reload")) {
-      return;
-    }
+	function liveReload(){
+		if(!loader.has("live-reload")) {
+			return;
+		}
 
-    loader.import("live-reload", { name: module.id }).then(function(reload){
+		loader.import("live-reload", { name: module.id }).then(function(reload){
 			loader.normalize(loader.main).then(function(mainName){
 				reload(function(){
 					main.rerender();
@@ -31,8 +33,8 @@ define(["@loader", "module", "can/view/stache/intermediate_and_imports"], functi
 					main = r;
 				});
 			});
-    });
-  }
+		});
+	}
 
 	var start = function(){
 		var state = this.state = new this.viewModel;
@@ -41,9 +43,10 @@ define(["@loader", "module", "can/view/stache/intermediate_and_imports"], functi
 		this.rerender();
 	},
 	rerender = function(){
+		var keep = { "SCRIPT": true, "STYLE": true, "LINK": true };
 		function eachChild(parent, callback){
 			can.each(can.makeArray(parent.childNodes), function(el){
-				if(el.nodeName !== "SCRIPT" && el.nodeName !== "STYLE") {
+				if(!keep[el.nodeName]) {
 					callback(el);
 				}
 			});

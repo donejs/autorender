@@ -6,9 +6,7 @@ F.attach(QUnit);
 
 QUnit.module("done-autorender",{
 	setup: function(){
-		$("#qunit-fixture").html(
-			$("<iframe src='progressive.html' name='f'></iframe>")
-		);
+	   F.open("//progressive.html");
 	}
 });
 

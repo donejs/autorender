@@ -23,10 +23,20 @@ module.exports = function(grunt){
 				}]
 			}
 
+		},
+		testee: {
+			tests: {
+				options: {
+					browsers: ['firefox']
+				},
+				src: ['test/test.html']
+			}
 		}
 	});
 
 	grunt.loadNpmTasks("grunt-contrib-copy");
+	grunt.loadNpmTasks("testee");
 
 	grunt.registerTask("default", ["copy"]);
+	grunt.registerTask("test", ["copy","testee"]);
 };

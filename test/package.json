@@ -12,9 +12,9 @@
     "can": "2.3.0-pre.0"
   },
   "system": {
-    "main": "progressive/index.stache!steal-can-autorender",
+    "main": "progressive/index.stache!done-autorender",
     "paths": {
-      "steal-can-autorender": "../steal-can-autorender.js"
+      "done-autorender": "../autorender.js"
     }
   }
 }

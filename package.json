@@ -4,7 +4,7 @@
   "description": "Autorender CanJS projects",
   "main": "autorender.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "grunt test --stack"
   },
   "repository": {
     "type": "git",
@@ -21,9 +21,12 @@
   },
   "devDependencies": {
     "can": "git://github.com/bitovi/canjs#place-my-order2",
+    "funcunit": "^3.0.0",
     "grunt": "^0.4.5",
     "grunt-cli": "^0.1.13",
-    "grunt-contrib-copy": "^0.8.0"
+    "grunt-contrib-copy": "^0.8.0",
+    "steal-qunit": "0.0.4",
+    "testee": "^0.2.0"
   },
   "dependencies": {
     "steal": "^0.10.5"

@@ -13,6 +13,6 @@ QUnit.module("done-autorender",{
 
 
 QUnit.test("basics works", function(){
-	F("order-history", "f").exists("order-history element is on the page");
-	F("[asset-id]", "f").size(2, "There are 2 style tags on the page");
+	F("order-history").exists("order-history element is on the page");
+	F("[asset-id]").size(2, "There are 2 style tags on the page");
 });

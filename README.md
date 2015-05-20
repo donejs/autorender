@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/donejs/autorender.svg?branch=master)](https://travis-ci.org/donejs/autorender)
+[![npm version](https://badge.fury.io/js/done-autorender.svg)](http://badge.fury.io/js/done-autorender)
+
 # done-autorender
 
 Automatically renders a template, either to the `<html>` or `<body>` elements.

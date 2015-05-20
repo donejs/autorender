@@ -16,10 +16,10 @@ done-autorender enables you to use a Stache template as your application entry-p
 
 ### index.stache
 
-```handlebars
+```mustache
 <html>
 <head>
-
+  <title>My Site</title>
 </head>
 <body>
   <can-import from="main.css!"/>

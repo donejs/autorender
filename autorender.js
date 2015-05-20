@@ -8,7 +8,6 @@ define(["@loader", "module", "can/view/stache/intermediate_and_imports"],
 
 	if(!isNode) {
 		steal.done().then(setup);
-		defineReattach();
 	}
 
 	function setup(){

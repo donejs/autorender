@@ -41,6 +41,34 @@ define(["@loader", "module", "can/view/stache/intermediate_and_imports"],
 		can.route.ready();
 		this.rerender();
 	},
+	renderAsync = function(){
+		var renderer = this.render;
+		var data = this.state;
+		var options = {};
+
+		var frag = renderer(data, options);
+
+		function waitForPromises(){
+			var readyPromises = [];
+			if(data.__readyPromises) {
+				readyPromises = data.__readyPromises;
+				data.__readyPromises = [];
+			}
+
+			if(readyPromises.length === 0) {
+				return new can.Deferred().resolve();
+			}
+
+			return can.when.apply(can, readyPromises).then(waitForPromises);
+		}
+
+		return waitForPromises().then(function(){
+			return {
+				fragment: frag,
+				data: data.__pageData
+			};
+		});
+	},
 	rerender = function(){
 		var keep = { "SCRIPT": true, "STYLE": true, "LINK": true };
 		function eachChild(parent, callback){
@@ -61,7 +89,7 @@ define(["@loader", "module", "can/view/stache/intermediate_and_imports"],
 			}
 		}
 
-		can.view.renderAsync(this.render, this.state).then(function(result){
+		this.renderAsync().then(function(result){
 			var frag = result.fragment;
 			var head = document.head;
 			var body = document.body;
@@ -97,6 +125,7 @@ define(["@loader", "module", "can/view/stache/intermediate_and_imports"],
 			"\trender: stache(" + JSON.stringify(intermediateAndImports.intermediate) + "),\n" +
 			"\tstart: " + start.toString() + ",\n" +
 			"\trerender: " + rerender.toString() + ",\n" +
+			"\trenderAsync: " + renderAsync.toString() + ",\n" +
 			can.map(ases, function(from, name){
 				return "\t" + name + ": " + name +"['default'] || " + name;
 			}).join(",\n") +

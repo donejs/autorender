@@ -41,10 +41,10 @@ define(["@loader", "module", "can/view/stache/intermediate_and_imports"],
 		can.route.ready();
 		this.rerender();
 	},
-	renderAsync = function(){
-		var renderer = this.render;
-		var data = this.state;
-		var options = {};
+	renderAsync = function(renderer, data, options, doc){
+		renderer = renderer || this.render;
+		data = data || this.state;
+		options = options || {};
 
 		var frag = renderer(data, options);
 
@@ -56,6 +56,13 @@ define(["@loader", "module", "can/view/stache/intermediate_and_imports"],
 			}
 
 			if(readyPromises.length === 0) {
+				if(doc) {
+					var oldDoc = can.document;
+					can.document = doc;
+					can.appendChild(doc.body, frag, doc);
+					can.document = oldDoc;
+				}
+
 				return new can.Deferred().resolve();
 			}
 

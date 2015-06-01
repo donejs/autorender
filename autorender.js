@@ -121,6 +121,11 @@ define(["@loader", "module", "can/view/stache/intermediate_and_imports"],
 			// Move the as to the front of the array.
 			imports.splice(imports.indexOf(from), 1);
 			imports.unshift(from);
+
+			// Get rid of @ character for the viewModel
+			if(name[0] === "@") {
+				name = name.substr(1);
+			}
 			args.unshift(name);
 		});
 		imports.unshift("can/view/stache/stache");

@@ -142,7 +142,8 @@ define(["@loader", "module", "can/view/stache/intermediate_and_imports"],
 				return "\t" + name + ": " + name +"['default'] || " + name;
 			}).join(",\n") +
 			"\n};\n\n" +
-			"if(typeof steal !== 'undefined' && !(typeof process === 'object' && {}.toString.call(process) === '[object process]')) steal.done().then(function() { __export.start(); });\n" +
+			"var __isNW = (function(){try{var nr = System._nodeRequire; return nr && nr('nw.gui') !== 'undefined';}catch(e){return false;}})();\n" +
+			"if(typeof steal !== 'undefined' && (__isNW || !(typeof process === 'object' && {}.toString.call(process) === '[object process]'))) steal.done().then(function() { __export.start(); });\n" +
 			"return __export;\n" +
 		"});";
 	}

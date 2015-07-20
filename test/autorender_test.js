@@ -6,13 +6,11 @@ F.attach(QUnit);
 
 QUnit.module("done-autorender",{
 	setup: function(){
-	   F.open("//progressive.html");
+	   F.open("//basics/index.html");
 	}
 });
 
-
-
 QUnit.test("basics works", function(){
-	F("order-history").exists("order-history element is on the page");
-	F("[asset-id]").size(2, "There are 2 style tags on the page");
+	F("#hello").exists("Content rendered");
+	F("#hello").text(/Hello world/, "Correct text");
 });

@@ -4,7 +4,8 @@
   "description": "Autorender CanJS projects",
   "main": "autorender.js",
   "scripts": {
-    "test": "grunt test --stack"
+    "build": "node build.js",
+    "test": "testee test/test.html --browsers firefox --reporter Spec"
   },
   "repository": {
     "type": "git",
@@ -20,16 +21,20 @@
     "url": "https://github.com/donejs/autorender/issues"
   },
   "devDependencies": {
-    "can": "^2.3.0-pre.1",
+    "can": "^2.3.0-pre.0",
     "funcunit": "^3.0.0",
-    "grunt": "^0.4.5",
-    "grunt-cli": "^0.1.13",
-    "grunt-contrib-copy": "^0.8.0",
+    "lodash.template": "^3.6.2",
+    "steal": "^0.10.5",
     "steal-qunit": "0.0.4",
     "testee": "^0.2.0"
   },
-  "dependencies": {
-    "steal": "^0.10.5"
-  },
-  "homepage": "https://github.com/donejs/autorender"
+  "homepage": "https://github.com/donejs/autorender",
+  "system": {
+    "directories": {
+      "lib": "src"
+    },
+    "npmIgnore": [
+      "testee"
+    ]
+  }
 }

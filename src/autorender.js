@@ -2,7 +2,7 @@ define([
 	"@loader",
 	"module",
 	"can/view/stache/intermediate_and_imports",
-	"./template.txt!steal-template"
+	"./template"
 ], function(loader, module, getIntermediateAndImports, template){
 
 	var main;

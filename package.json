@@ -4,6 +4,7 @@
   "description": "Autorender CanJS projects",
   "main": "autorender.js",
   "scripts": {
+    "build": "node build.js",
     "test": "testee test/test.html --browsers firefox --reporter Spec"
   },
   "repository": {
@@ -22,12 +23,10 @@
   "devDependencies": {
     "can": "^2.3.0-pre.0",
     "funcunit": "^3.0.0",
+    "lodash.template": "^3.6.2",
+    "steal": "^0.10.5",
     "steal-qunit": "0.0.4",
-    "testee": "^0.2.0",
-	"steal": "^0.10.5"
-  },
-  "dependencies": {
-    "steal-template": "^1.0.1"
+    "testee": "^0.2.0"
   },
   "homepage": "https://github.com/donejs/autorender",
   "system": {

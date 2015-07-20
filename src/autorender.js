@@ -1,5 +1,9 @@
-define(["@loader", "module", "can/view/stache/intermediate_and_imports"],
-	   function(loader, module, getIntermediateAndImports){
+define([
+	"@loader",
+	"module",
+	"can/view/stache/intermediate_and_imports",
+	"./template.txt!steal-template"
+], function(loader, module, getIntermediateAndImports, template){
 
 	var main;
 
@@ -131,7 +135,21 @@ define(["@loader", "module", "can/view/stache/intermediate_and_imports"],
 		imports.unshift("can/view/stache/stache");
 		args.unshift("stache");
 
-		return "define("+JSON.stringify(intermediateAndImports.imports)+",function(" +
+
+		var output = template({
+			imports: JSON.stringify(intermediateAndImports.imports),
+			args: args.join(", "),
+			intermediate: JSON.stringify(intermediateAndImports.intermediate),
+			ases: can.map(ases, function(from, name){
+				return "\t" + name + ": " + name +"['default'] || " + name;
+			}).join(",\n")
+		});
+
+		return output;
+
+
+
+		/*return "define("+JSON.stringify(intermediateAndImports.imports)+",function(" +
 			args.join(", ") + "){\n" +
 			"var __export = {\n" +
 			"\trender: stache(" + JSON.stringify(intermediateAndImports.intermediate) + "),\n" +
@@ -145,7 +163,7 @@ define(["@loader", "module", "can/view/stache/intermediate_and_imports"],
 			"var __isNW = (function(){try{var nr = System._nodeRequire; return nr && nr('nw.gui') !== 'undefined';}catch(e){return false;}})();\n" +
 			"if(typeof steal !== 'undefined' && (__isNW || !(typeof process === 'object' && {}.toString.call(process) === '[object process]'))) steal.done().then(function() { __export.start(); });\n" +
 			"return __export;\n" +
-		"});";
+		"});";*/
 	}
 
   return {

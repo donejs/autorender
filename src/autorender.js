@@ -39,82 +39,6 @@ define([
 		});
 	}
 
-	var start = function(){
-		var state = this.state = new this.viewModel;
-		can.route.map(state);
-		can.route.ready();
-		this.rerender();
-	},
-	renderAsync = function(renderer, data, options, doc){
-		renderer = renderer || this.render;
-		data = data || this.state;
-		options = options || {};
-
-		var frag = renderer(data, options);
-
-		function waitForPromises(){
-			var readyPromises = [];
-			if(data.__readyPromises) {
-				readyPromises = data.__readyPromises;
-				data.__readyPromises = [];
-			}
-
-			if(readyPromises.length === 0) {
-				if(doc) {
-					var oldDoc = can.document;
-					can.document = doc;
-					can.appendChild(doc.body, frag, doc);
-					can.document = oldDoc;
-				}
-
-				return new can.Deferred().resolve();
-			}
-
-			return can.when.apply(can, readyPromises).then(waitForPromises);
-		}
-
-		return waitForPromises().then(function(){
-			return {
-				fragment: frag,
-				data: data.__pageData
-			};
-		});
-	},
-	rerender = function(){
-		var keep = { "SCRIPT": true, "STYLE": true, "LINK": true };
-		function eachChild(parent, callback){
-			can.each(can.makeArray(parent.childNodes), function(el){
-				if(!keep[el.nodeName]) {
-					callback(el);
-				}
-			});
-		}
-
-		function remove(el) {
-			can.remove(el);
-		}
-
-		function appendTo(parent){
-			return function(el){
-				can.appendChild(parent, el);
-			}
-		}
-
-		this.renderAsync().then(function(result){
-			var frag = result.fragment;
-			var head = document.head;
-			var body = document.body;
-
-			// Move elements from the fragment's head to the document head.
-			eachChild(head, remove);
-			eachChild(can.$("head", frag)[0], appendTo(head));
-
-			// Move elements from the fragment's body to the document body.
-			eachChild(body, remove);
-			eachChild(can.$("body", frag)[0], appendTo(body));
-		});
-	};
-
 	function translate(load){
 		var intermediateAndImports = getIntermediateAndImports(load.source);
 
@@ -146,24 +70,6 @@ define([
 		});
 
 		return output;
-
-
-
-		/*return "define("+JSON.stringify(intermediateAndImports.imports)+",function(" +
-			args.join(", ") + "){\n" +
-			"var __export = {\n" +
-			"\trender: stache(" + JSON.stringify(intermediateAndImports.intermediate) + "),\n" +
-			"\tstart: " + start.toString() + ",\n" +
-			"\trerender: " + rerender.toString() + ",\n" +
-			"\trenderAsync: " + renderAsync.toString() + ",\n" +
-			can.map(ases, function(from, name){
-				return "\t" + name + ": " + name +"['default'] || " + name;
-			}).join(",\n") +
-			"\n};\n\n" +
-			"var __isNW = (function(){try{var nr = System._nodeRequire; return nr && nr('nw.gui') !== 'undefined';}catch(e){return false;}})();\n" +
-			"if(typeof steal !== 'undefined' && (__isNW || !(typeof process === 'object' && {}.toString.call(process) === '[object process]'))) steal.done().then(function() { __export.start(); });\n" +
-			"return __export;\n" +
-		"});";*/
 	}
 
   return {

@@ -42,11 +42,36 @@ define(<%= imports %>, function(<%= args %>){
 				eachChild(can.$("body", frag)[0], appendTo(body));
 			});
 		},
+		promiseAll: function(promises){
+			var dfd = new can.Deferred();
+
+			var left = promises.length,
+				failed = false;
+
+			function done(){
+				left--;
+				if(!left && !failed) {
+					dfd.resolve();
+				}
+			}
+
+			function fail(e){
+				failed = true;
+				dfd.reject(e);
+			}
+
+			can.each(promises, function(p){
+				p.then(done, fail);
+			});
+
+			return dfd;
+		},
 		renderAsync: function(renderer, data, options, doc){
 			renderer = renderer || this.render;
 			data = data || this.state;
 			options = options || {};
 
+			var promiseAll = this.promiseAll;
 			var frag = renderer(data, options);
 
 			function waitForPromises(){
@@ -67,7 +92,7 @@ define(<%= imports %>, function(<%= args %>){
 					return new can.Deferred().resolve();
 				}
 
-				return can.when.apply(can, readyPromises).then(waitForPromises);
+				return promiseAll(readyPromises).then(waitForPromises);
 			}
 
 			return waitForPromises().then(function(){

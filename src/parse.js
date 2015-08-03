@@ -19,8 +19,14 @@ define([
 			}
 			args.unshift(name);
 		});
+
+		// Add stache
 		imports.unshift("can/view/stache/stache");
 		args.unshift("stache");
+
+		// Add module
+		imports.unshift("module");
+		args.unshift("module");
 
 		return {
 			imports: imports,

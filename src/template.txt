@@ -1,7 +1,14 @@
 define(<%= imports %>, function(<%= args %>){
 
+	var renderer = stache(<%= intermediate %>);
+
 	var __export = {
-		render: stache(<%= intermediate %>),
+		render: function(scope, options){
+			var moduleOptions = { module: module };
+			options = (options && options.add) ? options.add(moduleOptions) :
+				moduleOptions;
+			return renderer(scope, options);
+		},
 		start: function(){
 			var state = this.state = new this.viewModel;
 			can.route.map(state);

@@ -30,6 +30,7 @@ define([
 
 		return {
 			imports: imports,
+			dynamicImports: intermediateAndImports.dynamicImports,
 			args: args,
 			ases: ases,
 			intermediate: intermediateAndImports.intermediate

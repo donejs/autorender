@@ -38,8 +38,28 @@ define([
 		});
 	}
 
+	function addBundles(dynamicImports) {
+		var localLoader = loader.localLoader || loader;
+		if(!dynamicImports.length) {
+			return;
+		}
+
+		var bundle = localLoader.bundle;
+		if(!bundle) {
+			bundle = localLoader.bundle = [];
+		}
+
+		can.each(dynamicImports, function(moduleName){
+			if(!~bundle.indexOf(moduleName)) {
+				bundle.push(moduleName);
+			}
+		});
+	}
+
 	function translate(load){
 		var result = parse(load.source);
+
+		addBundles(result.dynamicImports);
 
 		var output = template({
 			imports: JSON.stringify(result.imports),

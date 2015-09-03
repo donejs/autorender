@@ -5,7 +5,9 @@
   "main": "autorender.js",
   "scripts": {
     "build": "node build.js",
-    "test": "testee test/test.html --browsers firefox --reporter Spec"
+    "build-test-prod": "node test/build.js",
+    "testee": "testee test/test.html --browsers firefox --reporter Spec",
+    "test": "npm run build-test-prod && npm run testee"
   },
   "repository": {
     "type": "git",
@@ -24,8 +26,9 @@
     "can": "^2.3.0-pre.0",
     "funcunit": "^3.0.0",
     "lodash.template": "^3.6.2",
-    "steal": "^0.10.5",
+    "steal": "^0.11.0-pre.0",
     "steal-qunit": "0.0.4",
+    "steal-tools": "^0.11.0-pre.0",
     "testee": "^0.2.0"
   },
   "homepage": "https://github.com/donejs/autorender",
@@ -34,7 +37,8 @@
       "lib": "src"
     },
     "npmIgnore": [
-      "testee"
+      "testee",
+      "lodash.template"
     ]
   }
 }

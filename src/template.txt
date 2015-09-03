@@ -2,16 +2,20 @@ define(<%= imports %>, function(<%= args %>){
 
 	var renderer = stache(<%= intermediate %>);
 
-	// SSR helpers isProduction, and some that don't matter in the client.
-	stache.registerHelper("isProduction", function(options){
-		var loader = typeof System !== "undefined" ? System : undefined;
-		if(loader && loader.isEnv && loader.isEnv("production")) {
-			return options.fn(this);
-		} else {
-			return options.inverse(this);
-		}
-	});
-	stache.registerHelper("asset", can.k);
+	var isNode = typeof process === "object" && {}.toString.call(process) === "[object process]";
+
+	if(!isNode) {
+		// SSR helpers isProduction, and some that don't matter in the client.
+		stache.registerHelper("isProduction", function(options){
+			var loader = typeof System !== "undefined" ? System : undefined;
+			if(loader && loader.isEnv && loader.isEnv("production")) {
+				return options.fn(this);
+			} else {
+				return options.inverse(this);
+			}
+		});
+		stache.registerHelper("asset", can.k);
+	}
 
 	var __export = {
 		render: function(scope, options){

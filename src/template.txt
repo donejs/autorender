@@ -26,8 +26,10 @@ define(<%= imports %>, function(<%= args %>){
 		},
 		start: function(){
 			var state = this.state = new this.viewModel;
-			can.route.map(state);
-			can.route.ready();
+			if (can.route) {
+				can.route.map(state);
+				can.route.ready();
+			}
 			this.rerender();
 		},
 		rerender: function(){

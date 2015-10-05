@@ -24,3 +24,15 @@ QUnit.module("production", {
 QUnit.test("isProduction helper works", function(){
 	F("#hi-prod").exists("a div inside of isProduction was rendered");
 });
+
+// Fixes the case when can.route is not available (#5)
+QUnit.module("no-route", {
+	setup: function() {
+		F.open("//no_route/index.html");
+	}
+});
+
+QUnit.test("not using can.route works", function() {
+	F("#hello").exists("Content rendered");
+	F("#hello").text(/Hello world/, "Correct text");
+});

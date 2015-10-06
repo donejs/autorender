@@ -54,7 +54,7 @@ define(<%= imports %>, function(<%= args %>){
 
 			this.renderAsync().then(function(result){
 				var frag = result.fragment;
-				var head = document.head;
+				var head = document.head || document.getElementsByTagName("head")[0];
 				var body = document.body;
 
 				// Move elements from the fragment's head to the document head.

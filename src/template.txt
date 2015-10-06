@@ -1,6 +1,31 @@
 define(<%= imports %>, function(<%= args %>){
 
-	var renderer = stache(<%= intermediate %>);
+	var tokens = <%= intermediate %>;
+
+	var supportsCreatingScripts = (function(){
+		try { document.createElement("script").appendChild(document.createDocumentFragment()); return true; } catch(_) { return false; }
+	})();
+
+	// For IE8 strip out the scripts because they will be executed prematurely.
+	if(!supportsCreatingScripts) {
+		var removeTag = function(tag){
+			var i = 0, item;
+			while(i < tokens.length) {
+				item = tokens[i], j = i;
+				if(item.tokenType === "start" && item.args && item.args[0] === tag) {
+					do {
+						item = tokens[j]; j++;
+					}
+					while(j < tokens.length && !(item.tokenType === "close" && item.args && item.args[0] === tag ));
+					tokens.splice(i, j - i);
+				}
+				i++;
+			}
+		};
+		removeTag("script");
+	}
+
+	var renderer = stache(tokens);
 
 	var isNode = typeof process === "object" && {}.toString.call(process) === "[object process]";
 

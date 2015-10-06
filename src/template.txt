@@ -43,7 +43,7 @@ define(<%= imports %>, function(<%= args %>){
 			}
 
 			function remove(el) {
-				can.remove(el);
+				can.remove(can.$(el));
 			}
 
 			function appendTo(parent){

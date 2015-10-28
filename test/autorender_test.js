@@ -41,3 +41,14 @@ QUnit.test("not using can.route works", function() {
 	F("#hello").exists("Content rendered");
 	F("#hello").text(/Hello world/, "Correct text");
 });
+
+QUnit.module("progressive", {
+	setup: function(){
+		F.open("//progressive/index.html");
+	}
+});
+
+QUnit.test("are added to the bundle array", function(){
+	F("#bundles").exists().text(/test\/progressive\/bar/,
+							   "Normalized name is stored");
+});

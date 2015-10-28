@@ -2,8 +2,9 @@ define([
 	"@loader",
 	"module",
 	"./parse",
-	"./template"
-], function(loader, module, parse, template){
+	"./template",
+	"can/view/stache/add_bundles"
+], function(loader, module, parse, template, addBundles){
 	var main;
 
 	var isNode = typeof process === "object" &&
@@ -38,39 +39,23 @@ define([
 		});
 	}
 
-	function addBundles(dynamicImports) {
-		var localLoader = loader.localLoader || loader;
-		if(!dynamicImports.length) {
-			return;
-		}
-
-		var bundle = localLoader.bundle;
-		if(!bundle) {
-			bundle = localLoader.bundle = [];
-		}
-
-		can.each(dynamicImports, function(moduleName){
-			if(!~bundle.indexOf(moduleName)) {
-				bundle.push(moduleName);
-			}
-		});
-	}
-
 	function translate(load){
 		var result = parse(load.source);
 
-		addBundles(result.dynamicImports);
+		return addBundles(result.dynamicImports, load.name).then(function(){
 
-		var output = template({
-			imports: JSON.stringify(result.imports),
-			args: result.args.join(", "),
-			intermediate: JSON.stringify(result.intermediate),
-			ases: can.map(result.ases, function(from, name){
-				return "\t" + name + ": " + name +"['default'] || " + name;
-			}).join(",\n")
+			var output = template({
+				imports: JSON.stringify(result.imports),
+				args: result.args.join(", "),
+				intermediate: JSON.stringify(result.intermediate),
+				ases: can.map(result.ases, function(from, name){
+					return "\t" + name + ": " + name +"['default'] || " + name;
+				}).join(",\n")
+			});
+
+			return output;
+
 		});
-
-		return output;
 	}
 
   return {

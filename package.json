@@ -43,6 +43,6 @@
     ]
   },
   "dependencies": {
-    "can-wait": "^0.1.0"
+    "can-wait": "^0.2.0"
   }
 }

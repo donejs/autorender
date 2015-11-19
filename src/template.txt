@@ -99,18 +99,21 @@ define(<%= imports %>, function(<%= args %>){
 			var frag;
 			return wait(function(){
 				frag = renderer(data, options);
-			}).then(function(){
+
 				if(doc) {
 					var oldDoc = can.document;
 					can.document = doc;
 					can.appendChild(doc.body, frag, doc);
 					can.document = oldDoc;
 				}
-			}).then(function(){
+			}).then(function(responses){
 				return {
 					fragment: frag,
-					data: data.__pageData
+					data: data.__pageData,
+					canWaitData: responses
 				};
+			}, function(errors) {
+				throw errors;
 			});
 		},
 		<%= ases %>

@@ -43,7 +43,7 @@ define(<%= imports %>, function(<%= args %>){
 	}
 
 	var __export = {
-		render: function(scope, options){
+		renderToFrag: function(scope, options){
 			var moduleOptions = { module: module };
 			options = (options && options.add) ? options.add(moduleOptions) :
 				moduleOptions;
@@ -92,7 +92,7 @@ define(<%= imports %>, function(<%= args %>){
 			});
 		},
 		renderAsync: function(renderer, data, options, doc){
-			renderer = renderer || this.render;
+			renderer = renderer || this.renderToFrag;
 			data = data || this.state;
 			options = options || {};
 
@@ -115,6 +115,16 @@ define(<%= imports %>, function(<%= args %>){
 			}, function(errors) {
 				throw errors;
 			});
+		},
+		legacy: false,
+		render: function(doc, state){
+			var renderer = this.renderToFrag;
+			var frag = renderer(state, {});
+
+			var oldDoc = can.document;
+			can.document = doc;
+			can.appendChild(doc.body, frag, doc);
+			can.document = oldDoc;
 		},
 		<%= ases %>
 	};

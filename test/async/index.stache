@@ -1,0 +1,12 @@
+<html>
+<head><title>Async test</title></head>
+<body>
+	<can-import from="test/async/state" export-as="viewModel"/>
+	<can-import from="test/async/home/"/>
+
+	<home-page></home-page>
+
+	<script src="../../steal/steal.js"
+			main="test/async/index.stache!done-autorender"></script>
+</body>
+</html>

@@ -3,7 +3,8 @@ define([
 	"module",
 	"./parse",
 	"./template",
-	"can/view/stache/add_bundles"
+	"can/view/stache/add_bundles",
+	"can-wait",
 ], function(loader, module, parse, template, addBundles){
 	var main;
 

@@ -52,3 +52,16 @@ QUnit.test("are added to the bundle array", function(){
 	F("#bundles").exists().text(/test\/progressive\/bar/,
 							   "Normalized name is stored");
 });
+
+QUnit.module("async rendering", {
+	setup: function(){
+		F.open("//async/index.html");
+	}
+});
+
+QUnit.test("Everything is rendered up front", function(){
+	F("home-page").exists(function(){
+		var thingRendered = F("#thing").size();
+		QUnit.ok(thingRendered, "the #thing was added in a setTimeout but was rendered at the same time as the app because we wait for it");
+	});
+});

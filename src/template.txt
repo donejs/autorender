@@ -43,7 +43,7 @@ define(<%= imports %>, function(<%= args %>){
 	}
 
 	var __export = {
-		render: function(scope, options){
+		renderToFrag: function(scope, options){
 			var moduleOptions = { module: module };
 			options = (options && options.add) ? options.add(moduleOptions) :
 				moduleOptions;
@@ -91,65 +91,40 @@ define(<%= imports %>, function(<%= args %>){
 				eachChild(can.$("body", frag)[0], appendTo(body));
 			});
 		},
-		promiseAll: function(promises){
-			var dfd = new can.Deferred();
-
-			var left = promises.length,
-				failed = false;
-
-			function done(){
-				left--;
-				if(!left && !failed) {
-					dfd.resolve();
-				}
-			}
-
-			function fail(e){
-				failed = true;
-				dfd.reject(e);
-			}
-
-			can.each(promises, function(p){
-				p.then(done, fail);
-			});
-
-			return dfd;
-		},
 		renderAsync: function(renderer, data, options, doc){
-			renderer = renderer || this.render;
+			renderer = renderer || this.renderToFrag;
 			data = data || this.state;
 			options = options || {};
 
-			var promiseAll = this.promiseAll;
-			var frag = renderer(data, options);
+			var frag;
+			return wait(function(){
+				frag = renderer(data, options);
 
-			function waitForPromises(){
-				var readyPromises = [];
-				if(data.__readyPromises) {
-					readyPromises = data.__readyPromises;
-					data.__readyPromises = [];
+				if(doc) {
+					var oldDoc = can.document;
+					can.document = doc;
+					can.appendChild(doc.body, frag, doc);
+					can.document = oldDoc;
 				}
-
-				if(readyPromises.length === 0) {
-					if(doc) {
-						var oldDoc = can.document;
-						can.document = doc;
-						can.appendChild(doc.body, frag, doc);
-						can.document = oldDoc;
-					}
-
-					return new can.Deferred().resolve();
-				}
-
-				return promiseAll(readyPromises).then(waitForPromises);
-			}
-
-			return waitForPromises().then(function(){
+			}).then(function(responses){
 				return {
 					fragment: frag,
-					data: data.__pageData
+					data: data.__pageData,
+					canWaitData: responses
 				};
+			}, function(errors) {
+				throw errors;
 			});
+		},
+		legacy: false,
+		render: function(doc, state){
+			var renderer = this.renderToFrag;
+			var frag = renderer(state, {});
+
+			var oldDoc = can.document;
+			can.document = doc;
+			can.appendChild(doc.body, frag, doc);
+			can.document = oldDoc;
 		},
 		<%= ases %>
 	};

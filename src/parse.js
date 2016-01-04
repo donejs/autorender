@@ -20,13 +20,16 @@ define([
 			args.unshift(name);
 		});
 
-		// Add stache
-		imports.unshift("can/view/stache/stache");
-		args.unshift("stache");
+		var params = [
+			["can-wait", "wait"],
+			["can/view/stache/stache", "stache"],
+			["module", "module"]
+		];
 
-		// Add module
-		imports.unshift("module");
-		args.unshift("module");
+		can.each(params, function(param){
+			imports.unshift(param[0]);
+			args.unshift(param[1]);
+		});
 
 		return {
 			imports: imports,

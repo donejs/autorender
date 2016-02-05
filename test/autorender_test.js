@@ -4,6 +4,17 @@ var F = require("funcunit");
 
 F.attach(QUnit);
 
+var makeIframe = function(src){
+	var iframe = document.createElement('iframe');
+	window.removeMyself = function(){
+		delete window.removeMyself;
+		document.body.removeChild(iframe);
+		QUnit.start();
+	};
+	document.body.appendChild(iframe);
+	iframe.src = src;
+};
+
 QUnit.module("production", {
 	setup: function(){
 		F.open("//basics/prod.html");
@@ -28,6 +39,12 @@ QUnit.module("done-autorender",{
 QUnit.test("basics works", function(){
 	F("#hello").exists("Content rendered");
 	F("#hello").text(/Hello world/, "Correct text");
+});
+
+QUnit.module("development mode");
+
+QUnit.asyncTest("the appState is available as the html viewModel", function(){
+	makeIframe("basics/test.html");
 });
 
 // Fixes the case when can.route is not available (#5)

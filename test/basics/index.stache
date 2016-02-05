@@ -6,6 +6,7 @@
 	</head>
 	<body>
 		<can-import from="test/basics/state" as="viewModel"/>
+		<can-import from="can/component/"/>
 
 		<span id="hello">Hello {{hello}}!</span>
 

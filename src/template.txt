@@ -51,6 +51,7 @@ define(<%= imports %>, function(<%= args %>){
 		},
 		start: function(){
 			var state = this.state = new this.viewModel;
+			can.data(can.$("html"), "viewModel", state);
 			if (can.route) {
 				can.route.map(state);
 				can.route.ready();

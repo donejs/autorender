@@ -1,8 +1,9 @@
 define([
+	"module",
 	"can/view/stache/intermediate_and_imports"
-], function(getIntermediateAndImports){
+], function(module, getIntermediateAndImports){
 
-	return function(source){
+	return function(source, loader){
 		var intermediateAndImports = getIntermediateAndImports(source);
 
 		var ases = intermediateAndImports.ases;
@@ -21,7 +22,7 @@ define([
 		});
 
 		var params = [
-			["can-wait", "wait"],
+			[loader.normalize("can-wait", module.id), "wait"],
 			["can/view/stache/stache", "stache"],
 			["module", "module"]
 		];

@@ -41,12 +41,14 @@ define([
 	}
 
 	function translate(load){
-		var result = parse(load.source);
+		var result = parse(load.source, this);
 
-		return addBundles(result.dynamicImports, load.name).then(function(){
-
+		return Promise.all([
+			addBundles(result.dynamicImports, load.name),
+			Promise.all(result.imports)
+		]).then(function(pResults){
 			var output = template({
-				imports: JSON.stringify(result.imports),
+				imports: JSON.stringify(pResults[1]),
 				args: result.args.join(", "),
 				intermediate: JSON.stringify(result.intermediate),
 				ases: can.map(result.ases, function(from, name){
@@ -55,7 +57,6 @@ define([
 			});
 
 			return output;
-
 		});
 	}
 

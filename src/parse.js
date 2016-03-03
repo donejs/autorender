@@ -23,7 +23,8 @@ define([
 
 		var params = [
 			["can/util/util", "can"],
-			[loader.normalize("can-wait", module.id), "wait"],
+			[loader.normalize("can-wait", module.id), "Zone"],
+			[loader.normalize("can-wait/xhr", module.id), "xhrZone"],
 			["can/view/stache/stache", "stache"],
 			["module", "module"]
 		];

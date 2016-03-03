@@ -82,3 +82,13 @@ QUnit.test("Everything is rendered up front", function(){
 		QUnit.ok(thingRendered, "the #thing was added in a setTimeout but was rendered at the same time as the app because we wait for it");
 	});
 });
+
+QUnit.module("Using the xhrZone plugin", {
+	setup: function(){
+		F.open("//xhr/index.html");
+	}
+});
+
+QUnit.test("Requests are intercepted", function(){
+	F(".thing").size(2, "The ajax request was intercepted and returned a list");
+});

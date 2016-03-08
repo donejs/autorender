@@ -98,7 +98,10 @@ define(<%= imports %>, function(<%= args %>){
 			options = options || {};
 
 			var frag;
-			return wait(function(){
+			var zone = new Zone({
+				plugins: [xhrZone]
+			});
+			return zone.run(function(){
 				frag = renderer(data, options);
 
 				if(doc) {
@@ -107,14 +110,12 @@ define(<%= imports %>, function(<%= args %>){
 					can.appendChild(doc.body, frag, doc);
 					can.document = oldDoc;
 				}
-			}).then(function(responses){
+			}).then(function(zoneData){
 				return {
 					fragment: frag,
 					data: data.__pageData,
-					canWaitData: responses
+					zoneData: zoneData
 				};
-			}, function(errors) {
-				throw errors;
 			});
 		},
 		legacy: false,

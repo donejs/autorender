@@ -4,7 +4,7 @@ define([
 	"./parse",
 	"./template",
 	"can/view/stache/add_bundles",
-	"can-wait",
+	"can-zone",
 ], function(loader, module, parse, template, addBundles){
 	var main;
 

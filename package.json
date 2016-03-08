@@ -43,6 +43,6 @@
     ]
   },
   "dependencies": {
-    "can-wait": "^0.3.0"
+    "can-zone": "^0.4.0"
   }
 }

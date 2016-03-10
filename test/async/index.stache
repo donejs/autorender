@@ -6,6 +6,12 @@
 
 	<home-page></home-page>
 
+	<can-import from="test/async/other/">
+		{{#if isResolved}}
+			<other-page></other-page>
+		{{/if}}
+	</can-import>
+
 	<script src="../../steal/steal.js"
 			main="test/async/index.stache!done-autorender"></script>
 </body>

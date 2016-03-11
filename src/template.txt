@@ -42,6 +42,23 @@ define(<%= imports %>, function(<%= args %>){
 		stache.registerHelper("asset", can.k);
 	}
 
+
+	function systemImportZone(){
+		var oldImport;
+		var myImport = function(){
+			return Promise.resolve(oldImport.apply(this, arguments));
+		};
+		return {
+			beforeTask: function(){
+				oldImport = System.import;
+				System.import = myImport;
+			},
+			afterTask: function(){
+				System.import = oldImport;
+			}
+		};
+	}
+
 	var __export = {
 		renderToFrag: function(scope, options){
 			var moduleOptions = { module: module };
@@ -50,13 +67,18 @@ define(<%= imports %>, function(<%= args %>){
 			return renderer(scope, options);
 		},
 		start: function(){
-			var state = this.state = new this.viewModel;
-			can.data(can.$("html"), "viewModel", state);
-			if (can.route) {
-				can.route.map(state);
-				can.route.ready();
-			}
-			this.rerender();
+			var autorender = this;
+			new Zone({
+				plugins: [xhrZone, systemImportZone]
+			}).run(function(){
+				var state = autorender.state = new autorender.viewModel;
+				can.data(can.$("html"), "viewModel", state);
+				if (can.route) {
+					can.route.map(state);
+					can.route.ready();
+				}
+				autorender.rerender();
+			});
 		},
 		rerender: function(){
 			var keep = { "SCRIPT": true, "STYLE": true, "LINK": true };
@@ -98,9 +120,11 @@ define(<%= imports %>, function(<%= args %>){
 			options = options || {};
 
 			var frag;
+
 			var zone = new Zone({
-				plugins: [xhrZone]
+				plugins: [xhrZone, systemImportZone]
 			});
+
 			return zone.run(function(){
 				frag = renderer(data, options);
 

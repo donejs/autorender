@@ -81,6 +81,9 @@ QUnit.test("Everything is rendered up front", function(){
 		var thingRendered = F("#thing").size();
 		QUnit.ok(thingRendered, "the #thing was added in a setTimeout but was rendered at the same time as the app because we wait for it");
 	});
+
+	F("other-page").exists();
+	F("other-page .thing").size(3, "The three list items loaded from the XHR_CACHE");
 });
 
 QUnit.module("Using the xhrZone plugin", {

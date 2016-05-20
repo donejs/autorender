@@ -1,13 +1,12 @@
-var can = require("can");
-require("can/map/define/");
+var Component = require("can-component");
+var Map = require("can-map");
+require("can-map-define");
+var List = require("can-list");
 
-can.Component.extend({
-	tag: "other-page",
-	template: require("./other.stache!"),
-	viewModel: {
-		define: {
+var ViewModel = Map.extend({
+	define: {
 		things: {
-			Value: can.List,
+			Value: List,
 			get: function(list){
 				var xhr = new XMLHttpRequest();
 				xhr.open("GET", "foo://bar");
@@ -19,6 +18,11 @@ can.Component.extend({
 				return list;
 			}
 		}
-		}
 	}
+});
+
+Component.extend({
+	tag: "other-page",
+	template: require("./other.stache!"),
+	ViewModel: ViewModel
 });

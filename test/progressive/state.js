@@ -1,7 +1,7 @@
 define([
-	"can/map/map",
+	"can-map",
 	"@loader",
-	"can/route/route"
+	"can-route"
 ], function(Map, loader){
 	return Map.extend({
 		bundles: function(){

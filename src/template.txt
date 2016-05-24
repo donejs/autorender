@@ -37,7 +37,7 @@ define(<%= imports %>, function(<%= args %>){
 		return slice.call(childNodes(parent));
 	}
 
-	var __export = {
+	var autorender = {
 		renderToFrag: function(scope, options){
 			var moduleOptions = { module: module };
 			options = (options && options.add) ? options.add(moduleOptions) :
@@ -135,7 +135,7 @@ define(<%= imports %>, function(<%= args %>){
 				if(doc) {
 					var oldDoc = can.document;
 					can.document = doc;
-					can.appendChild(doc.body, frag, doc);
+					mutate.appendChild.call(doc.body, frag, doc);
 					can.document = oldDoc;
 				}
 			}).then(function(zoneData){
@@ -152,17 +152,21 @@ define(<%= imports %>, function(<%= args %>){
 
 			var oldDoc = can.document;
 			can.document = doc;
-			can.appendChild(doc.body, frag, doc);
+			mutate.appendChild.call(doc.body, frag, doc);
 			can.document = oldDoc;
 		},
 		<%= ases %>
 	};
-	var __isNW = (function(){
+	var isNW = (function(){
 		try{var nr = System._nodeRequire; return nr && nr('nw.gui') !== 'undefined';}catch(e){return false;}
 	})();
 
-	if(typeof steal !== 'undefined' && (__isNW || !(typeof process === 'object' && {}.toString.call(process) === '[object process]')))
-		steal.done().then(function() { __export.start(); });
+	if(typeof steal !== 'undefined' && (isNW || !isNode))
+		steal.done().then(function() {
+			if(steal.System.autorenderAutostart !== false) {
+				autorender.start();
+			}
+		});
 
-	return __export;
+	return autorender;
 });

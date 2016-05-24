@@ -1,6 +1,8 @@
 var QUnit = require("steal-qunit");
 var F = require("funcunit");
 
+require("./unit");
+
 F.attach(QUnit);
 
 var makeIframe = function(src){

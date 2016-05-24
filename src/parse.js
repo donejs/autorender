@@ -34,6 +34,7 @@ define([
 			[n("can-route"), "route"],
 			[n("can-util/dom/child-nodes/child-nodes"), "childNodes"],
 			[n("can-util/dom/mutate/mutate"), "mutate"],
+			[n("can-util/namespace"), "can"],
 			["module", "module"],
 			[n("can-view-import"), "canViewImport"]
 		];

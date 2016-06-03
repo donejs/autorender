@@ -25,9 +25,9 @@ done-autorender enables you to use a Stache template as your application entry-p
   <title>My Site</title>
 </head>
 <body>
-  <can-import from="main.css!"/>
+  <can-import from="main.css"/>
   <can-import from="routes"/>
-  <can-import from="state" as="viewModel"/>
+  <can-import from="state" export-as="viewModel"/>
 
   {{#eq page "home"}}
 
@@ -48,7 +48,7 @@ done-autorender enables you to use a Stache template as your application entry-p
 <script src="node_modules/steal/steal.js" main="index.stache!done-autorender"></script>
 ```
 
-Then load `index.html` in a browser. After all dependencies are loaded, your `index.stache` will be rendered and inserted into the page.
+Then load `index.html` in a browser. After all dependencies are loaded your `index.stache` will be rendered and inserted into the page.
 
 ## API
 
@@ -56,17 +56,17 @@ Then load `index.html` in a browser. After all dependencies are loaded, your `in
 
 Each done-autorender application is backed by a [viewModel](http://canjs.com/docs/can.Component.prototype.viewModel.html) that represents the state of the entire application.
 
-This viewModel is an instance of a can.Map or a [can-ssr/app-map](http://canjs.github.io/can-ssr/doc/can-ssr.AppMap.html). To import this ViewModel into your application use a can-import tag like so:
+This viewModel is an instance of a can.Map. To import this ViewModel into your application use a can-import tag like so:
 
 ```handlebars
-<can-import from="app/state" as="viewModel"/>
+<can-import from="app/state" export-as="viewModel"/>
 ```
 
-This tells done-autorender that the module **app/state** is the View Model.
+This tells done-autorender that the module **app/state** is the ViewModel.
 
-#### Accessing
+#### Debugging
 
-Often in development (such as in your dev tools console) you will want to have access to the Application View Model to inspect it's values.  You can access it with:
+Often in development (such as in your dev tools console) you will want to have access to the Application ViewModel to inspect it's values.  You can access it with:
 
 ```js
 $("html").viewModel(); // -> AppViewModel

@@ -3,9 +3,10 @@ define([
 	"module",
 	"./parse",
 	"./template",
-	"can/view/stache/add_bundles",
-	"can-zone",
-], function(loader, module, parse, template, addBundles){
+	"steal-stache/add-bundles",
+	"can-util/js/each/each",
+	"can-zone"
+], function(loader, module, parse, template, addBundles, each){
 	var main;
 
 	var isNode = typeof process === "object" &&
@@ -40,6 +41,14 @@ define([
 		});
 	}
 
+	function map(obj, cb){
+		var out = [];
+		each(obj, function(a, b){
+			out.push(cb(a, b));
+		});
+		return out;
+	}
+
 	function translate(load){
 		var result = parse(load.source, this);
 
@@ -51,7 +60,7 @@ define([
 				imports: JSON.stringify(pResults[1]),
 				args: result.args.join(", "),
 				intermediate: JSON.stringify(result.intermediate),
-				ases: can.map(result.ases, function(from, name){
+				ases: map(result.ases, function(from, name){
 					return "\t" + name + ": " + name +"['default'] || " + name;
 				}).join(",\n")
 			});

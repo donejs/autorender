@@ -6,7 +6,6 @@
 	</head>
 	<body>
 		<can-import from="test/xhr/state" as="viewModel"/>
-		<can-import from="can/component/"/>
 
 		{{#stuff}}
 			<div class="thing">{{name}}</div>

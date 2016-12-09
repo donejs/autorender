@@ -1,11 +1,14 @@
-var can = require("can");
+var Component = require("can-component");
+var Map = require("can-map");
 
-can.Component.extend({
+var ViewModel = Map.extend({
+	showThing: false
+});
+
+Component.extend({
 	tag: "home-page",
 	template: require("./home.stache!"),
-	viewModel: {
-		showThing: false
-	},
+	ViewModel: ViewModel,
 	events: {
 		init: function(){
 			var vm = this.viewModel;

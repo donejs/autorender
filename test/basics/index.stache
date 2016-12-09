@@ -1,12 +1,9 @@
 <html>
 	<head>
 		<title>Hello page</title>
-
-		{{asset "css"}}
 	</head>
 	<body>
 		<can-import from="test/basics/state" as="viewModel"/>
-		<can-import from="can/component/"/>
 
 		<span id="hello">Hello {{hello}}!</span>
 

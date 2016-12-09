@@ -2,29 +2,6 @@ define(<%= imports %>, function(<%= args %>){
 
 	var tokens = <%= intermediate %>;
 
-	var supportsCreatingScripts = (function(){
-		try { document.createElement("script").appendChild(document.createDocumentFragment()); return true; } catch(_) { return false; }
-	})();
-
-	// For IE8 strip out the scripts because they will be executed prematurely.
-	if(!supportsCreatingScripts) {
-		var removeTag = function(tag){
-			var i = 0, item;
-			while(i < tokens.length) {
-				item = tokens[i], j = i;
-				if(item.tokenType === "start" && item.args && item.args[0] === tag) {
-					do {
-						item = tokens[j]; j++;
-					}
-					while(j < tokens.length && !(item.tokenType === "close" && item.args && item.args[0] === tag ));
-					tokens.splice(i, j - i);
-				}
-				i++;
-			}
-		};
-		removeTag("script");
-	}
-
 	var renderer = stache(tokens);
 
 	var isNode = typeof process === "object" && {}.toString.call(process) === "[object process]";
@@ -38,8 +15,6 @@ define(<%= imports %>, function(<%= args %>){
 			return options.inverse(this);
 		}
 	});
-	stache.registerHelper("asset", can.k);
-
 
 	function systemImportZone(){
 		var oldImport;
@@ -57,7 +32,12 @@ define(<%= imports %>, function(<%= args %>){
 		};
 	}
 
-	var __export = {
+	var slice = Array.prototype.slice;
+	function makeArray(parent) {
+		return slice.call(childNodes(parent));
+	}
+
+	var autorender = {
 		renderToFrag: function(scope, options){
 			var moduleOptions = { module: module };
 			options = (options && options.add) ? options.add(moduleOptions) :
@@ -70,32 +50,54 @@ define(<%= imports %>, function(<%= args %>){
 				plugins: [xhrZone, systemImportZone]
 			}).run(function(){
 				var state = autorender.state = new autorender.viewModel;
-				can.data(can.$("html"), "viewModel", state);
-				if (can.route) {
-					can.route.map(state);
-					can.route.ready();
-				}
+
+				var docEl = document.documentElement;
+				domData.set.call(docEl, "viewModel", state);
+
+				route.map(state);
+				route.ready();
+
 				autorender.rerender();
 			});
 		},
 		rerender: function(){
 			var keep = { "SCRIPT": true, "STYLE": true, "LINK": true };
 			function eachChild(parent, callback){
-				can.each(can.makeArray(parent.childNodes), function(el){
-					if(!keep[el.nodeName]) {
-						callback(el);
+				var nodes = makeArray(parent), node;
+				var i = 0, len = nodes.length;
+
+				for(; i < len; i++) {
+					node = nodes[i];
+					if(!keep[node.nodeName]) {
+						if(callback(node) === false) {
+							break;
+						}
 					}
-				});
+				}
 			}
 
 			function remove(el) {
-				can.remove(can.$(el));
+				mutate.removeChild.call(el.parentNode, el);
 			}
 
 			function appendTo(parent){
 				return function(el){
-					can.appendChild(parent, el);
+					mutate.appendChild.call(parent, el);
 				}
+			}
+
+			function traverse(node, tagName){
+				var child;
+				eachChild(node, function(el){
+					if(el.tagName === tagName) {
+						child = el;
+						return false;
+					} else {
+						child = traverse(el, tagName);
+						return !child;
+					}
+				});
+				return child;
 			}
 
 			this.renderAsync().then(function(result){
@@ -105,11 +107,15 @@ define(<%= imports %>, function(<%= args %>){
 
 				// Move elements from the fragment's head to the document head.
 				eachChild(head, remove);
-				eachChild(can.$("head", frag)[0], appendTo(head));
+
+				var fragHead = traverse(frag, "HEAD");
+				eachChild(fragHead, appendTo(head));
 
 				// Move elements from the fragment's body to the document body.
 				eachChild(body, remove);
-				eachChild(can.$("body", frag)[0], appendTo(body));
+
+				var fragBody = traverse(frag, "BODY");
+				eachChild(fragBody, appendTo(body));
 			});
 		},
 		renderAsync: function(renderer, data, options, doc){
@@ -129,13 +135,12 @@ define(<%= imports %>, function(<%= args %>){
 				if(doc) {
 					var oldDoc = can.document;
 					can.document = doc;
-					can.appendChild(doc.body, frag, doc);
+					mutate.appendChild.call(doc.body, frag, doc);
 					can.document = oldDoc;
 				}
 			}).then(function(zoneData){
 				return {
 					fragment: frag,
-					data: data.__pageData,
 					zoneData: zoneData
 				};
 			});
@@ -147,17 +152,21 @@ define(<%= imports %>, function(<%= args %>){
 
 			var oldDoc = can.document;
 			can.document = doc;
-			can.appendChild(doc.body, frag, doc);
+			mutate.appendChild.call(doc.body, frag, doc);
 			can.document = oldDoc;
 		},
 		<%= ases %>
 	};
-	var __isNW = (function(){
+	var isNW = (function(){
 		try{var nr = System._nodeRequire; return nr && nr('nw.gui') !== 'undefined';}catch(e){return false;}
 	})();
 
-	if(typeof steal !== 'undefined' && (__isNW || !(typeof process === 'object' && {}.toString.call(process) === '[object process]')))
-		steal.done().then(function() { __export.start(); });
+	if(typeof steal !== 'undefined' && (isNW || !isNode))
+		steal.done().then(function() {
+			if(steal.System.autorenderAutostart !== false) {
+				autorender.start();
+			}
+		});
 
-	return __export;
+	return autorender;
 });

@@ -54,7 +54,7 @@ define(<%= imports %>, function(<%= args %>){
 				var docEl = document.documentElement;
 				domData.set.call(docEl, "viewModel", state);
 
-				route.map(state);
+				route.data = state;
 				route.ready();
 
 				autorender.rerender();

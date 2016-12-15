@@ -8,7 +8,7 @@ define(<%= imports %>, function(<%= args %>){
 
 	// SSR helpers isProduction, and some that don't matter in the client.
 	stache.registerHelper("isProduction", function(options){
-		var loader = typeof System !== "undefined" ? System : undefined;
+		var loader = typeof steal !== "undefined" ? steal : undefined;
 		if(loader && loader.isEnv && loader.isEnv("production")) {
 			return options.fn(this);
 		} else {
@@ -23,11 +23,11 @@ define(<%= imports %>, function(<%= args %>){
 		};
 		return {
 			beforeTask: function(){
-				oldImport = System.import;
-				System.import = myImport;
+				oldImport = steal.import;
+				steal.import = myImport;
 			},
 			afterTask: function(){
-				System.import = oldImport;
+				steal.import = oldImport;
 			}
 		};
 	}
@@ -158,7 +158,7 @@ define(<%= imports %>, function(<%= args %>){
 		<%= ases %>
 	};
 	var isNW = (function(){
-		try{var nr = System._nodeRequire; return nr && nr('nw.gui') !== 'undefined';}catch(e){return false;}
+		try{var nr = steal._nodeRequire; return nr && nr('nw.gui') !== 'undefined';}catch(e){return false;}
 	})();
 
 	if(typeof steal !== 'undefined' && (isNW || !isNode))

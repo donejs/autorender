@@ -50,7 +50,6 @@ define(<%= imports %>, function(<%= args %>){
 				plugins: [xhrZone, systemImportZone]
 			}).run(function(){
 				var state = autorender.state = new autorender.viewModel;
-
 				var docEl = document.documentElement;
 				domData.set.call(docEl, "viewModel", state);
 

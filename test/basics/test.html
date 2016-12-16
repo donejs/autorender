@@ -5,6 +5,8 @@
 </head>
 <body>
 	<script>
+		window.Testee = {};
+
 		window.QUnit = window.parent.QUnit;
 		window.removeMyself = window.parent.removeMyself;
 	</script>
@@ -13,9 +15,15 @@
 		var canViewModel = require("can-view-model");
 		var Zone = require("can-zone");
 
-		new Zone().run(function() {
-			return System.import('test/basics/index.stache!done-autorender');
-		}).then(function() {
+		System.import('test/basics/index.stache!done-autorender')
+		.then(function(){
+			return new Promise(function(resolve, reject){
+				setTimeout(function(){
+					resolve();
+				}, 500);
+			});
+		})
+		.then(function() {
 			var vm = canViewModel(document.documentElement);
 
 			if(window.QUnit) {

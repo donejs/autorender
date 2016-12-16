@@ -26,17 +26,17 @@
     "can-component": "^3.0.3",
     "can-list": "^3.0.1",
     "can-map": "^3.0.3",
-    "can-map-define": "^3.0.1",
+    "can-map-define": "^3.0.2",
     "can-route": "^3.0.5",
     "funcunit": "^3.1.0",
     "lodash.template": "^4.4.0",
-    "steal": "^0.16.43",
-    "steal-qunit": "0.1.4",
-    "steal-tools": "^0.16.8",
+    "steal": "^1.0.3",
+    "steal-qunit": "1.0.0",
+    "steal-tools": "^1.0.1",
     "testee": "^0.3.0"
   },
   "homepage": "https://github.com/donejs/autorender",
-  "system": {
+  "steal": {
     "npmAlgorithm": "flat",
     "directories": {
       "lib": "src"
@@ -44,11 +44,11 @@
   },
   "dependencies": {
     "can-route": "^3.0.5",
-    "can-stache": "^3.0.13",
-    "can-util": "^3.0.13",
+    "can-stache": "^3.0.15",
+    "can-util": "^3.1.0",
     "can-view-import": "^3.0.3",
     "can-view-model": "^3.1.2",
     "can-zone": "^0.6.0",
-    "steal-stache": "^3.0.3"
+    "steal-stache": "^3.0.4"
   }
 }

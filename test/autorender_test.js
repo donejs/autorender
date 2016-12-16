@@ -1,7 +1,7 @@
 var QUnit = require("steal-qunit");
 var F = require("funcunit");
 
-require("./unit");
+//require("./unit");
 
 F.attach(QUnit);
 

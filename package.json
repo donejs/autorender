@@ -2,7 +2,7 @@
   "name": "done-autorender",
   "version": "1.0.0-alpha.0",
   "description": "Autorender CanJS projects",
-  "main": "autorender.js",
+  "main": "src/autorender.js",
   "scripts": {
     "build": "node build.js",
     "build-test-prod": "node test/build.js",
@@ -36,12 +36,6 @@
     "testee": "^0.3.0"
   },
   "homepage": "https://github.com/donejs/autorender",
-  "system": {
-    "npmAlgorithm": "flat",
-    "directories": {
-      "lib": "src"
-    }
-  },
   "dependencies": {
     "can-route": "^3.0.5",
     "can-stache": "^3.0.15",

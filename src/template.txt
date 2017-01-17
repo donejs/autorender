@@ -60,6 +60,7 @@ define(<%= imports %>, function(<%= args %>){
 			});
 		},
 		rerender: function(){
+			var appendAll = document.documentElement.getAttribute("data-detached") == null;
 			var keep = { "SCRIPT": true, "STYLE": true, "LINK": true };
 			function eachChild(parent, callback){
 				var nodes = makeArray(parent), node;
@@ -67,7 +68,7 @@ define(<%= imports %>, function(<%= args %>){
 
 				for(; i < len; i++) {
 					node = nodes[i];
-					if(!keep[node.nodeName]) {
+					if(!keep[node.nodeName] || appendAll) {
 						if(callback(node) === false) {
 							break;
 						}
@@ -115,6 +116,10 @@ define(<%= imports %>, function(<%= args %>){
 
 				var fragBody = traverse(frag, "BODY");
 				eachChild(fragBody, appendTo(body));
+
+				// Removing this attribute will allow styles to respond
+				// to be attached
+				document.documentElement.removeAttribute("data-detached");
 			});
 		},
 		renderAsync: function(renderer, data, options, doc){
@@ -152,6 +157,7 @@ define(<%= imports %>, function(<%= args %>){
 			var oldDoc = can.document;
 			can.document = doc;
 			mutate.appendChild.call(doc.body, frag, doc);
+			doc.documentElement.setAttribute("data-detached", "");
 			can.document = oldDoc;
 		},
 		<%= ases %>

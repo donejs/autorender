@@ -72,7 +72,7 @@ QUnit.module("done-autorender rerenders",{
 	}
 });
 
-QUnit.test("rerendering doesn't reinsert scripts", function(){
+QUnit.test("rerendering doesn't reinsert scripts/links", function(){
 	F.wait(1000);
 
 	var rerendered = false;
@@ -90,7 +90,7 @@ QUnit.test("rerendering doesn't reinsert scripts", function(){
 	F('html').wait(function() { return !!rerendered; });
 
 	function one(val) { return val === 1; }
-	F("script").size(one, "There is still just one script tag");
+	F("link").size(one, "There is still just one link tag");
 });
 
 QUnit.module("development mode");

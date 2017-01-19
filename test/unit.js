@@ -2,10 +2,7 @@ var QUnit = require("steal-qunit");
 var loader = require("@loader");
 
 function makeDoc(){
-	var doc = document.createElement("html");
-	var body = document.createElement('body');
-	doc.appendChild(body);
-	doc.body = body;
+	var doc = document.implementation.createHTMLDocument();
 	return doc;
 }
 
@@ -35,6 +32,9 @@ QUnit.test("renders to a document", function(assert){
 	autorender.render(doc, state);
 
 	assert.ok(doc.body.querySelector("#hello"), "element was appended");
+	var html = doc.body.firstChild;
+	assert.equal(html.dataset.detached, "",
+			  "the detached data attributed as added");
 });
 
 QUnit.module("#renderAsync with basics", {

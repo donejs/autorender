@@ -2,7 +2,7 @@ language: node_js
 node_js: 5.8
 script: npm test
 addons:
-  firefox: "48.0"
+  firefox: latest
 before_install:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"

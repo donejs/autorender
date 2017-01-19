@@ -1,7 +1,7 @@
 var QUnit = require("steal-qunit");
 var F = require("funcunit");
 
-//require("./unit");
+require("./unit");
 
 F.attach(QUnit);
 
@@ -37,9 +37,60 @@ QUnit.module("done-autorender",{
 	}
 });
 
-QUnit.test("basics works", function(){
+QUnit.test("Basics works", function(){
 	F("#hello").exists("Content rendered");
 	F("#hello").text(/Hello world/, "Correct text");
+});
+
+QUnit.test("links in the index.stache get rendered", function(){
+	function one(val) { return val === 1; };
+	F("link[rel=stylesheet]").size(one, "there is one link");
+});
+
+QUnit.module("done-autorender ssr",{
+	setup: function(){
+	   F.open("//basics/ssr.html");
+	}
+});
+
+QUnit.test("only one link (the existing one) is rendered", function(){
+	function one(val) { return val === 1; };
+	F("link[rel=stylesheet]").size(one, "there is one link");
+});
+
+QUnit.test("the data-detached attribute is removed", function(){
+	F(function(){
+		var document = F.win.document;
+		var detached = document.documentElement.dataset.detached;
+		QUnit.equal(detached, null, "it is not detached");
+	});
+});
+
+QUnit.module("done-autorender rerenders",{
+	setup: function(){
+	   F.open("//basics/ssr.html");
+	}
+});
+
+QUnit.test("rerendering doesn't reinsert scripts/links", function(){
+	F.wait(1000);
+
+	var rerendered = false;
+	F(function(){
+		var loader = F.win.System;
+		loader["import"]("test/basics/index.stache!done-autorender")
+		.then(function(autorender){
+			return autorender.rerender();
+		})
+		.then(function(){
+			rerendered = true;
+		});
+	});
+
+	F('html').wait(function() { return !!rerendered; });
+
+	function one(val) { return val === 1; }
+	F("link").size(one, "There is still just one link tag");
 });
 
 QUnit.module("development mode");

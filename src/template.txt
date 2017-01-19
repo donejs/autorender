@@ -59,7 +59,10 @@ define(<%= imports %>, function(<%= args %>){
 				autorender.rerender();
 			});
 		},
+		isAttached: false,
 		rerender: function(){
+			var appendAll = !this.isAttached &&
+				document.documentElement.getAttribute("data-detached") == null;
 			var keep = { "SCRIPT": true, "STYLE": true, "LINK": true };
 			function eachChild(parent, callback){
 				var nodes = makeArray(parent), node;
@@ -67,16 +70,28 @@ define(<%= imports %>, function(<%= args %>){
 
 				for(; i < len; i++) {
 					node = nodes[i];
-					if(!keep[node.nodeName]) {
-						if(callback(node) === false) {
-							break;
-						}
+					if(callback(node) === false) {
+						break;
+					}
+				}
+			}
+
+			function ifInsertable(cb) {
+				return function(node){
+					if(!keep[node.nodeName] || appendAll) {
+						return cb(node);
 					}
 				}
 			}
 
 			function remove(el) {
 				mutate.removeChild.call(el.parentNode, el);
+			}
+
+			function removeIfRemovable(node){
+				if(!keep[node.nodeName]) {
+					remove(node);
+				}
 			}
 
 			function appendTo(parent){
@@ -99,23 +114,28 @@ define(<%= imports %>, function(<%= args %>){
 				return child;
 			}
 
-			this.renderAsync().then(function(result){
+			return this.renderAsync().then(function(result){
 				var frag = result.fragment;
 				var head = document.head || document.getElementsByTagName("head")[0];
 				var body = document.body;
 
 				// Move elements from the fragment's head to the document head.
-				eachChild(head, remove);
+				eachChild(head, removeIfRemovable);
 
 				var fragHead = traverse(frag, "HEAD");
-				eachChild(fragHead, appendTo(head));
+				eachChild(fragHead, ifInsertable(appendTo(head)));
 
 				// Move elements from the fragment's body to the document body.
-				eachChild(body, remove);
+				eachChild(body, removeIfRemovable);
 
 				var fragBody = traverse(frag, "BODY");
-				eachChild(fragBody, appendTo(body));
-			});
+				eachChild(fragBody, ifInsertable(appendTo(body)));
+
+				// Removing this attribute will allow styles to respond
+				// to be attached
+				document.documentElement.removeAttribute("data-detached");
+				this.isAttached = true;
+			}.bind(this));
 		},
 		renderAsync: function(renderer, data, options, doc){
 			renderer = renderer || this.renderToFrag;
@@ -152,6 +172,20 @@ define(<%= imports %>, function(<%= args %>){
 			var oldDoc = can.document;
 			can.document = doc;
 			mutate.appendChild.call(doc.body, frag, doc);
+
+			var html, cur = doc.body.firstChild;
+			while(!html && cur) {
+				if(cur.nodeName === "HTML") {
+					html = cur;
+				} else {
+					cur = cur.nextSibling;
+				}
+			}
+
+			if(html) {
+				html.setAttribute("data-detached", "");
+			}
+
 			can.document = oldDoc;
 		},
 		<%= ases %>

@@ -32,8 +32,7 @@ QUnit.test("renders to a document", function(assert){
 	autorender.render(doc, state);
 
 	assert.ok(doc.body.querySelector("#hello"), "element was appended");
-	var html = doc.body.firstChild;
-	assert.equal(html.dataset.detached, "",
+	assert.equal(doc.documentElement.dataset.detached, "",
 			  "the detached data attributed as added");
 });
 

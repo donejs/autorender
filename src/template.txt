@@ -157,20 +157,7 @@ define(<%= imports %>, function(<%= args %>){
 			var oldDoc = can.document;
 			can.document = doc;
 			mutate.appendChild.call(doc.body, frag, doc);
-
-			var html, cur = doc.body.firstChild;
-			while(!html && cur) {
-				if(cur.nodeName === "HTML") {
-					html = cur;
-				} else {
-					cur = cur.nextSibling;
-				}
-			}
-
-			if(html) {
-				html.setAttribute("data-detached", "");
-			}
-
+			doc.documentElement.setAttribute("data-detached", "");
 			can.document = oldDoc;
 		},
 		<%= ases %>

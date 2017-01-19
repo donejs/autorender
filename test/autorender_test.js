@@ -73,6 +73,8 @@ QUnit.module("done-autorender rerenders",{
 });
 
 QUnit.test("rerendering doesn't reinsert scripts", function(){
+	F.wait(1000);
+
 	var rerendered = false;
 	F(function(){
 		var loader = F.win.System;

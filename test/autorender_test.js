@@ -66,6 +66,31 @@ QUnit.test("the data-detached attribute is removed", function(){
 	});
 });
 
+QUnit.module("done-autorender rerenders",{
+	setup: function(){
+	   F.open("//basics/ssr.html");
+	}
+});
+
+QUnit.test("rerendering doesn't reinsert scripts", function(){
+	var rerendered = false;
+	F(function(){
+		var loader = F.win.System;
+		loader["import"]("test/basics/index.stache!done-autorender")
+		.then(function(autorender){
+			return autorender.rerender();
+		})
+		.then(function(){
+			rerendered = true;
+		});
+	});
+
+	F('html').wait(function() { return !!rerendered; });
+
+	function one(val) { return val === 1; }
+	F("script").size(one, "There is still just one script tag");
+});
+
 QUnit.module("development mode");
 
 QUnit.asyncTest("the appState is available as the html viewModel", function(){

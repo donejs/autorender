@@ -71,22 +71,3 @@ Often in development (such as in your dev tools console) you will want to have a
 ```js
 $("html").viewModel(); // -> AppViewModel
 ```
-
-## Server Rendering
-
-When rendering from the server using [done-ssr](https://github.com/donejs/done-ssr) done-autorender will add an attribute to the root HTML element like so:
-
-```html
-<html data-detached>
-  ...
-</html>
-```
-
-When done-autorender runs on the client it **reattaches** your interactive app to the DOM. After reattachment is complete the `data-detached` attribute is removed. This means you can use this attribute in your CSS to style things a certain way while reattachment is happening:
-
-```css
-html[data-detached] input {
-  background: grey;
-  /* other stuff to make it look disabled */
-}
-```

@@ -1,8 +1,6 @@
 <html>
 	<head>
 		<title>Hello page</title>
-
-		<link rel="stylesheet" href="./styles.css">
 	</head>
 	<body>
 		<can-import from="test/basics/state" as="viewModel"/>

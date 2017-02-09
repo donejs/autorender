@@ -49,6 +49,16 @@ define(<%= imports %>, function(<%= args %>){
 			new Zone({
 				plugins: [xhrZone, systemImportZone]
 			}).run(function(){
+				var ViewModel = autorender.viewModel;
+
+				if(!ViewModel) {
+					var message  = "done-autorender cannot start without a ViewModel. " +
+						"Please ensure your template contains an export for your " +
+						"application's ViewModel. https://github.com/donejs/autorender#viewmodel";
+					console.error(message);
+					return;
+				}
+
 				var state = autorender.state = new autorender.viewModel;
 				var docEl = document.documentElement;
 				domData.set.call(docEl, "viewModel", state);

@@ -36,7 +36,8 @@ define([
 			[n("can-util/dom/mutate/mutate"), "mutate"],
 			[n("can-util/namespace"), "can"],
 			["module", "module"],
-			[n("can-view-import"), "canViewImport"]
+			[n("can-view-import"), "canViewImport"],
+			[n("can-zone/debug"), "debugZone"]
 		];
 
 		each(params, function(param){

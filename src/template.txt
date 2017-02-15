@@ -135,7 +135,7 @@ define(<%= imports %>, function(<%= args %>){
 			var frag;
 
 			var zone = new Zone({
-				plugins: [xhrZone, systemImportZone]
+				plugins: [xhrZone, systemImportZone, debugZone(5000)]
 			});
 
 			return zone.run(function(){

@@ -1,0 +1,11 @@
+<html>
+<head><title>Async test</title></head>
+<body>
+	<can-import from="test/electron/state" export-as="viewModel"/>
+
+	<div id="main">It worked</div>
+
+	<script src="../../node_modules/steal/steal.js"
+			main="test/electron/index.stache!done-autorender"></script>
+</body>
+</html>

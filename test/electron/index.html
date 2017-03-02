@@ -1,0 +1,31 @@
+<html>
+<head></head>
+<body>
+	<script>
+		process = {
+			nextTick: function(fn){
+				setTimeout(fn, 0);
+			},
+			versions: {
+				electron: "1.0.0"
+			},
+			platform: "eletron"
+		};
+
+		global = window;
+
+		var oldToString = Object.prototype.toString;
+		Object.prototype.toString = function(){
+			// GROSS!
+			var stack = new Error().stack;
+			var isNPM = /npm/.test(stack);
+
+			if(this === process && !isNPM) {
+				return "[object process]";
+			}
+			return oldToString.apply(this, arguments);
+		};
+	</script>
+	<script src="../../node_modules/steal/steal.js" main="test/electron/index.stache!done-autorender"></script>
+</body>
+</html>

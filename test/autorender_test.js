@@ -115,3 +115,13 @@ QUnit.test("Receive a clear error message", function(){
 	var message = this.errors[0][0];
 	QUnit.ok(/cannot start without a ViewModel/.test(message), "Received a useful error message");
 });
+
+QUnit.module("Running in Electron", {
+	setup: function(){
+		F.open("//electron/index.html");
+	}
+});
+
+QUnit.test("It was able to load", function(){
+	F("#main").exists("template was rendered");
+});

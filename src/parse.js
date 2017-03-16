@@ -1,7 +1,8 @@
 define([
 	"module",
-	"can/view/stache/intermediate_and_imports"
-], function(module, getIntermediateAndImports){
+	"can-stache/src/intermediate_and_imports",
+	"can-util/js/each/each"
+], function(module, getIntermediateAndImports, each){
 
 	return function(source, loader){
 		var intermediateAndImports = getIntermediateAndImports(source);
@@ -9,7 +10,7 @@ define([
 		var ases = intermediateAndImports.ases;
 		var imports = intermediateAndImports.imports;
 		var args = [];
-		can.each(ases, function(from, name){
+		each(ases, function(from, name){
 			// Move the as to the front of the array.
 			imports.splice(imports.indexOf(from), 1);
 			imports.unshift(from);
@@ -21,15 +22,24 @@ define([
 			args.unshift(name);
 		});
 
+		var n = function(name){
+			return loader.normalize(name, module.id);
+		};
+
 		var params = [
-			["can/util/util", "can"],
-			[loader.normalize("can-zone", module.id), "Zone"],
-			[loader.normalize("can-zone/xhr", module.id), "xhrZone"],
-			["can/view/stache/stache", "stache"],
-			["module", "module"]
+			[n("can-zone"), "Zone"],
+			[n("can-zone/xhr"), "xhrZone"],
+			[n("can-stache"), "stache"],
+			[n("can-util/dom/data/data"), "domData"],
+			[n("can-route"), "route"],
+			[n("can-util/dom/child-nodes/child-nodes"), "childNodes"],
+			[n("can-util/dom/mutate/mutate"), "mutate"],
+			[n("can-util/namespace"), "can"],
+			["module", "module"],
+			[n("can-view-import"), "canViewImport"]
 		];
 
-		can.each(params, function(param){
+		each(params, function(param){
 			imports.unshift(param[0]);
 			args.unshift(param[1]);
 		});

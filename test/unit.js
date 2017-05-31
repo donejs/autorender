@@ -2,10 +2,7 @@ var QUnit = require("steal-qunit");
 var loader = require("@loader");
 
 function makeDoc(){
-	var doc = document.createElement("html");
-	var body = document.createElement('body');
-	doc.appendChild(body);
-	doc.body = body;
+	var doc = document.implementation.createHTMLDocument("Some Title");
 	return doc;
 }
 
@@ -33,6 +30,35 @@ QUnit.test("renders to a document", function(assert){
 	var state = new autorender.viewModel();
 
 	autorender.render(doc, state);
+
+	assert.ok(doc.body.querySelector("#hello"), "element was appended");
+});
+
+
+QUnit.module("#renderIntoDocument with basics", {
+	setup: function(assert){
+		var done = assert.async();
+
+		var test = this;
+
+		loader.config({
+			autorenderAutostart: false
+		});
+		loader["import"]("test/basics/index.stache!done-autorender")
+		.then(function(autorender){
+			test.autorender = autorender;
+		})
+		.then(done, done);
+	}
+});
+
+QUnit.test("renders to a document", function(assert){
+	var autorender = this.autorender;
+
+	var doc = makeDoc();
+	var state = new autorender.viewModel();
+
+	autorender.renderIntoDocument(doc, state);
 
 	assert.ok(doc.body.querySelector("#hello"), "element was appended");
 });

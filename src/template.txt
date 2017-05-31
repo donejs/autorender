@@ -37,6 +37,23 @@ define(<%= imports %>, function(<%= args %>){
 		return slice.call(childNodes(parent));
 	}
 
+	/**
+   * Render into a document
+	**/
+	function renderIntoDocument(document, state) {
+		var renderer = autorender.renderToFrag;
+		var frag = renderer(state, {});
+
+		// If there is an <html> element, which there usually is,
+		// replace the existing documentElement, otherwise just append the fragment.
+		var firstChild = frag.firstChild;
+		if(firstChild && firstChild.nodeName === "HTML") {
+			mutate.replaceChild.call(document, firstChild, document.documentElement);
+		} else {
+			mutate.appendChild.call(document.documentElement, frag);
+		}
+	}
+
 	var autorender = {
 		renderToFrag: function(scope, options){
 			var moduleOptions = { module: module };
@@ -155,6 +172,10 @@ define(<%= imports %>, function(<%= args %>){
 			});
 		},
 		legacy: false,
+		/*
+		 * This was previously used by done-ssr, but no longer is.
+		 * This should be removed as part of 2.0.0.
+		 */
 		render: function(doc, state){
 			var renderer = this.renderToFrag;
 			var frag = renderer(state, {});
@@ -164,6 +185,7 @@ define(<%= imports %>, function(<%= args %>){
 			mutate.appendChild.call(doc.body, frag, doc);
 			can.document = oldDoc;
 		},
+		renderIntoDocument: renderIntoDocument,
 		<%= ases %>
 	};
 	var isNW = (function(){

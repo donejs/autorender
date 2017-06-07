@@ -19,7 +19,10 @@ QUnit.module("#render with basics", {
 		.then(function(autorender){
 			test.autorender = autorender;
 		})
-		.then(done, done);
+		.then(done, function(err){
+			console.error(err);
+			done(err);
+		});
 	}
 });
 
@@ -63,7 +66,7 @@ QUnit.test("renders to a document", function(assert){
 	assert.ok(doc.body.querySelector("#hello"), "element was appended");
 });
 
-QUnit.module("#renderAsync with basics", {
+QUnit.module("#renderInZone with basics", {
 	setup: function(assert){
 		var done = assert.async();
 
@@ -87,7 +90,7 @@ QUnit.test("renders to a document", function(assert){
 	var doc = makeDoc();
 	var state = new autorender.viewModel();
 
-	autorender.renderAsync()
+	autorender.renderInZone().promise
 	.then(function(result){
 		assert.equal(result.fragment.nodeType, 11, "It is a document fragment");
 	})

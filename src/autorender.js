@@ -24,14 +24,14 @@ define([
 	}
 
 	function liveReload(){
-		if(!loader.has("live-reload")) {
+		if(!loader.liveReloadInstalled) {
 			return;
 		}
 
 		loader.import("live-reload", { name: module.id }).then(function(reload){
 			loader.normalize(loader.main).then(function(mainName){
 				reload(function(){
-					main.rerender();
+					main.renderAndAttach();
 				});
 
 				reload(mainName, function(r){

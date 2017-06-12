@@ -76,7 +76,7 @@ define(<%= imports %>, function(<%= args %>){
 		route.data = viewModel;
 		route.ready();
 
-		renderAndAttach();
+		return renderAndAttach();
 	}
 
 	/**
@@ -88,7 +88,11 @@ define(<%= imports %>, function(<%= args %>){
 		new Zone({
 			plugins: [xhrZone, systemImportZone]
 		}).run(function(){
-			connectViewModelAndAttach();
+			var result = connectViewModelAndAttach();
+
+			if(typeof doneSsrAttach !== "undefined") {
+				doneSsrAttach(result.fragment);
+			}
 		});
 	}
 
@@ -142,6 +146,12 @@ define(<%= imports %>, function(<%= args %>){
 	 */
 	function attach(result){
 		var frag = result.fragment;
+
+		// If the fragment has no childNodes it was already attached.
+		if(!frag.childNodes.firstChild) {
+			return;
+		}
+
 		var head = document.head;
 		var body = document.body;
 

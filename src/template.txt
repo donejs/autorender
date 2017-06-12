@@ -78,7 +78,12 @@ define(<%= imports %>, function(<%= args %>){
 			route.data = viewModel;
 			route.ready();
 
-			renderAndAttach();
+			var result = renderInZone(viewModel);
+			if(typeof DonessrAttach !== "undefined") {
+				doneSsrAttach(result.fragment);
+			} else {
+				result.promise.then(attach);
+			}
 		});
 	}
 

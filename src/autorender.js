@@ -1,7 +1,6 @@
 define([
 	"./init",
-	"./template",
 	"can-zone"
-], function(autorenderInit, template){
-	return autorenderInit(template);
+], function(autorenderInit){
+	return autorenderInit(true);
 });

@@ -1,5 +1,6 @@
 define(<%= imports %>, function(<%= args %>){
 
+	var useZones = <%= useZones %>;
 	var tokens = <%= intermediate %>;
 	var renderer = stache(tokens);
 
@@ -160,7 +161,9 @@ define(<%= imports %>, function(<%= args %>){
 	 */
 	function renderAndAttach(){
 		var viewModel = autorender.state;
-		return renderInZone(viewModel).promise.then(attach);
+		return useZones
+			? renderInZone(viewModel).promise.then(attach)
+			: renderNoZone(viewModel).then(attach);
 	}
 
 	/**
@@ -191,6 +194,19 @@ define(<%= imports %>, function(<%= args %>){
 			promise: zonePromise,
 			fragment: fragment
 		};
+	}
+
+	/**
+	 * @function renderNoZone
+	 * @hide
+	 * @description Render a viewModel without a Zone.
+	 * @signature `renderIntoZone(viewModel)`
+	 * @param {Object} viewModel
+	 * @return {RenderResult} the promise that resolves immediately with a fragment.
+	 */
+	function renderNoZone(viewModel){
+		var fragment = render(viewModel, {});
+		return Promise.resolve({ fragment: fragment });
 	}
 
 	/**

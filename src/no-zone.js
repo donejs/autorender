@@ -1,6 +1,5 @@
 define([
-	"./init",
-	"./template-no-zone"
-], function(autorenderInit, template){
-	return autorenderInit(template);
+	"./init"
+], function(autorenderInit){
+	return autorenderInit(false);
 });

@@ -1,11 +1,12 @@
 define([
 	"@loader",
 	"module",
+	"./template",
 	"./parse",
 	"steal-stache/add-bundles",
 	"can-util/js/each/each"
-], function(loader, module, parse, addBundles, each){
-	return function init(template){
+], function(loader, module, template, parse, addBundles, each){
+	return function init(useZones){
 		var main;
 
 		var isNode = typeof process === "object" &&
@@ -58,6 +59,7 @@ define([
 				var output = template({
 					imports: JSON.stringify(pResults[1]),
 					args: result.args.join(", "),
+					useZones: useZones,
 					intermediate: JSON.stringify(result.intermediate),
 					ases: map(result.ases, function(from, name){
 						return "\t" + name + ": " + name +"['default'] || " + name;

@@ -2,11 +2,10 @@ define([
 	"@loader",
 	"module",
 	"./parse",
-	"./template",
 	"steal-stache/add-bundles",
 	"can-util/js/each/each"
-], function(loader, module, parse, template, addBundles, each){
-	return function init(){
+], function(loader, module, parse, addBundles, each){
+	return function init(template){
 		var main;
 
 		var isNode = typeof process === "object" &&

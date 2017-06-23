@@ -1,12 +1,18 @@
 var template = require("lodash.template");
 var fs = require("fs");
 
-var str = fs.readFileSync(__dirname + "/src/template.txt");
+function buildTemplate(fileName){
 
-var fn = template(str);
+	var str = fs.readFileSync(__dirname + "/src/" + fileName + ".txt");
 
-var out = "def" + "ine([], function(){\n" +
-	"\treturn " + fn.source +
-	"\n});";
+	var fn = template(str);
 
-fs.writeFileSync(__dirname + "/src/template.js", out, "utf8");
+	var out = "def" + "ine([], function(){\n" +
+		"\treturn " + fn.source +
+		"\n});";
+
+	fs.writeFileSync(__dirname + "/src/" + fileName + ".js", out, "utf8");
+}
+
+buildTemplate('template');
+buildTemplate('template-no-zone');

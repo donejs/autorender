@@ -50,7 +50,7 @@ define([
 		}
 
 		function translate(load){
-			var result = parse(load.source, this);
+			var result = parse(load.source, this, useZones);
 
 			return Promise.all([
 				addBundles(result.dynamicImports, load.name),

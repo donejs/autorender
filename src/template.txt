@@ -271,7 +271,7 @@ define(<%= imports %>, function(<%= args %>){
 	if(typeof steal !== 'undefined' && (isNW || isElectron || !isNode))
 		steal.done().then(function() {
 			if(steal.System.autorenderAutostart !== false) {
-				if (useZone){
+				if (useZones){
 					reattachWithZone();
 				} else {
 					reattach();

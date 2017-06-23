@@ -42,6 +42,17 @@ QUnit.test("basics works", function(){
 	F("#hello").text(/Hello world/, "Correct text");
 });
 
+QUnit.module("done-autorender-no-zone",{
+	setup: function(){
+	   F.open("//basics/index-no-zone.html");
+	}
+});
+
+QUnit.test("basics works with no zone", function(){
+	F("#hello").exists("Content rendered");
+	F("#hello").text(/Hello world/, "Correct text");
+});
+
 QUnit.module("development mode");
 
 QUnit.asyncTest("the appState is available as the html viewModel", function(){

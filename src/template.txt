@@ -1,5 +1,6 @@
 define(<%= imports %>, function(<%= args %>){
 
+	var useZones = <%= useZones %>;
 	var tokens = <%= intermediate %>;
 	var renderer = stache(tokens);
 
@@ -51,34 +52,43 @@ define(<%= imports %>, function(<%= args %>){
 	}
 
 	/**
-	 * @function reattach
-	 * @description Create a Zone to render the stache template, then update the
+	 * @function connectViewModelAndAttach
+	 * @description Render the stache template, then update the
 	 * DOM to reflect these changes. Save the state of the ViewModel instance
 	 * so that it can be reused to do rerenders in case of live-reload. This is
 	 * the main entry point of rendering, and happens upon page load.
-	 * @signature `reattach()`
+	 * @signature `connectViewModelAndAttach()`
 	 **/
-	function reattach() {
+	function connectViewModelAndAttach() {
+		var ViewModel = autorender.viewModel;
+
+		if(!ViewModel) {
+			var message  = "done-autorender cannot start without a ViewModel. " +
+				"Please ensure your template contains an export for your " +
+				"application's ViewModel. https://github.com/donejs/autorender#viewmodel";
+			console.error(message);
+			return;
+		}
+
+		var viewModel = autorender.state = new ViewModel();
+		domData.set.call(document.documentElement, "viewModel", viewModel);
+
+		route.data = viewModel;
+		route.ready();
+
+		renderAndAttach();
+	}
+
+	/**
+	 * @function reattachWithZone
+	 * @description Create a Zone for reattach.
+	 * @signature `reattachWithZone()`
+	 **/
+	function reattachWithZone() {
 		new Zone({
 			plugins: [xhrZone, systemImportZone]
 		}).run(function(){
-			var ViewModel = autorender.viewModel;
-
-			if(!ViewModel) {
-				var message  = "done-autorender cannot start without a ViewModel. " +
-					"Please ensure your template contains an export for your " +
-					"application's ViewModel. https://github.com/donejs/autorender#viewmodel";
-				console.error(message);
-				return;
-			}
-
-			var viewModel = autorender.state = new ViewModel();
-			domData.set.call(document.documentElement, "viewModel", viewModel);
-
-			route.data = viewModel;
-			route.ready();
-
-			renderAndAttach();
+			connectViewModelAndAttach();
 		});
 	}
 
@@ -160,7 +170,9 @@ define(<%= imports %>, function(<%= args %>){
 	 */
 	function renderAndAttach(){
 		var viewModel = autorender.state;
-		return renderInZone(viewModel).promise.then(attach);
+		return useZones
+			? renderInZone(viewModel).promise.then(attach)
+			: renderNoZone(viewModel).then(attach);
 	}
 
 	/**
@@ -191,6 +203,19 @@ define(<%= imports %>, function(<%= args %>){
 			promise: zonePromise,
 			fragment: fragment
 		};
+	}
+
+	/**
+	 * @function renderNoZone
+	 * @hide
+	 * @description Render a viewModel without a Zone.
+	 * @signature `renderIntoZone(viewModel)`
+	 * @param {Object} viewModel
+	 * @return {RenderResult} the promise that resolves immediately with a fragment.
+	 */
+	function renderNoZone(viewModel){
+		var fragment = render(viewModel, {});
+		return Promise.resolve({ fragment: fragment });
 	}
 
 	/**
@@ -246,7 +271,11 @@ define(<%= imports %>, function(<%= args %>){
 	if(typeof steal !== 'undefined' && (isNW || isElectron || !isNode))
 		steal.done().then(function() {
 			if(steal.System.autorenderAutostart !== false) {
-				reattach();
+				if (useZones){
+					reattachWithZone();
+				} else {
+					connectViewModelAndAttach();
+				}
 			}
 		});
 

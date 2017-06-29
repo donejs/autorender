@@ -4,7 +4,7 @@ define([
 	"can-util/js/each/each"
 ], function(module, getIntermediateAndImports, each){
 
-	return function(source, loader){
+	return function(source, loader, useZones){
 		var intermediateAndImports = getIntermediateAndImports(source);
 
 		var ases = intermediateAndImports.ases;
@@ -27,8 +27,6 @@ define([
 		};
 
 		var params = [
-			[n("can-zone"), "Zone"],
-			[n("can-zone/xhr"), "xhrZone"],
 			[n("can-stache"), "stache"],
 			[n("can-util/dom/data/data"), "domData"],
 			[n("can-route"), "route"],
@@ -38,6 +36,11 @@ define([
 			["module", "module"],
 			[n("can-view-import"), "canViewImport"]
 		];
+
+		if (useZones) {
+			params.unshift([n("can-zone/xhr"), "xhrZone"])
+			params.unshift([n("can-zone"), "Zone"])
+		}
 
 		each(params, function(param){
 			imports.unshift(param[0]);

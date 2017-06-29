@@ -52,6 +52,14 @@ done-autorender enables you to use a Stache template as your application entry-p
 
 Then load `index.html` in a browser. After all dependencies are loaded your `index.stache` will be rendered and inserted into the page.
 
+#### No Zone option
+
+If you do not use SSR but still want to use `done-autorender` to bootstrap your application you can use the `no-zone` module:
+```html
+<script src="node_modules/steal/steal.js"
+        main="index.stache!done-autorender/no-zone"></script>
+```
+
 ## API
 
 ### ViewModel

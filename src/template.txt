@@ -180,6 +180,7 @@ define(<%= imports %>, function(<%= args %>){
 
 		var fragBody = frag.querySelector("body");
 		eachChild(fragBody, appendTo(body));
+		document.documentElement.setAttribute("data-attached", "");
 	}
 
 

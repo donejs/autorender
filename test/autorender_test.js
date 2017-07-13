@@ -40,6 +40,10 @@ QUnit.module("done-autorender",{
 QUnit.test("basics works", function(){
 	F("#hello").exists("Content rendered");
 	F("#hello").text(/Hello world/, "Correct text");
+	F(function(){
+		var doc = F.win.document;
+		QUnit.equal(doc.documentElement.getAttribute("data-attached"), "");
+	});
 });
 
 QUnit.module("done-autorender-no-zone",{

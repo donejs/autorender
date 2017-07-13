@@ -31,6 +31,7 @@ define([
 			loader.import("live-reload", { name: module.id }).then(function(reload){
 				loader.normalize(loader.main).then(function(mainName){
 					reload(function(){
+						document.documentElement.removeAttribute("data-attached");
 						main.renderAndAttach();
 					});
 

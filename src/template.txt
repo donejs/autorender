@@ -52,14 +52,13 @@ define(<%= imports %>, function(<%= args %>){
 	}
 
 	/**
-	 * @function connectViewModelAndAttach
-	 * @description Render the stache template, then update the
-	 * DOM to reflect these changes. Save the state of the ViewModel instance
-	 * so that it can be reused to do rerenders in case of live-reload. This is
-	 * the main entry point of rendering, and happens upon page load.
-	 * @signature `connectViewModelAndAttach()`
-	 **/
-	function connectViewModelAndAttach() {
+	 * @function connectViewModel
+	 * @description Create a new instance of the provided ViewModel, set it
+	 * as the route's data, and call route.ready().
+	 * @signature `connectViewModel()`
+	 * @return {Map} an instance of some map type.
+	 */
+	function connectViewModel() {
 		var ViewModel = autorender.viewModel;
 
 		if(!ViewModel) {
@@ -75,8 +74,20 @@ define(<%= imports %>, function(<%= args %>){
 
 		route.data = viewModel;
 		route.ready();
+		return viewModel;
+	}
 
-		renderAndAttach();
+	/**
+	 * @function connectViewModelAndAttach
+	 * @description Render the stache template, then update the
+	 * DOM to reflect these changes. Save the state of the ViewModel instance
+	 * so that it can be reused to do rerenders in case of live-reload. This is
+	 * the main entry point of rendering, and happens upon page load.
+	 * @signature `connectViewModelAndAttach()`
+	 **/
+	function connectViewModelAndAttach() {
+		connectViewModel();
+		return renderAndAttach();
 	}
 
 	/**
@@ -88,7 +99,14 @@ define(<%= imports %>, function(<%= args %>){
 		new Zone({
 			plugins: [xhrZone, systemImportZone]
 		}).run(function(){
-			connectViewModelAndAttach();
+			var viewModel = connectViewModel();
+			var result = renderInZone(viewModel);
+		
+			if(typeof doneSsrAttach !== "undefined") {
+				doneSsrAttach(result.fragment);
+			}
+
+			result.promise.then(attach);
 		});
 	}
 
@@ -142,6 +160,12 @@ define(<%= imports %>, function(<%= args %>){
 	 */
 	function attach(result){
 		var frag = result.fragment;
+
+		// If already attached skip this part.
+		if(document.documentElement.hasAttribute("data-attached")) {
+			return;
+		}
+
 		var head = document.head;
 		var body = document.body;
 
@@ -156,6 +180,7 @@ define(<%= imports %>, function(<%= args %>){
 
 		var fragBody = frag.querySelector("body");
 		eachChild(fragBody, appendTo(body));
+		document.documentElement.setAttribute("data-attached", "");
 	}
 
 

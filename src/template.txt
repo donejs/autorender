@@ -104,9 +104,9 @@ define(<%= imports %>, function(<%= args %>){
 		
 			if(typeof doneSsrAttach !== "undefined") {
 				doneSsrAttach(result.fragment);
+			} else {
+				result.promise.then(attach);
 			}
-
-			result.promise.then(attach);
 		});
 	}
 

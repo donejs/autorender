@@ -27,6 +27,8 @@ define([
 		};
 
 		var params = [
+			[n("@steal"), "steal"],
+			[n("@loader"), "loader"],
 			[n("can-stache"), "stache"],
 			[n("can-util/dom/data/data"), "domData"],
 			[n("can-route"), "route"],

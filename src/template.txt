@@ -294,9 +294,9 @@ define(<%= imports %>, function(<%= args %>){
 	})();
 	var isElectron = isNode && !!process.versions.electron;
 
-	if(typeof steal !== 'undefined' && (isNW || isElectron || !isNode))
+	if(isNW || isElectron || !isNode) {
 		steal.done().then(function() {
-			if(steal.System.autorenderAutostart !== false) {
+			if(loader.autorenderAutostart !== false) {
 				if (useZones){
 					reattachWithZone();
 				} else {
@@ -304,6 +304,7 @@ define(<%= imports %>, function(<%= args %>){
 				}
 			}
 		});
+	}
 
 	return autorender;
 });

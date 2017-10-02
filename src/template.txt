@@ -10,7 +10,6 @@ define(<%= imports %>, function(<%= args %>){
 	// SSR helpers isProduction, and some that don't matter in the client.
 	stache.registerHelper("isProduction", function(options){
 		console.warn("The isProduction helper is deprecated. Use a #switch helper on `env.NODE_ENV` instead.");
-		var loader = typeof System !== "undefined" ? System : undefined;
 		if(loader && loader.isEnv && loader.isEnv("production")) {
 			return options.fn(this);
 		} else {
@@ -25,11 +24,11 @@ define(<%= imports %>, function(<%= args %>){
 		};
 		return {
 			beforeTask: function(){
-				oldImport = System.import;
-				System.import = myImport;
+				oldImport = steal.import;
+				steal.import = myImport;
 			},
 			afterTask: function(){
-				System.import = oldImport;
+				steal.import = oldImport;
 			}
 		};
 	}
@@ -101,7 +100,7 @@ define(<%= imports %>, function(<%= args %>){
 		}).run(function(){
 			var viewModel = connectViewModel();
 			var result = renderInZone(viewModel);
-		
+
 			if(typeof doneSsrAttach !== "undefined") {
 				doneSsrAttach(result.fragment);
 			} else {
@@ -111,7 +110,7 @@ define(<%= imports %>, function(<%= args %>){
 	}
 
 	var tagsToIgnore = { "SCRIPT": true, "STYLE": true, "LINK": true };
-	
+
 	/**
 	 * Call a callback for each child Node within a parent, skipping
 	 * elements that should not be touched because of their side-effects.
@@ -290,13 +289,13 @@ define(<%= imports %>, function(<%= args %>){
 	};
 
 	var isNW = (function(){
-		try{var nr = System._nodeRequire; return nr && nr('nw.gui') !== 'undefined';}catch(e){return false;}
+		try{var nr = loader._nodeRequire; return nr && nr('nw.gui') !== 'undefined';}catch(e){return false;}
 	})();
 	var isElectron = isNode && !!process.versions.electron;
 
 	if(typeof steal !== 'undefined' && (isNW || isElectron || !isNode))
 		steal.done().then(function() {
-			if(steal.System.autorenderAutostart !== false) {
+			if(steal.loader.autorenderAutostart !== false) {
 				if (useZones){
 					reattachWithZone();
 				} else {

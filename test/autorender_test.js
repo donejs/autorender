@@ -140,3 +140,7 @@ QUnit.module("Running in Electron", {
 QUnit.test("It was able to load", function(){
 	F("#main").exists("template was rendered");
 });
+
+QUnit.asyncTest("autorender with optimized builds", function(){
+	makeIframe("basics-optimized/prod.html");
+});

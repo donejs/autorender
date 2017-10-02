@@ -34,12 +34,14 @@ define([
 			[n("can-util/dom/mutate/mutate"), "mutate"],
 			[n("can-util/namespace"), "can"],
 			["module", "module"],
-			[n("can-view-import"), "canViewImport"]
+			[n("can-view-import"), "canViewImport"],
+			["@loader", "loader"],
+			["@steal", "steal"]
 		];
 
 		if (useZones) {
-			params.unshift([n("can-zone/xhr"), "xhrZone"])
-			params.unshift([n("can-zone"), "Zone"])
+			params.unshift([n("can-zone/xhr"), "xhrZone"]);
+			params.unshift([n("can-zone"), "Zone"]);
 		}
 
 		each(params, function(param){

@@ -1,11 +1,12 @@
 define([
+	"@steal",
 	"@loader",
 	"module",
 	"./template",
 	"./parse",
 	"steal-stache/add-bundles",
 	"can-util/js/each/each"
-], function(loader, module, template, parse, addBundles, each){
+], function(steal, loader, module, template, parse, addBundles, each){
 	return function init(useZones){
 		var main;
 

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+</head>
+<body>
+	<script>
+		window.QUnit = window.parent.QUnit;
+		window.removeMyself = window.parent.removeMyself;
+	</script>
+	<script src="./dist/bundles/test/basics-optimized/index.js"></script>
+	<script>
+		if (window.QUnit) {
+			setTimeout(function() {
+				QUnit.equal(
+					document.getElementsByTagName("h1")[0].innerHTML,
+					"Hello world!",
+					"should render correctly"
+				);
+				removeMyself();
+			}, 300);
+		}
+	</script>
+</body>
+</html>

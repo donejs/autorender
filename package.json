@@ -9,6 +9,7 @@
 	"optimized-build-test": "node test/optimized-build.js",
     "testee": "testee test/test.html --browsers firefox --reporter Spec",
     "test": "npm run build-test-prod && npm run optimized-build-test && npm run testee",
+    "postversion": "git push --tags && git checkout master && git push",
     "release:patch": "npm version patch && npm publish",
     "release:minor": "npm version minor && npm publish",
     "release:major": "npm version major && npm publish"

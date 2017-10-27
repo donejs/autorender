@@ -1,5 +1,4 @@
 define(<%= imports %>, function(<%= args %>){
-
 	var useZones = <%= useZones %>;
 	var tokens = <%= intermediate %>;
 	var renderer = stache(tokens);
@@ -101,8 +100,12 @@ define(<%= imports %>, function(<%= args %>){
 			var viewModel = connectViewModel();
 			var result = renderInZone(viewModel);
 
-			if(typeof doneSsrAttach !== "undefined") {
-				doneSsrAttach(result.fragment);
+			var incremental = document.documentElement.dataset.incrementallyRendered === "";
+
+			// If incrementally rendering, attach right away. IR hydration will
+			// handle reattachment.
+			if(incremental) {
+				attach(result);
 			} else {
 				result.promise.then(attach);
 			}
@@ -211,10 +214,10 @@ define(<%= imports %>, function(<%= args %>){
 	 */
 	function renderInZone(viewModel){
 		var fragment;
-		var zonePromise = new Zone({
+		var zone = new Zone({
 			plugins: [xhrZone, systemImportZone]
-		})
-		.run(function(){
+		});
+		var zonePromise = zone.run(function(){
 			fragment = render(viewModel, {});
 		}).then(function(zoneData){
 			return {
@@ -225,7 +228,8 @@ define(<%= imports %>, function(<%= args %>){
 
 		return {
 			promise: zonePromise,
-			fragment: fragment
+			fragment: fragment,
+			zoneData: zone.data
 		};
 	}
 

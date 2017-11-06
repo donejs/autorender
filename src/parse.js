@@ -36,7 +36,8 @@ define([
 			["module", "module"],
 			[n("can-view-import"), "canViewImport"],
 			["@loader", "loader"],
-			["@steal", "steal"]
+			["@steal", "steal"],
+			[n("can-zone/debug"), "debugZone"]
 		];
 
 		if (useZones) {

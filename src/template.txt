@@ -215,7 +215,7 @@ define(<%= imports %>, function(<%= args %>){
 	function renderInZone(viewModel){
 		var fragment;
 		var zone = new Zone({
-			plugins: [xhrZone, systemImportZone]
+			plugins: [xhrZone, systemImportZone, debugZone(5000)]
 		});
 		var zonePromise = zone.run(function(){
 			fragment = render(viewModel, {});
@@ -224,6 +224,10 @@ define(<%= imports %>, function(<%= args %>){
 				fragment: fragment,
 				zoneData: zoneData
 			};
+		})
+		.catch(function(err) {
+			console.log(zone.data.debugInfo);
+			throw err;
 		});
 
 		return {

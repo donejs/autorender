@@ -1,5 +1,6 @@
 define(<%= imports %>, function(<%= args %>){
-	var useZones = <%= useZones %>;
+	var zoneOpts = <%= zoneOpts %>;
+	var useZones = zoneOpts.useZones;
 	var tokens = <%= intermediate %>;
 	var renderer = stache(tokens);
 
@@ -15,22 +16,6 @@ define(<%= imports %>, function(<%= args %>){
 			return options.inverse(this);
 		}
 	});
-
-	function systemImportZone(){
-		var oldImport;
-		var myImport = function(){
-			return Promise.resolve(oldImport.apply(this, arguments));
-		};
-		return {
-			beforeTask: function(){
-				oldImport = steal.import;
-				steal.import = myImport;
-			},
-			afterTask: function(){
-				steal.import = oldImport;
-			}
-		};
-	}
 
 	/**
 	 * @function render
@@ -95,7 +80,7 @@ define(<%= imports %>, function(<%= args %>){
 	 **/
 	function reattachWithZone() {
 		new Zone({
-			plugins: [xhrZone, systemImportZone]
+			plugins: [xhrZone]
 		}).run(function(){
 			var viewModel = connectViewModel();
 			var result = renderInZone(viewModel);
@@ -213,9 +198,32 @@ define(<%= imports %>, function(<%= args %>){
 	 * within the Zone is complete, and the fragment generated.
 	 */
 	function renderInZone(viewModel){
+		function getZonePlugins() {
+			var plugins = [xhrZone];
+			if(zoneOpts.useDebug) {
+				var timeout = zoneOpts.timeout;
+				var opts = {
+					break: zoneOpts.debugBrk
+				};
+
+				plugins.push(debugZone(timeout, opts));
+			}
+			return plugins;
+		}
+
+		function logDebugInfo() {
+			var warn = Function.prototype.bind.call(console.warn, console);
+			var zoneData = zone.data;
+			if(zoneData.debugInfo) {
+				zoneData.debugInfo.forEach(function(info){
+					warn(info.task, info.stack);
+				});
+			}
+		}
+
 		var fragment;
 		var zone = new Zone({
-			plugins: [xhrZone, systemImportZone]
+			plugins: getZonePlugins()
 		});
 		var zonePromise = zone.run(function(){
 			fragment = render(viewModel, {});
@@ -224,6 +232,15 @@ define(<%= imports %>, function(<%= args %>){
 				fragment: fragment,
 				zoneData: zoneData
 			};
+		})
+		.then(null, function(err){
+			if(err.timeout) {
+				logDebugInfo();
+				var error = new Error("Timeout of " + err.timeout + " exceeded");
+				throw error;
+			} else {
+				throw err;
+			}
 		});
 
 		return {

@@ -7,7 +7,7 @@ define([
 	"steal-stache/add-bundles",
 	"can-util/js/each/each"
 ], function(steal, loader, module, template, parse, addBundles, each){
-	return function init(useZones){
+	return function init(zoneOpts){
 		var main;
 
 		var isNode = typeof process === "object" &&
@@ -52,7 +52,7 @@ define([
 		}
 
 		function translate(load){
-			var result = parse(load.source, this, useZones);
+			var result = parse(load.source, this, zoneOpts);
 
 			return Promise.all([
 				addBundles(result.dynamicImports, load.name),
@@ -61,7 +61,7 @@ define([
 				var output = template({
 					imports: JSON.stringify(pResults[1]),
 					args: result.args.join(", "),
-					useZones: useZones,
+					zoneOpts: JSON.stringify(zoneOpts),
 					intermediate: JSON.stringify(result.intermediate),
 					ases: map(result.ases, function(from, name){
 						return "\t" + name + ": " + name +"['default'] || " + name;

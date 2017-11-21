@@ -4,7 +4,7 @@ define([
 	"can-util/js/each/each"
 ], function(module, getIntermediateAndImports, each){
 
-	return function(source, loader, useZones){
+	return function(source, loader, zoneOpts){
 		var intermediateAndImports = getIntermediateAndImports(source);
 
 		var ases = intermediateAndImports.ases;
@@ -39,9 +39,13 @@ define([
 			["@steal", "steal"]
 		];
 
-		if (useZones) {
+		if (zoneOpts.useZones) {
 			params.unshift([n("can-zone/xhr"), "xhrZone"]);
 			params.unshift([n("can-zone"), "Zone"]);
+
+			if(zoneOpts.useDebug) {
+				params.unshift([n("can-zone/debug"), "debugZone"]);
+			}
 		}
 
 		each(params, function(param){

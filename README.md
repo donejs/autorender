@@ -26,17 +26,17 @@ done-autorender enables you to use a [Stache](https://canjs.com/doc/can-stache.h
   <title>My Site</title>
 </head>
 <body>
-  <can-import from="main.css"/>
-  <can-import from="routes"/>
-  <can-import from="state" export-as="viewModel"/>
+  <can-import from="~/main.css"/>
+  <can-import from="~/routes"/>
+  <can-import from="~/state" export-as="viewModel"/>
 
   {{#eq page "home"}}
 
-    <can-import from="home/">
+    <can-dynamic-import from="~/home/">
       {{#if isResolved}}
         <home-page></home-page>
       {{/if}}
-    </can-import>
+    </can-dynamic-import>
 
   {{/eq}}
 </body>
@@ -47,7 +47,7 @@ done-autorender enables you to use a [Stache](https://canjs.com/doc/can-stache.h
 
 ```html
 <script src="node_modules/steal/steal.js"
-	main="index.stache!done-autorender"></script>
+	main="app/index.stache!done-autorender"></script>
 ```
 
 Then load *index.html* in a browser. After all dependencies are loaded your *index.stache* will be rendered and inserted into the page.

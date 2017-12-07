@@ -1,15 +1,14 @@
-<html>
+<!doctype html>
+<html lang="en">
 	<head>
 		<title>Hello page</title>
-
-		{{asset "css"}}
 	</head>
 	<body>
-		<can-import from="test/progressive/state" as="viewModel"/>
+		<can-import from="test/progressive/state" export-as="viewModel"/>
 
 		<can-import from="test/progressive/foo">
 			{{#isResolved}}
-				<span id="bundles">{{bundles}}</span>
+				<span id="bundles">{{../../bundles()}}</span>
 			{{/isResolved}}
 		</can-import>
 

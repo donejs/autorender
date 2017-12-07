@@ -1,19 +1,21 @@
 var Component = require("can-component");
-var Map = require("can-map");
+var DefineMap = require("can-define/map/map");
 
-var ViewModel = Map.extend({
-	showThing: false
+var ViewModel = DefineMap.extend({
+	showThing: {
+		value: false
+	}
 });
 
 Component.extend({
 	tag: "home-page",
-	template: require("./home.stache!"),
+	view: require("./home.stache"),
 	ViewModel: ViewModel,
 	events: {
 		init: function(){
 			var vm = this.viewModel;
 			setTimeout(function(){
-				vm.attr("showThing", true);
+				vm.showThing = true;
 			}, 50);
 		}
 	}

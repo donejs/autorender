@@ -37,7 +37,7 @@ define(<%= imports %>, function(<%= args %>){
 	/**
 	 * @function connectViewModel
 	 * @description Create a new instance of the provided ViewModel, set it
-	 * as the route's data, and call route.ready().
+	 * as the route's data, and call route.start().
 	 * @signature `connectViewModel()`
 	 * @return {Map} an instance of some map type.
 	 */
@@ -56,7 +56,7 @@ define(<%= imports %>, function(<%= args %>){
 		domData.set.call(document.documentElement, "viewModel", viewModel);
 
 		route.data = viewModel;
-		route.ready();
+		route.start();
 		return viewModel;
 	}
 

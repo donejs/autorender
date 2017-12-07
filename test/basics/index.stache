@@ -5,7 +5,7 @@
 	<body>
 		<can-import from="test/basics/state" as="viewModel"/>
 
-		<span id="hello">Hello {{hello}}!</span>
+		<span id="hello">Hello {{hello()}}!</span>
 
 		{{#isProduction}}
 			<div id="hi-prod"></div>

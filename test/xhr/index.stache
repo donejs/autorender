@@ -1,14 +1,13 @@
-<html>
+<!doctype html>
+<html lang="en">
 	<head>
 		<title>Hello page</title>
-
-		{{asset "css"}}
 	</head>
 	<body>
-		<can-import from="test/xhr/state" as="viewModel"/>
+		<can-import from="test/xhr/state" export-as="viewModel"/>
 
 		{{#stuff}}
-			<div class="thing">{{name}}</div>
+			<div class="thing">{{./name}}</div>
 		{{/stuff}}
 
 		<script src="../../node_modules/steal/steal.js"></script>

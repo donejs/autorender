@@ -290,21 +290,6 @@ define(<%= imports %>, function(<%= args %>){
 	var autorender = {
 		renderAndAttach: renderAndAttach,
 		renderInZone: renderInZone,
-		legacy: false,
-
-		/*
-		 * This was previously used by done-ssr, but no longer is.
-		 * This should be removed as part of 2.0.0.
-		 */
-		render: function(doc, state){
-			console.warn("render() is deprecated in done-autorender 1.3.0. Please use renderIntoDocument() instead.");
-			var frag = render(state, {});
-
-			var oldDoc = can.document;
-			can.document = doc;
-			mutate.appendChild.call(doc.body, frag, doc);
-			can.document = oldDoc;
-		},
 		renderIntoDocument: renderIntoDocument,
 		<%= ases %>
 	};

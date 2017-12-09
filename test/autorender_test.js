@@ -16,21 +16,6 @@ var makeIframe = function(src){
 	iframe.src = src;
 };
 
-QUnit.module("production", {
-	setup: function(){
-		F.open("//basics/prod.html");
-	}
-});
-
-QUnit.test("isProduction helper works", function(){
-	F("#hi-prod").exists("a div inside of isProduction was rendered");
-});
-
-// Only Production mode is supported in IE8.
-if(/MSIE 8/.test(navigator.userAgent)) {
-	return;
-}
-
 QUnit.module("done-autorender",{
 	setup: function(){
 	   F.open("//basics/index.html");

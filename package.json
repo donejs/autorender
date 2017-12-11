@@ -1,6 +1,6 @@
 {
   "name": "done-autorender",
-  "version": "2.0.0-pre.0",
+  "version": "2.0.0-pre.1",
   "description": "Autorender CanJS projects",
   "main": "src/autorender.js",
   "scripts": {

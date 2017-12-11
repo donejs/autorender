@@ -356,6 +356,9 @@ define(<%= imports %>, function(<%= args %>){
 			}
 		}
 
+		route.data = viewModel;
+		route.start();
+
 		renderIntoDocument(document, viewModel);
 	}
 

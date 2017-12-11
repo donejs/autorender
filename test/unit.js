@@ -6,7 +6,18 @@ function makeDoc(){
 	return doc;
 }
 
-QUnit.module("#renderIntoDocument with basics", {
+function makeContextForDocument(render, document) {
+	var proto = Object.getPrototypeOf(render);
+	return Object.create(proto, {
+		ownerDocument: {
+			get: function() {
+				return document;
+			}
+		}
+	});
+}
+
+QUnit.module("SSR Render with basics", {
 	setup: function(assert){
 		var done = assert.async();
 
@@ -16,20 +27,19 @@ QUnit.module("#renderIntoDocument with basics", {
 			autorenderAutostart: false
 		});
 		loader["import"]("test/basics/index.stache!done-autorender")
-		.then(function(autorender){
-			test.autorender = autorender;
+		.then(function(render){
+			test.render = render;
 		})
 		.then(done, done);
 	}
 });
 
 QUnit.test("renders to a document", function(assert){
-	var autorender = this.autorender;
-
+	var render = this.render;
 	var doc = makeDoc();
-	var state = new autorender.viewModel();
+	var context = makeContextForDocument(render, doc);
 
-	autorender.renderIntoDocument(doc, state);
+	render.call(context, { url: "/", connection: {}, headers: {} });
 
 	assert.ok(doc.body.querySelector("#hello"), "element was appended");
 });

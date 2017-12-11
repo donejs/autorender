@@ -43,14 +43,6 @@ define([
 			});
 		}
 
-		function map(obj, cb){
-			var out = [];
-			each(obj, function(a, b){
-				out.push(cb(a, b));
-			});
-			return out;
-		}
-
 		function translate(load){
 			var result = parse(load.source, this, zoneOpts);
 
@@ -58,14 +50,22 @@ define([
 				addBundles(result.dynamicImports, load.name),
 				Promise.all(result.imports)
 			]).then(function(pResults){
+				var exportedValuesDef = Object.keys(result.ases)
+				.map(function(name){
+					return "\"" + name + "\": {\n" +
+					"\t\t\tenumerable: true,\n" +
+					"\t\t\tconfigurable: true,\n" +
+					"\t\t\twritable: true,\n" +
+					"\t\t\tvalue: " + name + "['default'] || " + name + "\n" +
+					"\t\t}";
+				}).join(",\n");
+
 				var output = template({
 					imports: JSON.stringify(pResults[1]),
 					args: result.args.join(", "),
 					zoneOpts: JSON.stringify(zoneOpts),
 					intermediate: JSON.stringify(result.intermediate),
-					ases: map(result.ases, function(from, name){
-						return "\t" + name + ": " + name +"['default'] || " + name;
-					}).join(",\n")
+					ases: exportedValuesDef ? exportedValuesDef + "," : ""
 				});
 
 				return output;

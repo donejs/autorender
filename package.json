@@ -40,12 +40,14 @@
   },
   "homepage": "https://github.com/donejs/autorender",
   "dependencies": {
+    "can-reflect": "^1.11.0",
     "can-route": "^4.0.0-pre.0",
     "can-stache": "^4.0.0-pre.0",
     "can-util": "^3.10.18",
     "can-view-import": "^4.0.0-pre.0",
     "can-view-model": "^4.0.0-pre.0",
     "can-zone": "^0.6.0",
+    "full-url": "^1.0.0",
     "steal-stache": "^4.0.0-pre.0"
   }
 }

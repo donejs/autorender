@@ -22,6 +22,6 @@ var ViewModel = DefineMap.extend("OtherViewModel", {
 
 Component.extend({
 	tag: "other-page",
-	template: require("./other.stache"),
+	view: require("./other.stache"),
 	ViewModel: ViewModel
 });

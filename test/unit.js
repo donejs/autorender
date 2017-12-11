@@ -6,38 +6,6 @@ function makeDoc(){
 	return doc;
 }
 
-QUnit.module("#render with basics", {
-	setup: function(assert){
-		var done = assert.async();
-
-		var test = this;
-
-		loader.config({
-			autorenderAutostart: false
-		});
-		loader["import"]("test/basics/index.stache!done-autorender")
-		.then(function(autorender){
-			test.autorender = autorender;
-		})
-		.then(done, function(err){
-			console.error(err);
-			done(err);
-		});
-	}
-});
-
-QUnit.test("renders to a document", function(assert){
-	var autorender = this.autorender;
-
-	var doc = makeDoc();
-	var state = new autorender.viewModel();
-
-	autorender.render(doc, state);
-
-	assert.ok(doc.body.querySelector("#hello"), "element was appended");
-});
-
-
 QUnit.module("#renderIntoDocument with basics", {
 	setup: function(assert){
 		var done = assert.async();

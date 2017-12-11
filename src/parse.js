@@ -32,9 +32,12 @@ define([
 			[n("can-route"), "route"],
 			[n("can-util/dom/child-nodes/child-nodes"), "childNodes"],
 			[n("can-util/dom/mutate/mutate"), "mutate"],
-			[n("can-util/namespace"), "can"],
-			["module", "module"],
+			[n("can-util/js/is-empty-object/is-empty-object"), "isEmptyObject"],
 			[n("can-view-import"), "canViewImport"],
+			[n("can-reflect"), "canReflect"],
+			[n("can-util/namespace"), "can"],
+			[n("full-url/index"), "fullUrl"],
+			["module", "module"],
 			["@loader", "loader"],
 			["@steal", "steal"]
 		];

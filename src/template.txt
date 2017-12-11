@@ -6,6 +6,10 @@ define(<%= imports %>, function(<%= args %>){
 
 	var isNode = typeof process === "object" &&
 		{}.toString.call(process) === "[object process]";
+	var isNW = (function(){
+		try{var nr = loader._nodeRequire; return nr && nr('nw.gui') !== 'undefined';}catch(e){return false;}
+	})();
+	var isElectron = isNode && !!process.versions.electron;
 
 	/**
 	 * @function render
@@ -32,7 +36,7 @@ define(<%= imports %>, function(<%= args %>){
 	 * @return {Map} an instance of some map type.
 	 */
 	function connectViewModel() {
-		var ViewModel = autorender.viewModel;
+		var ViewModel = context.ViewModel;
 
 		if(!ViewModel) {
 			var message  = "done-autorender cannot start without a ViewModel. " +
@@ -42,7 +46,7 @@ define(<%= imports %>, function(<%= args %>){
 			return;
 		}
 
-		var viewModel = autorender.state = new ViewModel();
+		var viewModel = context.state = new ViewModel();
 		domData.set.call(document.documentElement, "viewModel", viewModel);
 
 		route.data = viewModel;
@@ -171,7 +175,7 @@ define(<%= imports %>, function(<%= args %>){
 	 * attached to the DOM.
 	 */
 	function renderAndAttach(){
-		var viewModel = autorender.state;
+		var viewModel = context.state;
 		return useZones
 			? renderInZone(viewModel).promise.then(attach)
 			: renderNoZone(viewModel).then(attach);
@@ -255,7 +259,7 @@ define(<%= imports %>, function(<%= args %>){
 
 	/**
 	 * @function renderIntoDocument
-	 * @description This is used by done-ssr, it provides a fresh document
+	 * @description This is used in SSR, it provides a fresh document
 	 * and viewModel, and this function calls the stache renderer and updates
 	 * the document with the result.
 	 * @signature `renderIntoDocument(document, viewModel)`
@@ -277,19 +281,7 @@ define(<%= imports %>, function(<%= args %>){
 		}
 	}
 
-	var autorender = {
-		renderAndAttach: renderAndAttach,
-		renderInZone: renderInZone,
-		renderIntoDocument: renderIntoDocument,
-		<%= ases %>
-	};
-
-	var isNW = (function(){
-		try{var nr = loader._nodeRequire; return nr && nr('nw.gui') !== 'undefined';}catch(e){return false;}
-	})();
-	var isElectron = isNode && !!process.versions.electron;
-
-	if(typeof steal !== 'undefined' && (isNW || isElectron || !isNode))
+	if(typeof steal !== 'undefined' && (isNW || isElectron || !isNode)) {
 		steal.done().then(function() {
 			if(steal.loader.autorenderAutostart !== false) {
 				if (useZones){
@@ -299,6 +291,75 @@ define(<%= imports %>, function(<%= args %>){
 				}
 			}
 		});
+	}
 
-	return autorender;
+	var context = Object.create(Function.prototype, {
+		<%= ases %>
+		ownerDocument: {
+			get: function(){
+				return document;
+			}
+		},
+		renderAndAttach: {
+			value: renderAndAttach
+		},
+		renderInZone: {
+			value: renderInZone
+		},
+		ViewModel: {
+			get: function(){
+				return this.viewModel;
+			}
+		}
+	});
+
+	/**
+	 * @function createViewModelAndRender
+	 * @hide
+	 * @description Create an instance of the ViewModel and render it with
+	 * the renderIntoDocument function.
+	 * @param {node.IncomingMessage} request A request object, from Node.js
+	 */
+	function createViewModelAndRender(request) {
+		// Check if we were called with .call/apply, otherwise use the
+		// context within the scope. This is for testing.
+		var ctx = context.isPrototypeOf(this) ? this : context;
+
+		var document = ctx.ownerDocument;
+		var ViewModel = ctx.ViewModel;
+
+		if(!ViewModel) {
+			var msg = "done-autorender cannot render your application " +
+							"without a viewModel defined. " +
+							"See the guide for information. " +
+							"http://donejs.com/Guide.html#section_Createatemplateandmainfile";
+			throw new Error(msg);
+		}
+
+		var pathname = new URL(fullUrl(request)).pathname;
+		var params = Object.assign(route.deparam(pathname), {
+			env: Object.assign({}, process.env),
+			request: request
+		});
+
+		var viewModel = new ViewModel(params);
+
+		if(!Object.isSealed(viewModel) &&
+			!canReflect.getKeyValue(viewModel, "statusCode") &&
+			!isEmptyObject(route.routes)) {
+			// fix: support root-url (i.e '/') in production-mode
+			if(typeof params.route === "string") {
+				canReflect.setKeyValue(viewModel, "statusCode", 200);
+			} else {
+				canReflect.setKeyValue(viewModel, "statusCode", 404);
+				canReflect.setKeyValue(viewModel, "statusMessage", "Not found");
+			}
+		}
+
+		renderIntoDocument(document, viewModel);
+	}
+
+	Object.setPrototypeOf(createViewModelAndRender, context);
+
+	return createViewModelAndRender;
 });

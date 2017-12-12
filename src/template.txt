@@ -313,6 +313,27 @@ define(<%= imports %>, function(<%= args %>){
 		}
 	});
 
+	var defaultProperties = ["env", "request"];
+
+	/**
+	 * @function setupDefaultViewModelProps
+	 * @hide
+	 * @description Given a ViewModel constructor, ensure that the
+	 * default properties like `env` and `request` are not serialized
+	 */
+	function setupDefaultViewModelProps(ViewModel) {
+		if(canReflect.isConstructorLike(ViewModel)) {
+			var proto = ViewModel.prototype;
+			if(!canReflect.hasOwnKey(proto, defaultProperties[0])) {
+				defaultProperties.forEach(function(prop){
+					canReflect.defineInstanceKey(ViewModel, prop, {
+						enumerable: false
+					});
+				});
+			}
+		}
+	}
+
 	/**
 	 * @function createViewModelAndRender
 	 * @hide
@@ -335,6 +356,8 @@ define(<%= imports %>, function(<%= args %>){
 							"http://donejs.com/Guide.html#section_Createatemplateandmainfile";
 			throw new Error(msg);
 		}
+
+		setupDefaultViewModelProps(ViewModel);
 
 		var pathname = new URL(fullUrl(request)).pathname;
 		var params = Object.assign(route.deparam(pathname), {

@@ -17,6 +17,15 @@ function makeContextForDocument(render, document) {
 	});
 }
 
+function Request(url) {
+	this.url = "/";
+	this.connection = {};
+	this.headers = {};
+	// This prop is to make the structure circular
+	// To make sure we have tested this as a bug.
+	this._self = this;
+}
+
 QUnit.module("SSR Render with basics", {
 	setup: function(assert){
 		var done = assert.async();
@@ -38,9 +47,9 @@ QUnit.test("renders to a document", function(assert){
 	var render = this.render;
 	var doc = makeDoc();
 	var context = makeContextForDocument(render, doc);
+	var request = new Request("/");
 
-	render.call(context, { url: "/", connection: {}, headers: {} });
-
+	render.call(context, request);
 	assert.ok(doc.body.querySelector("#hello"), "element was appended");
 });
 

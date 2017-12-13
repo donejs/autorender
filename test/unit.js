@@ -1,30 +1,10 @@
 var QUnit = require("steal-qunit");
 var loader = require("@loader");
+var testHelpers = require("./helpers");
 
-function makeDoc(){
-	var doc = document.implementation.createHTMLDocument("Some Title");
-	return doc;
-}
-
-function makeContextForDocument(render, document) {
-	var proto = Object.getPrototypeOf(render);
-	return Object.create(proto, {
-		ownerDocument: {
-			get: function() {
-				return document;
-			}
-		}
-	});
-}
-
-function Request(url) {
-	this.url = url;
-	this.connection = {};
-	this.headers = {};
-	// This prop is to make the structure circular
-	// To make sure we have tested this as a bug.
-	this._self = this;
-}
+var makeDoc = testHelpers.makeDoc;
+var makeContextForDocument = testHelpers.makeContextForDocument;
+var Request = testHelpers.Request;
 
 QUnit.module("SSR Render with basics", {
 	setup: function(assert){
@@ -69,7 +49,20 @@ QUnit.test("renders 404s", function(assert){
 
 	assert.equal(statusCode, 404, "Got a 404");
 	assert.equal(statusMessage, "Not found", "correct message");
-})
+});
+
+QUnit.test("renders with query params", function(assert){
+	var render = this.render;
+	var doc = makeDoc();
+	var context = makeContextForDocument(render, doc);
+	var request = new Request("/cart&param=works");
+
+	render.call(context, request);
+	console.log(doc.body.outerHTML);
+
+	var param = doc.body.querySelector("#some-param").textContent;
+	assert.equal(param, "works", "the param was part of the VM");
+});
 
 QUnit.module("#renderInZone with basics", {
 	setup: function(assert){

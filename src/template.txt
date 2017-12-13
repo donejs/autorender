@@ -361,9 +361,10 @@ define(<%= imports %>, function(<%= args %>){
 
 		setupDefaultViewModelProps(ViewModel);
 
-		var pathname = new URL(fullUrl(request)).pathname;
-		var pathWithoutSlash = pathname.substr(1);
-		var params = Object.assign(route.deparam(pathWithoutSlash), {
+		var urlObj = new URL(fullUrl(request))
+		var pathWithoutSlash = urlObj.pathname.substr(1);
+		var routeStr = pathWithoutSlash + urlObj.search;
+		var params = Object.assign(route.deparam(routeStr), {
 			env: Object.assign({}, process.env),
 			request: request
 		});

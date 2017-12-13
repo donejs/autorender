@@ -1,4 +1,7 @@
-define(["can-define/map/map", "can-route"], function(DefineMap, route){
+define([
+	"can-define/map/map",
+	"can-route"
+], function(DefineMap, route){
 	var AppViewModel = DefineMap.extend({
 		page: "string",
 		hello: function(){

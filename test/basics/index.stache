@@ -9,10 +9,14 @@
 
 		{{#if statusCode}}
 			<span id="status-code">{{statusCode}}</span>
-			
+
 			{{^eq(statusCode, 200)}}
 				<span id="status-message">{{statusMessage}}</span>
 			{{/eq}}
+		{{/if}}
+
+		{{#if param}}
+			<span id="some-param">{{param}}</span>
 		{{/if}}
 
 		{{#switch(env.NODE_ENV)}}

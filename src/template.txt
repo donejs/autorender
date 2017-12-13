@@ -313,7 +313,7 @@ define(<%= imports %>, function(<%= args %>){
 		}
 	});
 
-	var defaultProperties = ["env", "request"];
+	var defaultProperties = ["env", "request", "statusCode", "statusMessage"];
 
 	/**
 	 * @function setupDefaultViewModelProps
@@ -326,9 +326,11 @@ define(<%= imports %>, function(<%= args %>){
 			var proto = ViewModel.prototype;
 			if(!canReflect.hasOwnKey(proto, defaultProperties[0])) {
 				defaultProperties.forEach(function(prop){
-					canReflect.defineInstanceKey(ViewModel, prop, {
-						enumerable: false
-					});
+					if(!canReflect.hasOwnKey(proto, prop)) {
+						canReflect.defineInstanceKey(ViewModel, prop, {
+							enumerable: false
+						});
+					}
 				});
 			}
 		}
@@ -360,17 +362,16 @@ define(<%= imports %>, function(<%= args %>){
 		setupDefaultViewModelProps(ViewModel);
 
 		var pathname = new URL(fullUrl(request)).pathname;
-		var params = Object.assign(route.deparam(pathname), {
+		var pathWithoutSlash = pathname.substr(1);
+		var params = Object.assign(route.deparam(pathWithoutSlash), {
 			env: Object.assign({}, process.env),
 			request: request
 		});
 
 		var viewModel = new ViewModel(params);
 
-		if(!Object.isSealed(viewModel) &&
-			!canReflect.getKeyValue(viewModel, "statusCode") &&
+		if(!canReflect.getKeyValue(viewModel, "statusCode") &&
 			!isEmptyObject(route.routes)) {
-			// fix: support root-url (i.e '/') in production-mode
 			if(typeof params.route === "string") {
 				canReflect.setKeyValue(viewModel, "statusCode", 200);
 			} else {

@@ -18,7 +18,7 @@ function makeContextForDocument(render, document) {
 }
 
 function Request(url) {
-	this.url = "/";
+	this.url = url;
 	this.connection = {};
 	this.headers = {};
 	// This prop is to make the structure circular
@@ -51,7 +51,25 @@ QUnit.test("renders to a document", function(assert){
 
 	render.call(context, request);
 	assert.ok(doc.body.querySelector("#hello"), "element was appended");
+
+	var statusCode = Number(doc.body.querySelector("#status-code").textContent);
+	assert.equal(statusCode, 200, "Got a 200");
 });
+
+QUnit.test("renders 404s", function(assert){
+	var render = this.render;
+	var doc = makeDoc();
+	var context = makeContextForDocument(render, doc);
+	var request = new Request("/some/fake/route");
+
+	render.call(context, request);
+
+	var statusCode = Number(doc.body.querySelector("#status-code").textContent);
+	var statusMessage = doc.body.querySelector("#status-message").textContent;
+
+	assert.equal(statusCode, 404, "Got a 404");
+	assert.equal(statusMessage, "Not found", "correct message");
+})
 
 QUnit.module("#renderInZone with basics", {
 	setup: function(assert){

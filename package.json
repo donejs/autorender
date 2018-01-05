@@ -1,7 +1,7 @@
 {
   "name": "done-autorender",
   "version": "1.5.1",
-  "description": "Autorender CanJS projects",
+  "description": "Autorender CanJS projects   ",
   "main": "src/autorender.js",
   "scripts": {
     "build": "node build.js",

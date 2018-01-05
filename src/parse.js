@@ -8,7 +8,7 @@ define([
 		var intermediateAndImports = getIntermediateAndImports(source);
 
 		var ases = intermediateAndImports.ases;
-		var imports = intermediateAndImports.imports;
+		var imports = intermediateAndImports.imports.slice(0);
 		var args = [];
 		each(ases, function(from, name){
 			// Move the as to the front of the array.
@@ -55,6 +55,7 @@ define([
 
 		return {
 			imports: imports,
+			rawImports: intermediateAndImports.imports,
 			dynamicImports: intermediateAndImports.dynamicImports,
 			args: args,
 			ases: ases,

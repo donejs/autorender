@@ -26,6 +26,12 @@ QUnit.test("isProduction helper works", function(){
 	F("#hi-prod").exists("a div inside of isProduction was rendered");
 });
 
+QUnit.module("optimized builds");
+
+QUnit.asyncTest("autorender with optimized builds", function() {
+	makeIframe("basics-optimized/prod.html");
+});
+
 // Only Production mode is supported in IE8.
 if(/MSIE 8/.test(navigator.userAgent)) {
 	return;
@@ -139,8 +145,4 @@ QUnit.module("Running in Electron", {
 
 QUnit.test("It was able to load", function(){
 	F("#main").exists("template was rendered");
-});
-
-QUnit.asyncTest("autorender with optimized builds", function(){
-	makeIframe("basics-optimized/prod.html");
 });

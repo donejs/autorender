@@ -54,10 +54,18 @@ define([
 		function translate(load){
 			var result = parse(load.source, this, zoneOpts);
 
+			// Register dynamic imports for the slim loader config
+			var localLoader = loader.localLoader || loader;
+			if (localLoader.slimConfig) {
+				var toMap = localLoader.slimConfig.toMap;
+				Array.prototype.push.apply(toMap, result.rawImports);
+				Array.prototype.push.apply(toMap, result.dynamicImports);
+			}
+
 			return Promise.all([
 				addBundles(result.dynamicImports, load.name),
 				Promise.all(result.imports)
-			]).then(function(pResults){
+			]).then(function(pResults) {
 				var output = template({
 					imports: JSON.stringify(pResults[1]),
 					args: result.args.join(", "),
@@ -75,5 +83,5 @@ define([
 		return {
 			translate: translate
 		};
-	}
+	};
 });

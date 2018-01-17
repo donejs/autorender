@@ -34,6 +34,9 @@ QUnit.test("renders to a document", function(assert){
 
 	var statusCode = Number(doc.body.querySelector("#status-code").textContent);
 	assert.equal(statusCode, 200, "Got a 200");
+
+	var automount = doc.documentElement.dataset.canAutomount;
+	assert.equal(automount, "false", "Renders with <html can-automount=\"false\"");
 });
 
 QUnit.test("renders 404s", function(assert){

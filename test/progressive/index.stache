@@ -7,9 +7,9 @@
 		<can-import from="test/progressive/state" export-as="viewModel"/>
 
 		<can-import from="test/progressive/foo">
-			{{#isResolved}}
-				<span id="bundles">{{../../bundles()}}</span>
-			{{/isResolved}}
+			{{#if isResolved}}
+				<span id="bundles">{{scope.root.bundles()}}</span>
+			{{/if}}
 		</can-import>
 
 		{{#switch(env.NODE_ENV)}}

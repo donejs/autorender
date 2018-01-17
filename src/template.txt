@@ -47,7 +47,8 @@ define(<%= imports %>, function(<%= args %>){
 		}
 
 		var viewModel = context.state = new ViewModel();
-		domData.set.call(document.documentElement, "viewModel", viewModel);
+		canReflect.setKeyValue(document.documentElement,
+			canSymbol.for("can.viewModel"), viewModel);
 
 		route.data = viewModel;
 		route.start();
@@ -279,6 +280,9 @@ define(<%= imports %>, function(<%= args %>){
 		} else {
 			mutate.appendChild.call(documentElement, frag);
 		}
+
+		// Set the can-automount=false attribute
+		document.documentElement.setAttribute("data-can-automount", "false");
 	}
 
 	if(typeof steal !== 'undefined' && (isNW || isElectron || !isNode)) {
@@ -364,6 +368,7 @@ define(<%= imports %>, function(<%= args %>){
 		var urlObj = new URL(fullUrl(request))
 		var pathWithoutSlash = urlObj.pathname.substr(1);
 		var routeStr = pathWithoutSlash + urlObj.search;
+		var hasMatchingRoute = !!route.rule(routeStr);
 		var params = Object.assign(route.deparam(routeStr), {
 			env: Object.assign({}, process.env),
 			request: request
@@ -373,7 +378,7 @@ define(<%= imports %>, function(<%= args %>){
 
 		if(!canReflect.getKeyValue(viewModel, "statusCode") &&
 			!isEmptyObject(route.routes)) {
-			if(typeof params.route === "string") {
+			if(hasMatchingRoute) {
 				canReflect.setKeyValue(viewModel, "statusCode", 200);
 			} else {
 				canReflect.setKeyValue(viewModel, "statusCode", 404);

@@ -279,6 +279,9 @@ define(<%= imports %>, function(<%= args %>){
 		} else {
 			mutate.appendChild.call(documentElement, frag);
 		}
+
+		// Set the can-automount=false attribute
+		document.documentElement.setAttribute("data-can-automount", "false");
 	}
 
 	if(typeof steal !== 'undefined' && (isNW || isElectron || !isNode)) {

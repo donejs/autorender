@@ -129,3 +129,13 @@ QUnit.test("It was able to load", function(){
 QUnit.asyncTest("autorender with optimized builds", function(){
 	makeIframe("basics-optimized/prod.html");
 });
+
+QUnit.module("Using live-reload", {
+	setup: function(){
+		F.open("//live-reload/page.html");
+	}
+});
+
+QUnit.test("live-reload doesn't cause double renders", function() {
+	F("#result").text("worked", "Loaded without timing out");
+});

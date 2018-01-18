@@ -31,9 +31,17 @@ define([
 
 			loader.import("live-reload", { name: module.id }).then(function(reload){
 				loader.normalize(loader.main).then(function(mainName){
+					var shouldRerender = true;
 					reload(function(){
-						document.documentElement.removeAttribute("data-attached");
-						main.renderAndAttach();
+						if(shouldRerender) {
+							document.documentElement.removeAttribute("data-attached");
+							main.renderAndAttach();
+						}
+						shouldRerender = true;
+					});
+
+					reload.dispose(mainName, function(){
+						shouldRerender = false;
 					});
 
 					reload(mainName, function(r){

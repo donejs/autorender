@@ -1,0 +1,13 @@
+<html>
+<head>
+	<title>my app</title>
+</head>
+<body>
+	<can-import from="~/test/live-reload/app.js" export-as="viewModel" />
+
+	<h1>My App</h1>
+
+	<div id="result"></div>
+	<div id="running">{{runMe()}}</div>
+</body>
+</html>

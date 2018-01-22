@@ -5,12 +5,14 @@ require("./unit");
 
 F.attach(QUnit);
 
-var makeIframe = function(src){
-	var iframe = document.createElement('iframe');
-	window.removeMyself = function(){
+var makeIframe = function makeIframe(src, assert) {
+	var done = assert.async();
+	var iframe = document.createElement("iframe");
+
+	window.removeMyself = function removeMyself() {
 		delete window.removeMyself;
 		document.body.removeChild(iframe);
-		QUnit.start();
+		done();
 	};
 	document.body.appendChild(iframe);
 	iframe.src = src;
@@ -44,8 +46,8 @@ QUnit.test("basics works with no zone", function(){
 
 QUnit.module("development mode");
 
-QUnit.asyncTest("the appState is available as the html viewModel", function(){
-	makeIframe("basics/test.html");
+QUnit.test("the appState is available as the html viewModel", function(assert) {
+	makeIframe("basics/test.html", assert);
 });
 
 // Fixes the case when can.route is not available (#5)
@@ -126,10 +128,6 @@ QUnit.test("It was able to load", function(){
 	F("#main").exists("template was rendered");
 });
 
-QUnit.asyncTest("autorender with optimized builds", function(){
-	makeIframe("basics-optimized/prod.html");
-});
-
 QUnit.module("Using live-reload", {
 	setup: function(){
 		F.open("//live-reload/page.html");
@@ -138,4 +136,10 @@ QUnit.module("Using live-reload", {
 
 QUnit.test("live-reload doesn't cause double renders", function() {
 	F("#result").text("worked", "Loaded without timing out");
+});
+
+QUnit.module("optimized builds");
+
+QUnit.test("autorender with optimized builds", function(assert) {
+	makeIframe("basics-optimized/prod.html", assert);
 });

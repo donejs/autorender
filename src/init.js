@@ -4,9 +4,8 @@ define([
 	"module",
 	"./template",
 	"./parse",
-	"steal-stache/add-bundles",
-	"can-util/js/each/each"
-], function(steal, loader, module, template, parse, addBundles, each){
+	"steal-stache/add-bundles"
+], function(steal, loader, module, template, parse, addBundles) {
 	return function init(zoneOpts){
 		var main;
 
@@ -54,6 +53,14 @@ define([
 		function translate(load){
 			var result = parse(load.source, this, zoneOpts);
 
+			// Register dynamic imports for the slim loader config
+			var localLoader = loader.localLoader || loader;
+			if (localLoader.slimConfig) {
+				var toMap = localLoader.slimConfig.toMap;
+				Array.prototype.push.apply(toMap, result.rawImports);
+				Array.prototype.push.apply(toMap, result.dynamicImports);
+			}
+
 			return Promise.all([
 				addBundles(result.dynamicImports, load.name),
 				Promise.all(result.imports)
@@ -83,5 +90,5 @@ define([
 		return {
 			translate: translate
 		};
-	}
+	};
 });

@@ -18,6 +18,10 @@
 					"Hello world!",
 					"should render correctly"
 				);
+				QUnit.ok(
+					window.steal.map["test/basics-optimized/state"],
+					"can-import modules should be registered"
+				);
 				removeMyself();
 			}, 300);
 		}

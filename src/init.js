@@ -56,6 +56,8 @@ define([
 			// Register dynamic imports for the slim loader config
 			var localLoader = loader.localLoader || loader;
 			if (localLoader.slimConfig) {
+				localLoader.slimConfig.needsDynamicLoader = true;
+
 				var toMap = localLoader.slimConfig.toMap;
 				Array.prototype.push.apply(toMap, result.rawImports);
 				Array.prototype.push.apply(toMap, result.dynamicImports);

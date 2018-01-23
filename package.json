@@ -37,7 +37,7 @@
     "lodash.template": "^4.4.0",
     "steal": "^1.0.3",
     "steal-qunit": "1.0.1",
-    "steal-tools": "stealjs/steal-tools#autorender",
+    "steal-tools": "^1.11.0",
     "testee": "^0.7.0"
   },
   "homepage": "https://github.com/donejs/autorender",

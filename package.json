@@ -45,7 +45,7 @@
     "can-route": "^3.0.5",
     "can-stache": "^3.0.15",
     "can-util": "^3.1.0",
-    "can-view-import": "^3.0.3",
+    "can-view-import": "^4.0.0",
     "can-view-model": "^3.1.2",
     "can-zone": "^0.6.0",
     "steal-stache": "^3.0.4"

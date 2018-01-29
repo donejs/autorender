@@ -48,6 +48,6 @@
     "can-view-import": "^3.0.3",
     "can-view-model": "^3.1.2",
     "can-zone": "^0.6.0",
-    "steal-stache": "^3.0.4"
+    "steal-stache": "^4.0.0"
   }
 }

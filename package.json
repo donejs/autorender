@@ -29,10 +29,10 @@
     "url": "https://github.com/donejs/autorender/issues"
   },
   "devDependencies": {
-    "can-component": "^4.0.0-pre.0",
-    "can-define": "^2.0.0-pre.19",
-    "can-route": "^4.0.0-pre.0",
-    "can-route-pushstate": "^4.0.0-pre.0",
+    "can-component": "^4.0.0",
+    "can-define": "^2.0.0",
+    "can-route": "^4.0.0",
+    "can-route-pushstate": "^4.0.0",
     "funcunit": "^3.1.0",
     "lodash.template": "^4.4.0",
     "steal": "^1.0.3",
@@ -42,15 +42,17 @@
   },
   "homepage": "https://github.com/donejs/autorender",
   "dependencies": {
+    "can-dom-mutate": "^1.0.1",
+    "can-namespace": "^1.0.0",
     "can-reflect": "^1.11.0",
-    "can-route": "^4.0.0-pre.0",
-    "can-stache": "^4.0.0-pre.0",
+    "can-route": "^4.0.0",
+    "can-stache": "^4.0.0",
     "can-symbol": "^1.5.0",
     "can-util": "^3.10.18",
-    "can-view-import": "^4.0.0-pre.0",
-    "can-view-model": "^4.0.0-pre.0",
+    "can-view-import": "^4.0.1",
+    "can-view-model": "^4.0.0",
     "can-zone": "^0.6.0",
     "full-url": "^1.0.0",
-    "steal-stache": "^4.0.0-pre.0"
+    "steal-stache": "^4.0.0"
   }
 }

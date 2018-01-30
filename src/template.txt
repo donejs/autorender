@@ -92,7 +92,12 @@ define(<%= imports %>, function(<%= args %>){
 		});
 	}
 
-	var tagsToIgnore = { "SCRIPT": true, "STYLE": true, "LINK": true };
+	var tagsToIgnore = {
+		"SCRIPT": true,
+		"STYLE": true,
+		"LINK": true,
+		"BASE": true
+	};
 
 	/**
 	 * Call a callback for each child Node within a parent, skipping

@@ -33,6 +33,20 @@ QUnit.test("basics works", function(){
 	});
 });
 
+QUnit.module("tags to ignore from head", {
+	setup: function setup() {
+		F.open("//ignore/index.html");
+	}
+});
+
+QUnit.test("<base>", function(assert) {
+	var done = assert.async();
+	assert.expect(0);
+
+	F("base").exists();
+	F(done);
+});
+
 QUnit.module("done-autorender-no-zone",{
 	setup: function(){
 	   F.open("//basics/index-no-zone.html");

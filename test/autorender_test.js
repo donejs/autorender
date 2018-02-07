@@ -33,6 +33,10 @@ QUnit.test("basics works", function(){
 	});
 });
 
+QUnit.test("elements marked with data-keep are left in the DOM", function(){
+	F("[name='custom-meta']").exists("meta tag left in");
+});
+
 QUnit.module("tags to ignore from head", {
 	setup: function setup() {
 		F.open("//ignore/index.html");

@@ -111,7 +111,7 @@ define(<%= imports %>, function(<%= args %>){
 		for(; i < len; i++) {
 			node = nodes[i];
 			ignoreTag = tagsToIgnore[node.nodeName];
-			if(!ignoreTag) {
+			if(!ignoreTag && !(node.dataset && node.dataset.keep === "")) {
 				// Returning false breaks the loop
 				if(callback(node) === false) {
 					break;

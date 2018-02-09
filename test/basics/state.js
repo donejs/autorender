@@ -4,12 +4,13 @@ define([
 ], function(DefineMap, route){
 	var AppViewModel = DefineMap.extend({
 		page: "string",
+		param: "string",
 		hello: function(){
 			return "world";
 		}
 	});
 
-	route("{page}", { page: "home" });
+	route.register("{page}", { page: "home" });
 
 	return AppViewModel;
 });

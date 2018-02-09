@@ -1,6 +1,7 @@
 var QUnit = require("steal-qunit");
 var loader = require("@loader");
 var testHelpers = require("./helpers");
+var canTestHelpers = require("can-test-helpers");
 
 var makeDoc = testHelpers.makeDoc;
 var makeContextForDocument = testHelpers.makeContextForDocument;
@@ -61,7 +62,6 @@ QUnit.test("renders with query params", function(assert){
 	var request = new Request("/cart&param=works");
 
 	render.call(context, request);
-	console.log(doc.body.outerHTML);
 
 	var param = doc.body.querySelector("#some-param").textContent;
 	assert.equal(param, "works", "the param was part of the VM");
@@ -96,4 +96,25 @@ QUnit.test("renders to a document", function(assert){
 		assert.equal(result.fragment.nodeType, 11, "It is a document fragment");
 	})
 	.then(done, done);
+});
+
+QUnit.module("connectViewModelAndAttach");
+
+QUnit.test("Does not warn", function(assert){
+	var done = assert.async();
+	var teardown = canTestHelpers.dev.willWarn(/Unable to find key/);
+
+	testHelpers.load("test/basics/index.stache!done-autorender")
+	.then(function(autorender){
+		var doc = makeDoc();
+		var context = makeContextForDocument(autorender, doc);
+		return context.connectViewModelAndAttach();
+	})
+	.then(function(){
+		assert.equal(teardown(), 0, "No warnings for undefined keys");
+	})
+	.then(done, function(err){
+		QUnit.ok(false, err);
+		done();
+	});
 });

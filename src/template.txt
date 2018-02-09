@@ -36,7 +36,8 @@ define(<%= imports %>, function(<%= args %>){
 	 * @return {Map} an instance of some map type.
 	 */
 	function connectViewModel() {
-		var ViewModel = context.ViewModel;
+		var ctx = getContext(this);
+		var ViewModel = ctx.ViewModel;
 
 		if(!ViewModel) {
 			var message  = "done-autorender cannot start without a ViewModel. " +
@@ -46,7 +47,10 @@ define(<%= imports %>, function(<%= args %>){
 			return;
 		}
 
-		var viewModel = context.state = new ViewModel();
+		// Make sure the common index.stache props are defined.
+		setupDefaultViewModelProps(ViewModel);
+
+		var viewModel = ctx.state = new ViewModel();
 		canReflect.setKeyValue(document.documentElement,
 			canSymbol.for("can.viewModel"), viewModel);
 
@@ -65,7 +69,7 @@ define(<%= imports %>, function(<%= args %>){
 	 **/
 	function connectViewModelAndAttach() {
 		connectViewModel();
-		return renderAndAttach();
+		return renderAndAttach.call(this);
 	}
 
 	/**
@@ -146,6 +150,7 @@ define(<%= imports %>, function(<%= args %>){
 	 * @param {RenderResult} The result of rendering within a Zone.
 	 */
 	function attach(result){
+		var document = getContext(this).ownerDocument;
 		var frag = result.fragment;
 
 		// If already attached skip this part.
@@ -181,10 +186,12 @@ define(<%= imports %>, function(<%= args %>){
 	 * attached to the DOM.
 	 */
 	function renderAndAttach(){
+		var boundAttach = attach.bind(this);
+
 		var viewModel = context.state;
 		return useZones
-			? renderInZone(viewModel).promise.then(attach)
-			: renderNoZone(viewModel).then(attach);
+			? renderInZone(viewModel).promise.then(boundAttach)
+			: renderNoZone(viewModel).then(boundAttach);
 	}
 
 	/**
@@ -304,6 +311,9 @@ define(<%= imports %>, function(<%= args %>){
 
 	var context = Object.create(Function.prototype, {
 		<%= ases %>
+		connectViewModelAndAttach: {
+			value: connectViewModelAndAttach
+		},
 		ownerDocument: {
 			get: function(){
 				return document;
@@ -345,6 +355,10 @@ define(<%= imports %>, function(<%= args %>){
 		}
 	}
 
+	function getContext(thisArg) {
+		 return context.isPrototypeOf(thisArg) ? thisArg : context;
+	}
+
 	/**
 	 * @function createViewModelAndRender
 	 * @hide
@@ -355,7 +369,7 @@ define(<%= imports %>, function(<%= args %>){
 	function createViewModelAndRender(request) {
 		// Check if we were called with .call/apply, otherwise use the
 		// context within the scope. This is for testing.
-		var ctx = context.isPrototypeOf(this) ? this : context;
+		var ctx = getContext(this);
 
 		var document = ctx.ownerDocument;
 		var ViewModel = ctx.ViewModel;

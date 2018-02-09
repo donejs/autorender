@@ -3,7 +3,7 @@ var DefineMap = require("can-define/map/map");
 
 var ViewModel = DefineMap.extend({
 	showThing: {
-		value: false
+		default: false
 	}
 });
 

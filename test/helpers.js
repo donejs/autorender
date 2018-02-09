@@ -1,3 +1,5 @@
+var loader = require("@loader");
+
 function makeDoc(){
 	var doc = document.implementation.createHTMLDocument("Some Title");
 	return doc;
@@ -23,6 +25,20 @@ function Request(url) {
 	this._self = this;
 }
 
+function load(moduleName) {
+	loader.config({
+		autorenderAutostart: false
+	});
+
+	return loader.normalize(moduleName)
+	.then(function(normalizedName){
+		loader["delete"](normalizedName);
+
+		return loader["import"](moduleName);
+	});
+}
+
 exports.makeDoc = makeDoc;
 exports.makeContextForDocument = makeContextForDocument;
 exports.Request = Request;
+exports.load = load;

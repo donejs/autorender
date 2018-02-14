@@ -297,6 +297,16 @@ define(<%= imports %>, function(<%= args %>){
 		document.documentElement.setAttribute("data-can-automount", "false");
 	}
 
+	/**
+	 * @function teardownRouting
+	 * @hide
+	 * @description Teardown the connection to the route, for live-reload.
+	 * @signature `teardownRouting()`
+	**/
+	function teardownRouting() {
+		route.stop();
+	}
+
 	if(typeof steal !== 'undefined' && (isNW || isElectron || !isNode)) {
 		steal.done().then(function() {
 			if(steal.loader.autorenderAutostart !== false) {
@@ -324,6 +334,9 @@ define(<%= imports %>, function(<%= args %>){
 		},
 		renderInZone: {
 			value: renderInZone
+		},
+		teardownRouting: {
+			value: teardownRouting
 		},
 		ViewModel: {
 			get: function(){
@@ -355,8 +368,14 @@ define(<%= imports %>, function(<%= args %>){
 		}
 	}
 
+	/**
+	 * @function getContext
+	 * @hide
+	 * @description Gets the context (an object containing information about the render).
+	 * This is used mostly as a DI mechanism for testing.
+	 */
 	function getContext(thisArg) {
-		 return context.isPrototypeOf(thisArg) ? thisArg : context;
+		return context.isPrototypeOf(thisArg) ? thisArg : context;
 	}
 
 	/**

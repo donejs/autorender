@@ -9,5 +9,8 @@
 
 	<div id="result"></div>
 	<div id="running">{{runMe()}}</div>
+
+	<button id="go-to-cart" on:click="setPage('cart')">Go to Cart</button>
+	<div>Current page: <span id="current-page">{{currentPage}}</span></div>
 </body>
 </html>

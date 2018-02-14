@@ -156,6 +156,16 @@ QUnit.test("live-reload doesn't cause double renders", function() {
 	F("#result").text("worked", "Loaded without timing out");
 });
 
+QUnit.test("The new ViewModel is bound to the route", function() {
+	F("#current-page").text("home", "Start on the home page");
+	F("#go-to-cart").click();
+	F("#current-page").text("cart", "Changed to the cart");
+	F(function(){
+		var hash = F.win.location.hash;
+		QUnit.equal(hash, "#!cart", "now on the cart page");
+	});
+});
+
 QUnit.module("optimized builds");
 
 QUnit.test("autorender with optimized builds", function(assert) {

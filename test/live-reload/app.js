@@ -1,37 +1,52 @@
 import dep from "./dep";
 import timeout from "can-zone/timeout";
 import Zone from "can-zone";
+import DefineMap from "can-define/map/map";
+import route from "can-route";
+import "can-stache-bindings";
 
 const d = dep();
 
-function MyApp() {
-	Object.defineProperty(this, "message", {
-		value: "Hello world!",
-		enumerable: false
-	});
-}
+const MyApp = DefineMap.extend("MyApp", {
+	message: {
+		default: "Hello world!",
+		serialize: false
+	},
 
-MyApp.prototype.runMe = function(){
-	var zone = new Zone([
-		timeout(200)
-	]);
+	page: "string",
 
-	Zone.ignore(function(){
-		zone.run(function(){
-			d.decrement();
-			d.increment();
-		})
-		.then(function(){
-			setTimeout(function(){
-				addResult("worked");
-			}, 300);
-		}, function(err){
-			addResult("failed");
-		});
-	})();
+	runMe: function(){
+		var zone = new Zone([
+			timeout(200)
+		]);
 
-	return 'yay';
-};
+		Zone.ignore(function(){
+			zone.run(function(){
+				d.decrement();
+				d.increment();
+			})
+			.then(function(){
+				setTimeout(function(){
+					addResult("worked");
+				}, 300);
+			}, function(err){
+				addResult("failed");
+			});
+		})();
+
+		return 'yay';
+	},
+
+	currentPage: {
+		get: function(){
+			return route.data.page;
+		}
+	},
+
+	setPage: function(page) {
+		this.page = page;
+	}
+});
 
 function addResult(txt) {
 	var div = document.getElementById("result");
@@ -39,5 +54,7 @@ function addResult(txt) {
 		div.textContent = txt;
 	}
 }
+
+route.register("{page}", { page: "home" });
 
 export default MyApp;

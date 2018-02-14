@@ -40,6 +40,8 @@ define([
 					});
 
 					reload.dispose(mainName, function(){
+						main.teardownRouting();
+						document.documentElement.removeAttribute("data-attached");
 						shouldRerender = false;
 					});
 

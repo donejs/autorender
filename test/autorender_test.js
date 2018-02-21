@@ -18,6 +18,22 @@ var makeIframe = function makeIframe(src, assert) {
 	iframe.src = src;
 };
 
+QUnit.module("production", {
+	setup: function(){
+		F.open("//basics/prod.html");
+	}
+});
+
+QUnit.test("isProduction helper works", function(){
+	F("#hi-prod").exists("a div inside of isProduction was rendered");
+});
+
+QUnit.module("optimized builds");
+
+QUnit.asyncTest("autorender with optimized builds", function() {
+	makeIframe("basics-optimized/prod.html");
+});
+
 QUnit.module("done-autorender",{
 	setup: function(){
 	   F.open("//basics/index.html");
@@ -145,6 +161,7 @@ QUnit.module("Running in Electron", {
 QUnit.test("It was able to load", function(){
 	F("#main").exists("template was rendered");
 });
+<<<<<<< HEAD
 
 QUnit.module("Using live-reload", {
 	setup: function(){
@@ -171,3 +188,5 @@ QUnit.module("optimized builds");
 QUnit.test("autorender with optimized builds", function(assert) {
 	makeIframe("basics-optimized/prod.html", assert);
 });
+=======
+>>>>>>> master

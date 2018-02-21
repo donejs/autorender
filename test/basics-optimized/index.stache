@@ -3,7 +3,7 @@
 		<title>Hello page</title>
 	</head>
 	<body>
-		<can-import from="test/basics-optimized/state" as="viewModel"/>
-		<h1 id="hello">Hello {{hello}}!</h1>
+		<can-import from="test/basics-optimized/state" export-as="viewModel"/>
+		<h1 id="hello">Hello {{hello()}}!</h1>
 	</body>
 </html>

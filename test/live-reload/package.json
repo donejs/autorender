@@ -1,0 +1,12 @@
+{
+	"name": "lr-example",
+	"version": "1.0.0",
+	"main": "main.js",
+	"steal": {
+		"main": "lr-example/index.stache!done-autorender",
+		"configDependencies": [
+			"config",
+			"live-reload"
+		]
+	}
+}

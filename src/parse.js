@@ -1,8 +1,8 @@
 define([
 	"module",
 	"can-stache/src/intermediate_and_imports",
-	"can-util/js/each/each"
-], function(module, getIntermediateAndImports, each){
+	"can-reflect"
+], function(module, getIntermediateAndImports, canReflect){
 
 	return function(source, loader, zoneOpts){
 		var intermediateAndImports = getIntermediateAndImports(source);
@@ -10,7 +10,7 @@ define([
 		var ases = intermediateAndImports.ases;
 		var imports = intermediateAndImports.imports.slice(0);
 		var args = [];
-		each(ases, function(from, name){
+		canReflect.each(ases, function(from, name){
 			// Move the as to the front of the array.
 			imports.splice(imports.indexOf(from), 1);
 			imports.unshift(from);
@@ -28,13 +28,16 @@ define([
 
 		var params = [
 			[n("can-stache"), "stache"],
-			[n("can-util/dom/data/data"), "domData"],
 			[n("can-route"), "route"],
 			[n("can-util/dom/child-nodes/child-nodes"), "childNodes"],
-			[n("can-util/dom/mutate/mutate"), "mutate"],
-			[n("can-util/namespace"), "can"],
-			["module", "module"],
+			[n("can-dom-mutate/node"), "mutate"],
+			[n("can-util/js/is-empty-object/is-empty-object"), "isEmptyObject"],
 			[n("can-view-import"), "canViewImport"],
+			[n("can-reflect"), "canReflect"],
+			[n("can-namespace"), "can"],
+			[n("full-url/index"), "fullUrl"],
+			[n("can-symbol"), "canSymbol"],
+			["module", "module"],
 			["@loader", "loader"],
 			["@steal", "steal"]
 		];
@@ -48,7 +51,7 @@ define([
 			}
 		}
 
-		each(params, function(param){
+		canReflect.each(params, function(param){
 			imports.unshift(param[0]);
 			args.unshift(param[1]);
 		});

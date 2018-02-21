@@ -1,22 +1,24 @@
-<html>
+<!doctype html>
+<html lang="en">
 	<head>
 		<title>Hello page</title>
-
-		{{asset "css"}}
 	</head>
 	<body>
-		<can-import from="test/progressive/state" as="viewModel"/>
+		<can-import from="test/progressive/state" export-as="viewModel"/>
 
 		<can-import from="test/progressive/foo">
-			{{#isResolved}}
-				<span id="bundles">{{bundles}}</span>
-			{{/isResolved}}
+			{{#if isResolved}}
+				<span id="bundles">{{scope.root.bundles()}}</span>
+			{{/if}}
 		</can-import>
 
-		{{#isProduction}}
-			<script src="../../node_modules/steal/steal.production.js"></script>
-		{{else}}
-			<script src="../../node_modules/steal/steal.js"></script>
-		{{/isProduction}}
+		{{#switch(env.NODE_ENV)}}
+			{{#case "production"}}
+				<script src="../../node_modules/steal/steal.production.js"></script>
+			{{/case}}
+			{{#default}}
+				<script src="../../node_modules/steal/steal.js"></script>
+			{{/default}}
+		{{/switch}}
 	</body>
 </html>

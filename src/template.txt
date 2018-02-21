@@ -6,16 +6,10 @@ define(<%= imports %>, function(<%= args %>){
 
 	var isNode = typeof process === "object" &&
 		{}.toString.call(process) === "[object process]";
-
-	// SSR helpers isProduction, and some that don't matter in the client.
-	stache.registerHelper("isProduction", function(options){
-		console.warn("The isProduction helper is deprecated. Use a #switch helper on `env.NODE_ENV` instead.");
-		if(loader && loader.isEnv && loader.isEnv("production")) {
-			return options.fn(this);
-		} else {
-			return options.inverse(this);
-		}
-	});
+	var isNW = (function(){
+		try{var nr = loader._nodeRequire; return nr && nr('nw.gui') !== 'undefined';}catch(e){return false;}
+	})();
+	var isElectron = isNode && !!process.versions.electron;
 
 	/**
 	 * @function render
@@ -37,12 +31,13 @@ define(<%= imports %>, function(<%= args %>){
 	/**
 	 * @function connectViewModel
 	 * @description Create a new instance of the provided ViewModel, set it
-	 * as the route's data, and call route.start() or route.ready().
+	 * as the route’s data, and call route.start().
 	 * @signature `connectViewModel()`
 	 * @return {Map} an instance of some map type.
 	 */
 	function connectViewModel() {
-		var ViewModel = autorender.viewModel;
+		var ctx = getContext(this);
+		var ViewModel = ctx.ViewModel;
 
 		if(!ViewModel) {
 			var message  = "done-autorender cannot start without a ViewModel. " +
@@ -52,15 +47,15 @@ define(<%= imports %>, function(<%= args %>){
 			return;
 		}
 
-		var viewModel = autorender.state = new ViewModel();
-		domData.set.call(document.documentElement, "viewModel", viewModel);
+		// Make sure the common index.stache props are defined.
+		setupDefaultViewModelProps(ViewModel);
+
+		var viewModel = ctx.state = new ViewModel();
+		canReflect.setKeyValue(document.documentElement,
+			canSymbol.for("can.viewModel"), viewModel);
 
 		route.data = viewModel;
-		if (route.start) {// can-route 3.3+
-			route.start();
-		} else if (route.ready) {// can-route < 3.3
-			route.ready();
-		}
+		route.start();
 		return viewModel;
 	}
 
@@ -74,7 +69,7 @@ define(<%= imports %>, function(<%= args %>){
 	 **/
 	function connectViewModelAndAttach() {
 		connectViewModel();
-		return renderAndAttach();
+		return renderAndAttach.call(this);
 	}
 
 	/**
@@ -101,7 +96,12 @@ define(<%= imports %>, function(<%= args %>){
 		});
 	}
 
-	var tagsToIgnore = { "SCRIPT": true, "STYLE": true, "LINK": true };
+	var tagsToIgnore = {
+		"SCRIPT": true,
+		"STYLE": true,
+		"LINK": true,
+		"BASE": true
+	};
 
 	/**
 	 * Call a callback for each child Node within a parent, skipping
@@ -115,7 +115,7 @@ define(<%= imports %>, function(<%= args %>){
 		for(; i < len; i++) {
 			node = nodes[i];
 			ignoreTag = tagsToIgnore[node.nodeName];
-			if(!ignoreTag) {
+			if(!ignoreTag && !(node.dataset && node.dataset.keep === "")) {
 				// Returning false breaks the loop
 				if(callback(node) === false) {
 					break;
@@ -150,6 +150,7 @@ define(<%= imports %>, function(<%= args %>){
 	 * @param {RenderResult} The result of rendering within a Zone.
 	 */
 	function attach(result){
+		var document = getContext(this).ownerDocument;
 		var frag = result.fragment;
 
 		// If already attached skip this part.
@@ -185,10 +186,12 @@ define(<%= imports %>, function(<%= args %>){
 	 * attached to the DOM.
 	 */
 	function renderAndAttach(){
-		var viewModel = autorender.state;
+		var boundAttach = attach.bind(this);
+
+		var viewModel = context.state;
 		return useZones
-			? renderInZone(viewModel).promise.then(attach)
-			: renderNoZone(viewModel).then(attach);
+			? renderInZone(viewModel).promise.then(boundAttach)
+			: renderNoZone(viewModel).then(boundAttach);
 	}
 
 	/**
@@ -269,7 +272,7 @@ define(<%= imports %>, function(<%= args %>){
 
 	/**
 	 * @function renderIntoDocument
-	 * @description This is used by done-ssr, it provides a fresh document
+	 * @description This is used in SSR, it provides a fresh document
 	 * and viewModel, and this function calls the stache renderer and updates
 	 * the document with the result.
 	 * @signature `renderIntoDocument(document, viewModel)`
@@ -289,36 +292,22 @@ define(<%= imports %>, function(<%= args %>){
 		} else {
 			mutate.appendChild.call(documentElement, frag);
 		}
+
+		// Set the can-automount=false attribute
+		document.documentElement.setAttribute("data-can-automount", "false");
 	}
 
-	var autorender = {
-		renderAndAttach: renderAndAttach,
-		renderInZone: renderInZone,
-		legacy: false,
+	/**
+	 * @function teardownRouting
+	 * @hide
+	 * @description Teardown the connection to the route, for live-reload.
+	 * @signature `teardownRouting()`
+	**/
+	function teardownRouting() {
+		route.stop();
+	}
 
-		/*
-		 * This was previously used by done-ssr, but no longer is.
-		 * This should be removed as part of 2.0.0.
-		 */
-		render: function(doc, state){
-			console.warn("render() is deprecated in done-autorender 1.3.0. Please use renderIntoDocument() instead.");
-			var frag = render(state, {});
-
-			var oldDoc = can.document;
-			can.document = doc;
-			mutate.appendChild.call(doc.body, frag, doc);
-			can.document = oldDoc;
-		},
-		renderIntoDocument: renderIntoDocument,
-		<%= ases %>
-	};
-
-	var isNW = (function(){
-		try{var nr = loader._nodeRequire; return nr && nr('nw.gui') !== 'undefined';}catch(e){return false;}
-	})();
-	var isElectron = isNode && !!process.versions.electron;
-
-	if(typeof steal !== 'undefined' && (isNW || isElectron || !isNode))
+	if(typeof steal !== 'undefined' && (isNW || isElectron || !isNode)) {
 		steal.done().then(function() {
 			if(steal.loader.autorenderAutostart !== false) {
 				if (useZones){
@@ -328,6 +317,120 @@ define(<%= imports %>, function(<%= args %>){
 				}
 			}
 		});
+	}
 
-	return autorender;
+	var context = Object.create(Function.prototype, {
+		<%= ases %>
+		connectViewModelAndAttach: {
+			value: connectViewModelAndAttach
+		},
+		ownerDocument: {
+			get: function(){
+				return document;
+			}
+		},
+		renderAndAttach: {
+			value: renderAndAttach
+		},
+		renderInZone: {
+			value: renderInZone
+		},
+		teardownRouting: {
+			value: teardownRouting
+		},
+		ViewModel: {
+			get: function(){
+				return this.viewModel;
+			}
+		}
+	});
+
+	var defaultProperties = ["env", "request", "statusCode", "statusMessage"];
+
+	/**
+	 * @function setupDefaultViewModelProps
+	 * @hide
+	 * @description Given a ViewModel constructor, ensure that the
+	 * default properties like `env` and `request` are not serialized
+	 */
+	function setupDefaultViewModelProps(ViewModel) {
+		if(canReflect.isConstructorLike(ViewModel)) {
+			var proto = ViewModel.prototype;
+			if(!canReflect.hasOwnKey(proto, defaultProperties[0])) {
+				defaultProperties.forEach(function(prop){
+					if(!canReflect.hasOwnKey(proto, prop)) {
+						canReflect.defineInstanceKey(ViewModel, prop, {
+							enumerable: false
+						});
+					}
+				});
+			}
+		}
+	}
+
+	/**
+	 * @function getContext
+	 * @hide
+	 * @description Gets the context (an object containing information about the render).
+	 * This is used mostly as a DI mechanism for testing.
+	 */
+	function getContext(thisArg) {
+		return context.isPrototypeOf(thisArg) ? thisArg : context;
+	}
+
+	/**
+	 * @function createViewModelAndRender
+	 * @hide
+	 * @description Create an instance of the ViewModel and render it with
+	 * the renderIntoDocument function.
+	 * @param {node.IncomingMessage} request A request object, from Node.js
+	 */
+	function createViewModelAndRender(request) {
+		// Check if we were called with .call/apply, otherwise use the
+		// context within the scope. This is for testing.
+		var ctx = getContext(this);
+
+		var document = ctx.ownerDocument;
+		var ViewModel = ctx.ViewModel;
+
+		if(!ViewModel) {
+			var msg = "done-autorender cannot render your application " +
+							"without a viewModel defined. " +
+							"See the guide for information. " +
+							"http://donejs.com/Guide.html#section_Createatemplateandmainfile";
+			throw new Error(msg);
+		}
+
+		setupDefaultViewModelProps(ViewModel);
+
+		var urlObj = new URL(fullUrl(request))
+		var pathWithoutSlash = urlObj.pathname.substr(1);
+		var routeStr = pathWithoutSlash + urlObj.search;
+		var hasMatchingRoute = !!route.rule(routeStr);
+		var params = Object.assign(route.deparam(routeStr), {
+			env: Object.assign({}, process.env),
+			request: request
+		});
+
+		var viewModel = new ViewModel(params);
+
+		if(!canReflect.getKeyValue(viewModel, "statusCode") &&
+			!isEmptyObject(route.routes)) {
+			if(hasMatchingRoute) {
+				canReflect.setKeyValue(viewModel, "statusCode", 200);
+			} else {
+				canReflect.setKeyValue(viewModel, "statusCode", 404);
+				canReflect.setKeyValue(viewModel, "statusMessage", "Not found");
+			}
+		}
+
+		route.data = viewModel;
+		route.start();
+
+		renderIntoDocument(document, viewModel);
+	}
+
+	Object.setPrototypeOf(createViewModelAndRender, context);
+
+	return createViewModelAndRender;
 });

@@ -74,7 +74,7 @@ To import this View Model into your application use a [can-import](https://canjs
 
 This tells done-autorender that the module *app/state* is the ViewModel.
 
-#### Debugging
+### Debugging
 
 In development mode, [can-zone/debug](https://canjs.com/doc/can-zone/debug.html) is enabled to provide debugging information in the case where the Zone times out and the app is never attached to the page.
 
@@ -91,7 +91,7 @@ After the Zone has timed out the console will print out stack traces of code tha
 
 ![debug stack traces](https://user-images.githubusercontent.com/361671/33093932-62001f4a-cecc-11e7-8cbc-376789a43781.png)
 
-##### Break on timeout
+#### Break on timeout
 
 Additionally you can choose to have a `debugger;` breakpoint that is hit *after* the Zone times out. This allows you to more easily figure out which code is still running and see if something can be done about it.
 
@@ -107,7 +107,7 @@ This is a boolean attribute and doesn't need a value. Instead of logging stack t
 ![break on timeout](https://user-images.githubusercontent.com/361671/33095278-1628ab46-ced1-11e7-96e7-bf25e9cc2853.png)
 
 
-##### can-view-model
+#### can-view-model
 
 If you install [can-view-model](https://github.com/canjs/can-view-model) you can use it to access the Application ViewModel like so:
 
@@ -115,4 +115,18 @@ If you install [can-view-model](https://github.com/canjs/can-view-model) you can
 var canViewModel = require("can-view-model");
 
 var appVM = canViewModel(document.documentElement);
+```
+
+### Keeping elements in the DOM
+
+By default done-autorender removes all elements from the `<head>` and `<body>` and replaces them with the elements from the template. This is to facilitate use with [done-ssr](https://github.com/donejs/done-ssr) which will have duplicated content.
+
+Some times, especially if not using done-ssr, you might want to keep some elements that are in your HTML but not your stache template. Use the __data-keep__ property and done-autorender will leave them alone:
+
+```html
+<html>
+<head>
+  <meta name="some-prop" content="some-value" data-keep>
+</head>
+</html>
 ```

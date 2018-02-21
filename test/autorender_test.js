@@ -5,37 +5,18 @@ require("./unit");
 
 F.attach(QUnit);
 
-var makeIframe = function(src){
-	var iframe = document.createElement('iframe');
-	window.removeMyself = function(){
+var makeIframe = function makeIframe(src, assert) {
+	var done = assert.async();
+	var iframe = document.createElement("iframe");
+
+	window.removeMyself = function removeMyself() {
 		delete window.removeMyself;
 		document.body.removeChild(iframe);
-		QUnit.start();
+		done();
 	};
 	document.body.appendChild(iframe);
 	iframe.src = src;
 };
-
-QUnit.module("production", {
-	setup: function(){
-		F.open("//basics/prod.html");
-	}
-});
-
-QUnit.test("isProduction helper works", function(){
-	F("#hi-prod").exists("a div inside of isProduction was rendered");
-});
-
-QUnit.module("optimized builds");
-
-QUnit.asyncTest("autorender with optimized builds", function() {
-	makeIframe("basics-optimized/prod.html");
-});
-
-// Only Production mode is supported in IE8.
-if(/MSIE 8/.test(navigator.userAgent)) {
-	return;
-}
 
 QUnit.module("done-autorender",{
 	setup: function(){
@@ -52,6 +33,24 @@ QUnit.test("basics works", function(){
 	});
 });
 
+QUnit.test("elements marked with data-keep are left in the DOM", function(){
+	F("[name='custom-meta']").exists("meta tag left in");
+});
+
+QUnit.module("tags to ignore from head", {
+	setup: function setup() {
+		F.open("//ignore/index.html");
+	}
+});
+
+QUnit.test("<base>", function(assert) {
+	var done = assert.async();
+	assert.expect(0);
+
+	F("base").exists();
+	F(done);
+});
+
 QUnit.module("done-autorender-no-zone",{
 	setup: function(){
 	   F.open("//basics/index-no-zone.html");
@@ -65,8 +64,8 @@ QUnit.test("basics works with no zone", function(){
 
 QUnit.module("development mode");
 
-QUnit.asyncTest("the appState is available as the html viewModel", function(){
-	makeIframe("basics/test.html");
+QUnit.test("the appState is available as the html viewModel", function(assert) {
+	makeIframe("basics/test.html", assert);
 });
 
 // Fixes the case when can.route is not available (#5)
@@ -145,4 +144,30 @@ QUnit.module("Running in Electron", {
 
 QUnit.test("It was able to load", function(){
 	F("#main").exists("template was rendered");
+});
+
+QUnit.module("Using live-reload", {
+	setup: function(){
+		F.open("//live-reload/page.html");
+	}
+});
+
+QUnit.test("live-reload doesn't cause double renders", function() {
+	F("#result").text("worked", "Loaded without timing out");
+});
+
+QUnit.test("The new ViewModel is bound to the route", function() {
+	F("#current-page").text("home", "Start on the home page");
+	F("#go-to-cart").click();
+	F("#current-page").text("cart", "Changed to the cart");
+	F(function(){
+		var hash = F.win.location.hash;
+		QUnit.equal(hash, "#!cart", "now on the cart page");
+	});
+});
+
+QUnit.module("optimized builds");
+
+QUnit.test("autorender with optimized builds", function(assert) {
+	makeIframe("basics-optimized/prod.html", assert);
 });

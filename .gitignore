@@ -2,3 +2,4 @@ node_modules/
 test/node_modules/
 test/basics/dist/
 test/basics-optimized/dist/
+package-lock.json

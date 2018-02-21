@@ -1,28 +1,27 @@
 var Component = require("can-component");
-var Map = require("can-map");
-require("can-map-define");
-var List = require("can-list");
+var DefineMap = require("can-define/map/map");
 
-var ViewModel = Map.extend({
-	define: {
-		things: {
-			Value: List,
-			get: function(list){
-				var xhr = new XMLHttpRequest();
-				xhr.open("GET", "foo://bar");
-				xhr.onload = function(){
-					var data = JSON.parse(xhr.responseText);
-					list.replace(data);
-				};
-				xhr.send();
-				return list;
-			}
+var ViewModel = DefineMap.extend("OtherViewModel", {
+	get thingsPromise() {
+		return new Promise(function(resolve){
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", "foo://bar");
+			xhr.onload = function(){
+				var data = JSON.parse(xhr.responseText);
+				resolve(data);
+			};
+			xhr.send();
+		});
+	},
+	things: {
+		get: function(last, resolve){
+			this.thingsPromise.then(resolve);
 		}
 	}
 });
 
 Component.extend({
 	tag: "other-page",
-	template: require("./other.stache!"),
+	view: require("./other.stache"),
 	ViewModel: ViewModel
 });

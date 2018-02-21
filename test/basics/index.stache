@@ -5,13 +5,28 @@
 	<body>
 		<can-import from="test/basics/state" as="viewModel"/>
 
-		<span id="hello">Hello {{hello}}!</span>
+		<span id="hello">Hello {{hello()}}!</span>
 
-		{{#isProduction}}
-			<div id="hi-prod"></div>
-			<script src="../../node_modules/steal/steal.production.js"></script>
-		{{else}}
-			<script src="../../node_modules/steal/steal.js"></script>
-		{{/isProduction}}
+		{{#if statusCode}}
+			<span id="status-code">{{statusCode}}</span>
+
+			{{^eq(statusCode, 200)}}
+				<span id="status-message">{{statusMessage}}</span>
+			{{/eq}}
+		{{/if}}
+
+		{{#if param}}
+			<span id="some-param">{{param}}</span>
+		{{/if}}
+
+		{{#switch(env.NODE_ENV)}}
+			{{#case "production"}}
+				<div id="hi-prod"></div>
+				<script src="../../node_modules/steal/steal.production.js"></script>
+			{{/case}}
+			{{#default}}
+				<script src="../../node_modules/steal/steal.js"></script>
+			{{/default}}
+		{{/switch}}
 	</body>
 </html>

@@ -1,0 +1,9 @@
+<html>
+	<head>
+		<title>Ignore Tags</title>
+	</head>
+	<body>
+		<can-import from="test/ignore/state" as="viewModel"/>
+		<span id="hello">Hello {{hello()}}!</span>
+	</body>
+</html>

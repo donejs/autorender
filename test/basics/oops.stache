@@ -1,0 +1,11 @@
+<html>
+	<head>
+		<title>Oops page</title>
+	</head>
+	<body>
+		<can-import from="./state" export-as="viewModel"/>
+		<can-import from="./not-exists" />
+
+		<span id="hello">This is an oops page</span>
+	</body>
+</html>

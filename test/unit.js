@@ -118,3 +118,18 @@ QUnit.test("Does not warn", function(assert){
 		done();
 	});
 });
+
+QUnit.test("Importing a module that does not exist", function(assert){
+	var done = assert.async();
+
+	testHelpers.load("~/test/basics/oops.stache!done-autorender")
+	.then(null, function(err){
+		var msg = err.message;
+		var stack = err.stack;
+
+		assert.ok(/<can-import/.test(msg), "the can-import shows up");
+		assert.ok(/not-exists/.test(msg), "Alludes to not-exists being the problem");
+		assert.ok(/oops.stache/.test(stack), "The stache file is in the stack");
+		done();
+	})
+});

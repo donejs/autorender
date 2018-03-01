@@ -2,7 +2,7 @@ define(<%= imports %>, function(<%= args %>){
 	var zoneOpts = <%= zoneOpts %>;
 	var useZones = zoneOpts.useZones;
 	var tokens = <%= intermediate %>;
-	var renderer = stache(tokens);
+	var renderer = stache("<%= filename %>", tokens);
 
 	var isNode = typeof process === "object" &&
 		{}.toString.call(process) === "[object process]";

@@ -4,8 +4,10 @@ define([
 	"module",
 	"./template",
 	"./parse",
-	"steal-stache/add-bundles"
-], function(steal, loader, module, template, parse, addBundles) {
+	"steal-stache/add-bundles",
+	"steal-config-utils/import-specifiers"
+], function(steal, loader, module, template, parse, addBundles, importSpecifiers) {
+	var addImportSpecifiers = importSpecifiers.addImportSpecifiers;
 	return function init(zoneOpts){
 		var main;
 
@@ -52,8 +54,26 @@ define([
 			});
 		}
 
+		//!steal-remove-start
+		function getFilename(name) {
+			var hash = name.indexOf('#');
+			var bang = name.indexOf('!');
+
+			return name.slice(hash < bang ? (hash + 1) : 0, bang);
+		}
+		//!steal-remove-end
+
 		function translate(load){
+			var filename;
+			//!steal-remove-start
+			filename = getFilename(load.name);
+			//!steal-remove-end
+
 			var result = parse(load.source, this, zoneOpts);
+
+			// Add any import specifiers to the load.
+			addImportSpecifiers(load, result);
+			load.metadata.originalSource = load.source;
 
 			// Register dynamic imports for the slim loader config
 			var localLoader = loader.localLoader || loader;
@@ -84,7 +104,8 @@ define([
 					args: result.args.join(", "),
 					zoneOpts: JSON.stringify(zoneOpts),
 					intermediate: JSON.stringify(result.intermediate),
-					ases: exportedValuesDef ? exportedValuesDef + "," : ""
+					ases: exportedValuesDef ? exportedValuesDef + "," : "",
+					filename: filename
 				});
 
 				return output;

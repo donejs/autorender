@@ -1,8 +1,9 @@
 define([
 	"module",
-	"can-stache/src/intermediate_and_imports",
+	"can-stache-ast",
 	"can-reflect"
-], function(module, getIntermediateAndImports, canReflect){
+], function(module, canStacheAst, canReflect){
+	var getIntermediateAndImports = canStacheAst.parse;
 
 	return function(source, loader, zoneOpts){
 		var intermediateAndImports = getIntermediateAndImports(source);
@@ -60,6 +61,7 @@ define([
 			imports: imports,
 			rawImports: intermediateAndImports.imports,
 			dynamicImports: intermediateAndImports.dynamicImports,
+			importDeclarations: intermediateAndImports.importDeclarations,
 			args: args,
 			ases: ases,
 			intermediate: intermediateAndImports.intermediate

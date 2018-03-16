@@ -34,6 +34,7 @@ define([
 			[n("can-dom-mutate/node"), "mutate"],
 			[n("can-util/js/is-empty-object/is-empty-object"), "isEmptyObject"],
 			[n("can-view-import"), "canViewImport"],
+			[n("can-stache-bindings"), "canStacheBindings"],
 			[n("can-reflect"), "canReflect"],
 			[n("can-namespace"), "can"],
 			[n("full-url/index"), "fullUrl"],

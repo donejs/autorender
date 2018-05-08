@@ -48,7 +48,7 @@ define(<%= imports %>, function(<%= args %>){
 		}
 
 		// Make sure the common index.stache props are defined.
-		setupDefaultViewModelProps(ViewModel);
+		setupDefaultViewModelProps(ctx, ViewModel);
 
 		var viewModel = ctx.state = new ViewModel();
 		canReflect.setKeyValue(document.documentElement,
@@ -353,18 +353,21 @@ define(<%= imports %>, function(<%= args %>){
 	 * @description Given a ViewModel constructor, ensure that the
 	 * default properties like `env` and `request` are not serialized
 	 */
-	function setupDefaultViewModelProps(ViewModel) {
-		if(canReflect.isConstructorLike(ViewModel)) {
+	function setupDefaultViewModelProps(ctx, ViewModel) {
+		var sym = canSymbol.for("autorender.props");
+		if(!canReflect.getKeyValue(ctx, sym) &&
+			canReflect.isConstructorLike(ViewModel)) {
 			var proto = ViewModel.prototype;
-			if(!canReflect.hasOwnKey(proto, defaultProperties[0])) {
-				defaultProperties.forEach(function(prop){
-					if(!canReflect.hasOwnKey(proto, prop)) {
-						canReflect.defineInstanceKey(ViewModel, prop, {
-							enumerable: false
-						});
-					}
-				});
-			}
+
+			defaultProperties.forEach(function(prop){
+				if(!canReflect.hasOwnKey(proto, prop)) {
+					canReflect.defineInstanceKey(ViewModel, prop, {
+						enumerable: false
+					});
+				}
+			});
+
+			canReflect.setKeyValue(ctx, sym, true);
 		}
 	}
 
@@ -401,7 +404,7 @@ define(<%= imports %>, function(<%= args %>){
 			throw new Error(msg);
 		}
 
-		setupDefaultViewModelProps(ViewModel);
+		setupDefaultViewModelProps(ctx, ViewModel);
 
 		var urlObj = new URL(fullUrl(request))
 		var pathWithoutSlash = urlObj.pathname.substr(1);

@@ -3,6 +3,10 @@ define([
 	"can-route"
 ], function(DefineMap, route){
 	var AppViewModel = DefineMap.extend({
+		env: {
+			default: () => ({NODE_ENV:'development'}),
+			serialize: false
+		},
 		page: "string",
 		param: "string",
 		hello: function(){

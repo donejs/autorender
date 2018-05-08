@@ -20,7 +20,10 @@ QUnit.module("SSR Render with basics", {
 		.then(function(render){
 			test.render = render;
 		})
-		.then(done, done);
+		.then(done, function(e){
+			assert.ok(false, e);
+			done();
+		});
 	}
 });
 

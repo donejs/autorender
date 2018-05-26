@@ -1,6 +1,8 @@
-define(["can-define/map/map"], function(DefineMap){
+define([
+	"can-define/map/map"
+], function(DefineMap){
 	return DefineMap.extend({
-		hello: function(){
+		hello: function () {
 			return "world";
 		}
 	});

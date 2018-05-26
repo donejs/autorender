@@ -1,7 +1,9 @@
 var QUnit = require("steal-qunit");
+var sinon = require("sinon");
 var loader = require("@loader");
 var testHelpers = require("./helpers");
 var canTestHelpers = require("can-test-helpers");
+var canRoute = require("can-route");
 
 var makeDoc = testHelpers.makeDoc;
 var makeContextForDocument = testHelpers.makeContextForDocument;
@@ -90,7 +92,6 @@ QUnit.test("renders with h2", function(assert){
 QUnit.module("#renderInZone with basics", {
 	setup: function(assert){
 		var done = assert.async();
-
 		var test = this;
 
 		loader.config({
@@ -116,6 +117,46 @@ QUnit.test("renders to a document", function(assert){
 		assert.equal(result.fragment.nodeType, 11, "It is a document fragment");
 	})
 	.then(done, done);
+});
+
+QUnit.module("SSR Route", {
+	setup: function(assert){
+		var done = assert.async();
+		var test = this;
+
+		loader.config({
+			autorenderAutostart: false
+		});
+		loader["import"]("test/no_route/index.stache!done-autorender")
+			.then(function(render){
+				test.render = render;
+			})
+			.then(done, function(e){
+				assert.ok(false, e);
+				done();
+			});
+	},
+	teardown: function () {
+		console.warn.restore();
+	}
+});
+
+QUnit.test("Warn if not route", function(assert){
+	var render = this.render;
+	var doc = makeDoc();
+	var context = makeContextForDocument(render, doc);
+	var request = new Request("/");
+
+	// because canRoute is global and we are running tests before that have a route initialized
+	// we have clear the routes manually
+	canRoute.routes = {};
+
+	sinon.spy(console, "warn");
+
+	render.call(context, request);
+
+	var message = console.warn.getCall(0).args[0];
+	assert.ok(/done-autorender didn't receive route definitions/.test(message), "Received a warning in console");
 });
 
 QUnit.module("connectViewModelAndAttach");

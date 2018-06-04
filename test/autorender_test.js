@@ -149,6 +149,7 @@ QUnit.test("It was able to load", function(){
 QUnit.module("Using live-reload", {
 	setup: function(){
 		F.open("//live-reload/page.html");
+		F.wait(100);
 	}
 });
 

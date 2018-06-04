@@ -21,11 +21,11 @@ define(<%= imports %>, function(<%= args %>){
 	 * @return {DocumentFragment} The result of calling a can-stache renderer,
 	 * a document fragment.
 	 */
-	function render(scope, options){
+	function render(context, options){
 		var moduleOptions = { module: module };
 		options = (options && options.add) ? options.add(moduleOptions) :
 			moduleOptions;
-		return renderer(scope, options);
+		return renderer(new Scope(context, null, { viewModel: true }), options);
 	}
 
 	/**

@@ -28,6 +28,7 @@ define([
 		};
 
 		var params = [
+			[n("can-view-scope"), "Scope"],
 			[n("can-stache"), "stache"],
 			[n("can-route"), "route"],
 			[n("can-util/dom/child-nodes/child-nodes"), "childNodes"],

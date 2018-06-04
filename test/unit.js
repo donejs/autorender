@@ -134,5 +134,23 @@ QUnit.test("Importing a module that does not exist", function(assert){
 		assert.ok(/not-exists/.test(msg), "Alludes to not-exists being the problem");
 		assert.ok(/oops.stache/.test(stack), "The stache file is in the stack");
 		done();
+	});
+});
+
+QUnit.test("ViewModel scope is marked as a viewModel", function(assert){
+	var done = assert.async();
+
+	testHelpers.load("~/test/basics/scope-vm.stache!done-autorender")
+	.then(function(render){
+		var doc = makeDoc();
+		var context = makeContextForDocument(render, doc);
+		var request = new Request("/");
+
+		render.call(context, request);
+		assert.equal(doc.body.querySelector("#hello").innerHTML, "world", "element was appended");
 	})
+	.then(done, function(e){
+		assert.ok(false, e);
+		done();
+	});
 });

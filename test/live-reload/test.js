@@ -8,6 +8,6 @@ window.ONRUNNING = function(){
 
 loader.normalize("~/test/live-reload/app").then(function(name){
 	reloadAll([name]).then(function(){
-		console.log("reloaded");
+		//console.log("reloaded");
 	});
 });

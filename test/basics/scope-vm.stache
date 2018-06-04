@@ -1,0 +1,10 @@
+<html>
+	<head>
+		<title>Oops page</title>
+	</head>
+	<body>
+		<can-import from="./state" export-as="viewModel"/>
+
+		<span id="hello">{{scope.vm.hello()}}</span>
+	</body>
+</html>

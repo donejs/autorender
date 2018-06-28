@@ -39,7 +39,7 @@
     "steal": "^1.0.3",
     "steal-qunit": "1.0.1",
     "steal-tools": "^1.11.0",
-    "testee": "^0.7.0"
+    "testee": "^0.8.1"
   },
   "homepage": "https://github.com/donejs/autorender",
   "dependencies": {

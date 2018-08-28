@@ -46,7 +46,7 @@
     "can-dom-mutate": "^1.0.1",
     "can-namespace": "^1.0.0",
     "can-reflect": "^1.11.0",
-    "can-route": "^4.0.0",
+    "can-route": "^4.3.11",
     "can-stache": "^4.1.5",
     "can-stache-ast": "^1.0.0",
     "can-symbol": "^1.5.0",

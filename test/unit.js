@@ -6,6 +6,7 @@ var canTestHelpers = require("can-test-helpers");
 var makeDoc = testHelpers.makeDoc;
 var makeContextForDocument = testHelpers.makeContextForDocument;
 var Request = testHelpers.Request;
+var makeHeaders = testHelpers.makeHeaders;
 
 QUnit.module("SSR Render with basics", {
 	setup: function(assert){
@@ -68,6 +69,22 @@ QUnit.test("renders with query params", function(assert){
 
 	var param = doc.body.querySelector("#some-param").textContent;
 	assert.equal(param, "works", "the param was part of the VM");
+});
+
+QUnit.test("renders with h2", function(assert){
+	var render = this.render;
+	var doc = makeDoc();
+	var context = makeContextForDocument(render, doc);
+	var headers = makeHeaders("/");
+
+	render.call(context, headers);
+	assert.ok(doc.body.querySelector("#hello"), "element was appended");
+
+	var statusCode = Number(doc.body.querySelector("#status-code").textContent);
+	assert.equal(statusCode, 200, "Got a 200");
+
+	var automount = doc.documentElement.dataset.canAutomount;
+	assert.equal(automount, "false", "Renders with <html can-automount=\"false\"");
 });
 
 QUnit.module("#renderInZone with basics", {

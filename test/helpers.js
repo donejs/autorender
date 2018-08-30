@@ -25,6 +25,14 @@ function Request(url) {
 	this._self = this;
 }
 
+function makeHeaders(pth) {
+	return {
+		":scheme": "http",
+		":authority": "localhost",
+		":path": pth
+	};
+}
+
 function load(moduleName) {
 	loader.config({
 		autorenderAutostart: false
@@ -40,5 +48,6 @@ function load(moduleName) {
 
 exports.makeDoc = makeDoc;
 exports.makeContextForDocument = makeContextForDocument;
+exports.makeHeaders = makeHeaders;
 exports.Request = Request;
 exports.load = load;

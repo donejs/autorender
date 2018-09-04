@@ -386,9 +386,9 @@ define(<%= imports %>, function(<%= args %>){
 	 * @hide
 	 * @description Create an instance of the ViewModel and render it with
 	 * the renderIntoDocument function.
-	 * @param {node.IncomingMessage} request A request object, from Node.js
+	 * @param {node.IncomingMessage|Object} requestOrHeaders A request object, from Node.js
 	 */
-	function createViewModelAndRender(request) {
+	function createViewModelAndRender(requestOrHeaders) {
 		// Check if we were called with .call/apply, otherwise use the
 		// context within the scope. This is for testing.
 		var ctx = getContext(this);
@@ -406,13 +406,23 @@ define(<%= imports %>, function(<%= args %>){
 
 		setupDefaultViewModelProps(ctx, ViewModel);
 
-		var urlObj = new URL(fullUrl(request))
+		var urlObj;
+
+		// Test if this is http/2 headers object
+		var isH2 = !!requestOrHeaders[":authority"];
+		if(isH2) {
+			var h = requestOrHeaders;
+			urlObj = new URL(h[":scheme"] + ":" + h[":authority"] + h[":path"]);
+		} else {
+			urlObj = new URL(fullUrl(requestOrHeaders));
+		}
+
 		var pathWithoutSlash = urlObj.pathname.substr(1);
 		var routeStr = pathWithoutSlash + urlObj.search;
 		var hasMatchingRoute = !!route.rule(routeStr);
 		var params = Object.assign(route.deparam(routeStr), {
 			env: Object.assign({}, process.env),
-			request: request
+			request: !isH2 && requestOrHeaders
 		});
 
 		var viewModel = new ViewModel(params);

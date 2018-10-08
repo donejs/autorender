@@ -238,3 +238,36 @@ Some times, especially if not using done-ssr, you might want to keep some elemen
 </head>
 </html>
 ```
+
+### connectedCallback
+
+done-autorender supports the `connectedCallback` lifecycle hook, and it works the same way [as in can-component](https://canjs.com/doc/can-component/connectedCallback.html).
+
+The callback function receives the `document.documentElement` (aka the `<html>` element) as its only argument. You can use `this.listenTo` to listen to changes in the DefineMap's properties, or to listen to events in the DOM.
+
+The callback should return a function that will be called when the document is torn down, where cleanup should be done.
+
+The following is an example counter that is implemented using connectedCallback:
+
+```js
+import DefineMap from "can-define/map/map";
+import route from "can-route";
+
+export default DefineMap.extend({
+	count: {
+		type: 'number',
+		default: 0,
+		serialize: false
+	},
+
+	connectedCallback(el) {
+		const button = el.querySelector("#increment");
+
+		this.listenTo(button, "click", () => {
+			this.count++;
+		});
+
+		return () => this.stopListening();
+	}
+});
+```

@@ -1,5 +1,4 @@
 var QUnit = require("steal-qunit");
-var sinon = require("sinon");
 var loader = require("@loader");
 var testHelpers = require("./helpers");
 var canTestHelpers = require("can-test-helpers");
@@ -135,9 +134,6 @@ QUnit.module("SSR Route", {
 				assert.ok(false, e);
 				done();
 			});
-	},
-	teardown: function () {
-		console.warn.restore();
 	}
 });
 
@@ -151,12 +147,10 @@ QUnit.test("Warn if no routes", function(assert){
 	// we have clear the routes manually
 	canRoute.routes = {};
 
-	sinon.spy(console, "warn");
+	var teardown = canTestHelpers.dev.willWarn(/receive route definitions/);
 
 	render.call(context, request);
-
-	var message = console.warn.getCall(0).args[0];
-	assert.ok(/done-autorender didn't receive route definitions/.test(message), "Received a warning in console");
+	assert.equal(teardown(), 1, "Received a warning in console");
 });
 
 QUnit.module("connectViewModelAndAttach");

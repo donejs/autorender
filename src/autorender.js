@@ -13,5 +13,5 @@ define([
 		debugBrk: isDevelopment && l.autorenderDebugBreak
 	};
 
-	return autorenderInit(zoneOpts);
+	return autorenderInit(zoneOpts, isDevelopment);
 });

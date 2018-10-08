@@ -8,7 +8,7 @@ define([
 	"steal-config-utils/import-specifiers"
 ], function(steal, loader, module, template, parse, addBundles, importSpecifiers) {
 	var addImportSpecifiers = importSpecifiers.addImportSpecifiers;
-	return function init(zoneOpts){
+	return function init(zoneOpts, isDevelopment){
 		var main;
 
 		var isNode = typeof process === "object" &&
@@ -101,6 +101,7 @@ define([
 
 				var output = template({
 					imports: JSON.stringify(pResults[1]),
+					isDevelopment: isDevelopment || false,
 					routeData: result.viewModel.routeData || "",
 					args: result.args.join(", "),
 					zoneOpts: JSON.stringify(zoneOpts),

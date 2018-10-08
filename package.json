@@ -36,7 +36,6 @@
     "can-test-helpers": "^1.1.1",
     "funcunit": "^3.1.0",
     "lodash.template": "^4.4.0",
-	"sinon": "^5.0.10",
     "steal": "^2.0.0",
     "steal-qunit": "^1.0.2",
     "steal-tools": "^2.0.0",
@@ -45,6 +44,7 @@
   "homepage": "https://github.com/donejs/autorender",
   "dependencies": {
     "can-dom-mutate": "^1.0.1",
+    "can-log": "^1.0.0",
     "can-namespace": "^1.0.0",
     "can-reflect": "^1.11.0",
     "can-route": "^4.0.0",

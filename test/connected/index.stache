@@ -1,0 +1,24 @@
+<html>
+	<head>
+		<title>Hello page</title>
+	</head>
+	<body>
+		<can-import from="test/connected/app"
+		  export-as="viewModel" />
+
+		<h1>Counter app</h1>
+
+		<div><strong id="count">{{count}}</strong></div>
+
+		<button type="button" id="increment">Increment</button>
+
+		{{#switch(env.NODE_ENV)}}
+			{{#case "production"}}
+				<script src="../../node_modules/steal/steal.production.js"></script>
+			{{/case}}
+			{{#default}}
+				<script src="../../node_modules/steal/steal.js"></script>
+			{{/default}}
+		{{/switch}}
+	</body>
+</html>

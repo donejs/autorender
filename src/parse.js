@@ -3,13 +3,40 @@ define([
 	"can-stache-ast",
 	"can-reflect"
 ], function(module, canStacheAst, canReflect){
-	var getIntermediateAndImports = canStacheAst.parse;
+	function hasExportAs(attrs) {
+		return attrs.has("export-as") || attrs.has("as");
+	}
+
+	function getExportAs(attrs) {
+		return attrs.get("export-as") || attrs.get("as");
+	}
+
+	function viewModelInfo(ast) {
+		var info = {ases: {}};
+
+		for(var i = 0; i < ast.importDeclarations.length; i++) {
+			var canImport = ast.importDeclarations[i];
+			var attrs = canImport.attributes;
+
+			if(hasExportAs(attrs)) {
+				info.ases[getExportAs(attrs)] = canImport.specifier;
+			}
+
+			if(attrs.has("route-data")) {
+				info.routeData = attrs.get("route-data");
+			}
+		}
+
+		return info;
+	}
 
 	return function(source, loader, zoneOpts){
-		var intermediateAndImports = getIntermediateAndImports(source);
+		var ast = canStacheAst.parse(source);
 
-		var ases = intermediateAndImports.ases;
-		var imports = intermediateAndImports.imports.slice(0);
+		var canImport = viewModelInfo(ast);
+
+		var ases = ast.ases;
+		var imports = ast.imports.slice(0);
 		var args = [];
 		canReflect.each(ases, function(from, name){
 			// Move the as to the front of the array.
@@ -61,12 +88,13 @@ define([
 
 		return {
 			imports: imports,
-			rawImports: intermediateAndImports.imports,
-			dynamicImports: intermediateAndImports.dynamicImports,
-			importDeclarations: intermediateAndImports.importDeclarations,
+			rawImports: ast.imports,
+			dynamicImports: ast.dynamicImports,
+			importDeclarations: ast.importDeclarations,
 			args: args,
 			ases: ases,
-			intermediate: intermediateAndImports.intermediate
+			intermediate: ast.intermediate,
+			viewModel: canImport
 		};
 	};
 

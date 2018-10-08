@@ -3,6 +3,7 @@ define(<%= imports %>, function(<%= args %>){
 	var useZones = zoneOpts.useZones;
 	var tokens = <%= intermediate %>;
 	var renderer = stache("<%= filename %>", tokens);
+	var routeDataProp = "<%= routeData %>";
 
 	var isNode = typeof process === "object" &&
 		{}.toString.call(process) === "[object process]";
@@ -54,7 +55,7 @@ define(<%= imports %>, function(<%= args %>){
 		canReflect.setKeyValue(document.documentElement,
 			canSymbol.for("can.viewModel"), viewModel);
 
-		route.data = viewModel;
+		setRouteData(route, viewModel);
 		route.start();
 		return viewModel;
 	}
@@ -137,6 +138,24 @@ define(<%= imports %>, function(<%= args %>){
 	function appendTo(parent){
 		return function(el){
 			mutate.appendChild.call(parent, el);
+		}
+	}
+
+	/**
+	 * Sets the route.data property
+	 */
+	function setRouteData(route, appViewModel) {
+		if(routeDataProp) {
+			var obs = canReflect.getKeyValue(appViewModel, routeDataProp);
+
+			if(obs.constructor) {
+				route.data = new obs.constructor();
+				canReflect.setKeyValue(appViewModel, routeDataProp, route.data);
+			} else {
+				route.data = obs;
+			}
+		} else {
+			route.data = appViewModel;
 		}
 	}
 
@@ -437,7 +456,7 @@ define(<%= imports %>, function(<%= args %>){
 			}
 		}
 
-		route.data = viewModel;
+		setRouteData(route, viewModel);
 		route.start();
 
 		renderIntoDocument(document, viewModel);

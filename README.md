@@ -26,18 +26,16 @@ done-autorender enables you to use a [Stache](https://canjs.com/doc/can-stache.h
   <title>My Site</title>
 </head>
 <body>
-  <can-import from="~/main.css"/>
-  <can-import from="~/routes"/>
-  <can-import from="~/state" export-as="viewModel"/>
+  <can-import from="~/main.css" />
+  <can-import from="~/routes" />
+  <can-import from="~/state" export-as="viewModel" />
 
-  {{#eq page "home"}}
-
+  {{#eq(page, "home")}}
     <can-dynamic-import from="~/home/">
-      {{#if isResolved}}
+      {{#if(./isResolved)}}
         <home-page></home-page>
       {{/if}}
     </can-dynamic-import>
-
   {{/eq}}
 </body>
 </html>
@@ -47,7 +45,7 @@ done-autorender enables you to use a [Stache](https://canjs.com/doc/can-stache.h
 
 ```html
 <script src="node_modules/steal/steal.js"
-	main="app/index.stache!done-autorender"></script>
+	main="app/index.stache!done-autorender" main></script>
 ```
 
 Then load *index.html* in a browser. After all dependencies are loaded your *index.stache* will be rendered and inserted into the page.
@@ -57,22 +55,132 @@ Then load *index.html* in a browser. After all dependencies are loaded your *ind
 If you do not use SSR but still want to use `done-autorender` to bootstrap your application you can use the `no-zone` module:
 ```html
 <script src="node_modules/steal/steal.js"
-	main="app/index.stache!done-autorender/no-zone"></script>
+	main="app/index.stache!done-autorender/no-zone" main></script>
 ```
 
 ## API
 
-### ViewModel
+### export-as
 
-Each done-autorender application is backed by a View Model (such as a [DefineMap](https://canjs.com/doc/can-define/map/map.html)) that represents the state of the entire application.
+Each done-autorender application is backed by a ViewModel (such as a [DefineMap](https://canjs.com/doc/can-define/map/map.html)) that represents the state of the entire application.
 
 To import this View Model into your application use a [can-import](https://canjs.com/doc/can-view-import.html#_can_importfrom__MODULE_NAME___) tag like so:
 
 ```html
-<can-import from="app/state" export-as="viewModel" />
+<can-import from="todo-app/app" export-as="viewModel" />
 ```
 
-This tells done-autorender that the module *app/state* is the ViewModel.
+The __export-as__ attribute specifies that this module represents the viewModel. The `todo-app` module might look like:
+
+```js
+import DefineMap from "can-define/map/map";
+import route from "can-route";
+import RoutePushstate from "can-route-pushstate";
+
+route.urlData = new RoutePushstate();
+route.register("{page}", { page: "home" });
+
+const AppViewModel = DefineMap.extend("AppViewModel", {
+	page: "string"
+});
+
+export default AppViewModel;
+```
+
+Internally done-autorender will create a new instance of this DefineMap and set it as the [route.data](https://canjs.com/doc/can-route.data.html).
+
+### route-data
+
+Specifies an alternative property on the [ViewModel](https://github.com/donejs/autorender#export-as) to use as the [route data](https://canjs.com/doc/can-route.data.html).
+
+#### Using the default route.data
+
+Starting in [can-route 4.4.0](https://github.com/canjs/can-route/releases/tag/v4.4.0) you can more easily use the default `route.data`, as it is a DefineMap.
+
+To use this pattern, first add a property on your ApplicationViewModel that is the route.data property:
+
+```js
+import DefineMap from "can-define/map/map";
+import route from "can-route";
+import RoutePushstate from "can-route-pushstate";
+
+route.urlData = new RoutePushstate();
+route.register("{page}", { page: "home" });
+
+const AppViewModel = DefineMap.extend("AppViewModel", {
+	routeData: {
+		default: () => route.data
+	}
+});
+
+export default AppViewModel;
+```
+
+Now, in your index.stache, set the __route-data__ attribute to this property name:
+
+```handlebars
+<can-import from="todo-app/app" export-as="viewModel" route-data="routeData" />
+```
+
+From here you can you use the properties on `route.data` the same way you can any other ViewModel. Here's a fuller example template:
+
+```handlebars
+<html>
+<head>
+  <title>{{routeData.page}} | My App</title>
+</head>
+<body>
+  <can-import from="todo-app/app" export-as="viewModel" route-data="routeData" />
+
+  <h1>My App!</h1>
+  <h2>{{routeData.page}}</h2>
+</body>
+</html>
+```
+
+#### Using a custom Type
+
+Since __route-data__ allows you to specify any property on your ViewModel, one option is to use a custom type, such as a DefineMap. This allows you to separate properties that you want attached to the route from other properties on the ViewModel that you do not.
+
+Below is an example AppViewModel module:
+
+```js
+import DefineMap from "can-define/map/map";
+import route from "can-route";
+import RoutePushstate from "can-route-pushstate";
+
+route.urlData = new RoutePushstate();
+route.register("{page}", { page: "home" });
+
+const MyRouteData = DefineMap.extend("MyRouteData", {
+	page: "string"
+});
+
+const AppViewModel = DefineMap.extend("AppViewModel", {
+	routeData: {
+		Default: MyRouteData
+	}
+});
+
+export default AppViewModel;
+```
+
+And then to use it, set it as the __route-data__ attribute:
+
+```handlebars
+<html>
+<head>
+  <title>{{routeData.page}} | My App</title>
+</head>
+<body>
+  <can-import from="todo-app/app" export-as="viewModel" route-data="routeData" />
+
+  <h1>My App!</h1>
+  <h2>{{routeData.page}}</h2>
+  <p>This is coming from the <strong>MyRouteData</strong> observable!</p>
+</body>
+</html>
+```
 
 ### Debugging
 

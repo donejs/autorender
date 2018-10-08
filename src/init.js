@@ -101,6 +101,7 @@ define([
 
 				var output = template({
 					imports: JSON.stringify(pResults[1]),
+					routeData: result.viewModel.routeData || "",
 					args: result.args.join(", "),
 					zoneOpts: JSON.stringify(zoneOpts),
 					intermediate: JSON.stringify(result.intermediate),

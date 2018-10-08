@@ -1,0 +1,23 @@
+<html>
+	<head>
+		<title>Hello page</title>
+	</head>
+	<body>
+		<can-import from="test/routedata-type/app"
+		  export-as="viewModel"
+		  route-data="routeData" />
+
+		<h1>{{page}}</h1>
+		<h2>{{routeData.page}}</h2>
+		<h3>{{routeData.name}}</h3>
+
+		{{#switch(env.NODE_ENV)}}
+			{{#case "production"}}
+				<script src="../../node_modules/steal/steal.production.js"></script>
+			{{/case}}
+			{{#default}}
+				<script src="../../node_modules/steal/steal.js"></script>
+			{{/default}}
+		{{/switch}}
+	</body>
+</html>

@@ -2,6 +2,7 @@ var QUnit = require("steal-qunit");
 var F = require("funcunit");
 
 require("./unit");
+require("./autorender-routedata_test");
 
 F.attach(QUnit);
 

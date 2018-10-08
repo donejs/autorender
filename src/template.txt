@@ -130,7 +130,7 @@ define(<%= imports %>, function(<%= args %>){
 	 * Remove an element
 	 */
 	function remove(el) {
-		mutate.removeChild.call(el.parentNode, el);
+		domMutateNode.removeChild.call(el.parentNode, el);
 	}
 
 	/**
@@ -138,7 +138,7 @@ define(<%= imports %>, function(<%= args %>){
 	 */
 	function appendTo(parent){
 		return function(el){
-			mutate.appendChild.call(parent, el);
+			domMutateNode.appendChild.call(parent, el);
 		}
 	}
 
@@ -172,6 +172,7 @@ define(<%= imports %>, function(<%= args %>){
 	function attach(result){
 		var document = getContext(this).ownerDocument;
 		var frag = result.fragment;
+		var viewModel = result.viewModel;
 
 		// If already attached skip this part.
 		if(document.documentElement.hasAttribute("data-attached")) {
@@ -193,6 +194,14 @@ define(<%= imports %>, function(<%= args %>){
 		var fragBody = frag.querySelector("body");
 		eachChild(fragBody, appendTo(body));
 		document.documentElement.setAttribute("data-attached", "");
+
+		if(viewModel && viewModel.connectedCallback) {
+			var dispose = viewModel.connectedCallback(document.documentElement);
+
+			if(typeof dispose === "function") {
+				domMutate.onNodeRemoval(document.documentElement, dispose);
+			}
+		}
 	}
 
 
@@ -257,7 +266,8 @@ define(<%= imports %>, function(<%= args %>){
 		}).then(function(zoneData){
 			return {
 				fragment: fragment,
-				zoneData: zoneData
+				zoneData: zoneData,
+				viewModel: viewModel
 			};
 		})
 		.then(null, function(err){
@@ -308,9 +318,9 @@ define(<%= imports %>, function(<%= args %>){
 		// If there is an <html> element, which there usually is,
 		// replace the existing documentElement, otherwise just append the fragment
 		if(firstChild && firstChild.nodeName === "HTML") {
-			mutate.replaceChild.call(document, firstChild, documentElement);
+			domMutateNode.replaceChild.call(document, firstChild, documentElement);
 		} else {
-			mutate.appendChild.call(documentElement, frag);
+			domMutateNode.appendChild.call(documentElement, frag);
 		}
 
 		// Set the can-automount=false attribute

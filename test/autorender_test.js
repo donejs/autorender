@@ -173,3 +173,14 @@ QUnit.module("optimized builds");
 QUnit.test("autorender with optimized builds", function(assert) {
 	makeIframe("basics-optimized/prod.html", assert);
 });
+
+QUnit.module("connectedCallback", {
+	setup: function(assert) {
+		F.open("//connected/index.html");
+	}
+});
+
+QUnit.test("Can be used to listen to events in the DOM", function() {
+	F("#increment").exists().click();
+	F("#count").text("1", "connectedCallback wired up this change");
+});

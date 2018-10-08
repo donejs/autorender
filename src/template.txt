@@ -4,6 +4,7 @@ define(<%= imports %>, function(<%= args %>){
 	var tokens = <%= intermediate %>;
 	var renderer = stache("<%= filename %>", tokens);
 	var routeDataProp = "<%= routeData %>";
+	var isDevelopment = <%= isDevelopment %>;
 
 	var isNode = typeof process === "object" &&
 		{}.toString.call(process) === "[object process]";
@@ -423,6 +424,18 @@ define(<%= imports %>, function(<%= args %>){
 			throw new Error(msg);
 		}
 
+		//!steal-remove-start
+		if (isDevelopment) {
+			if(isEmptyObject(route.routes)) {
+				var msg = "done-autorender didn't receive route definitions." +
+							"For Server-Side-Rendering you have to provide and initialized can-route." +
+							"See the guide for information. " +
+							"https://canjs.com/doc/can-route.html and https://donejs.com/Apis.html#can-route"
+				canDev.warn(msg);
+			}
+		}
+		//!steal-remove-end
+
 		setupDefaultViewModelProps(ctx, ViewModel);
 
 		var urlObj;
@@ -446,8 +459,7 @@ define(<%= imports %>, function(<%= args %>){
 
 		var viewModel = new ViewModel(params);
 
-		if(!canReflect.getKeyValue(viewModel, "statusCode") &&
-			!isEmptyObject(route.routes)) {
+		if(!canReflect.getKeyValue(viewModel, "statusCode") && !isEmptyObject(route.routes)) {
 			if(hasMatchingRoute) {
 				canReflect.setKeyValue(viewModel, "statusCode", 200);
 			} else {

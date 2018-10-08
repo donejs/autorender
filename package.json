@@ -44,6 +44,7 @@
   "homepage": "https://github.com/donejs/autorender",
   "dependencies": {
     "can-dom-mutate": "^1.0.1",
+    "can-log": "^1.0.0",
     "can-namespace": "^1.0.0",
     "can-reflect": "^1.11.0",
     "can-route": "^4.0.0",

@@ -3,6 +3,7 @@ var loader = require("@loader");
 var testHelpers = require("./helpers");
 var canTestHelpers = require("can-test-helpers");
 var canRoute = require("can-route");
+var globals = require("can-globals");
 
 var makeDoc = testHelpers.makeDoc;
 var makeContextForDocument = testHelpers.makeContextForDocument;
@@ -86,6 +87,44 @@ QUnit.test("renders with h2", function(assert){
 
 	var automount = doc.documentElement.dataset.canAutomount;
 	assert.equal(automount, "false", "Renders with <html can-automount=\"false\"");
+});
+
+QUnit.module("SSR Render with route-data attribute", {
+	setup: function(assert){
+		var done = assert.async();
+
+		var test = this;
+
+		loader.config({
+			autorenderAutostart: false
+		});
+		loader["import"]("test/routedata/index.stache!done-autorender")
+		.then(function(render){
+			test.render = render;
+		})
+		.then(done, function(e){
+			assert.ok(false, e);
+			done();
+		});
+	}
+});
+
+QUnit.test("route.data is bound to the location params", function(assert) {
+	var render = this.render;
+	var doc = makeDoc();
+	var context = makeContextForDocument(render, doc);
+	var request = new Request("/cart");
+
+	var isBrowserWindow = globals.getKeyValue("isBrowserWindow");
+	globals.setKeyValue("isBrowserWindow", false);
+	render.call(context, request);
+	globals.setKeyValue("isBrowserWindow", isBrowserWindow);
+
+	// Assertions
+	var text = function(sel) { return doc.body.querySelector(sel).textContent; };
+	assert.equal(text("h1"), "fromVM");
+	assert.equal(text("h2"), "cart");
+	assert.equal(text("h3"), "cart");
 });
 
 QUnit.module("#renderInZone with basics", {

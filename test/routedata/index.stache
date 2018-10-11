@@ -6,9 +6,13 @@
 		<can-import from="test/routedata/app"
 		  export-as="viewModel"
 		  route-data="routeData" />
+		<can-import from="can-stache-route-helpers" />
+
+		<a href="{{routeUrl(page='cart')}}">Go to cart</a>
 
 		<h1>{{page}}</h1>
 		<h2>{{routeData.page}}</h2>
+		<h3>{{derivedPage}}</h3>
 
 		{{#switch(env.NODE_ENV)}}
 			{{#case "production"}}

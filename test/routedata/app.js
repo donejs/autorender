@@ -9,5 +9,13 @@ export default DefineMap.extend({
 	},
 	routeData: {
 		default: () => route.data
+	},
+	derivedPage: {
+		value({listenTo, resolve}) {
+			listenTo(this.routeData, "page", (ev, val) => {
+				resolve(val);
+			});
+			resolve(this.routeData.page);
+		}
 	}
 });

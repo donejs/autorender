@@ -459,15 +459,22 @@ define(<%= imports %>, function(<%= args %>){
 			urlObj = new URL(fullUrl(requestOrHeaders));
 		}
 
+		// Get the route params
 		var pathWithoutSlash = urlObj.pathname.substr(1);
 		var routeStr = pathWithoutSlash + urlObj.search;
 		var hasMatchingRoute = !!route.rule(routeStr);
-		var params = Object.assign(route.deparam(routeStr), {
+		var routeParams = route.deparam(routeStr);
+
+		var viewModelParams = {
 			env: Object.assign({}, process.env),
 			request: !isH2 && requestOrHeaders
-		});
+		};
 
-		var viewModel = new ViewModel(params);
+		if(!routeDataProp) {
+			viewModelParams = Object.assign(routeParams, viewModelParams);
+		}
+
+		var viewModel = new ViewModel(viewModelParams);
 
 		if(!canReflect.getKeyValue(viewModel, "statusCode") && !isEmptyObject(route.routes)) {
 			if(hasMatchingRoute) {
@@ -479,6 +486,11 @@ define(<%= imports %>, function(<%= args %>){
 		}
 
 		setRouteData(route, viewModel);
+
+		if(routeDataProp) {
+			canReflect.update(route.data, routeParams);
+		}
+
 		route.start();
 
 		renderIntoDocument(document, viewModel);

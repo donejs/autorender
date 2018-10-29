@@ -36,6 +36,21 @@ QUnit.test("basics works", function(){
 
 QUnit.test("elements marked with data-keep are left in the DOM", function(){
 	F("[name='custom-meta']").exists("meta tag left in");
+	F(function() {
+		var hasComment = false;
+		var head = F.win.document.head;
+		var child = head.firstChild;
+		while(child) {
+			if(child.nodeType === 8) {
+				if(child.nodeValue === "autorender-keep some comment") {
+					hasComment = true;
+					break;
+				}
+			}
+			child = child.nextSibling;
+		}
+		QUnit.equal(hasComment, true, "Comments with autorender-keep are left in.");
+	})
 });
 
 QUnit.module("tags to ignore from head", {

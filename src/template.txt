@@ -105,6 +105,18 @@ define(<%= imports %>, function(<%= args %>){
 		"BASE": true
 	};
 
+	function hasDataKeepAttr(node) {
+		return node.dataset && node.dataset.keep === "";
+	}
+
+	function isKeepComment(node) {
+		return node.nodeType === 8 && node.nodeValue.indexOf("autorender-keep") === 0;
+	}
+
+	function isKeepNode(node) {
+		return hasDataKeepAttr(node) || isKeepComment(node);
+	}
+
 	/**
 	 * Call a callback for each child Node within a parent, skipping
 	 * elements that should not be touched because of their side-effects.
@@ -117,7 +129,7 @@ define(<%= imports %>, function(<%= args %>){
 		for(; i < len; i++) {
 			node = nodes[i];
 			ignoreTag = tagsToIgnore[node.nodeName];
-			if(!ignoreTag && !(node.dataset && node.dataset.keep === "")) {
+			if(!ignoreTag && !isKeepNode(node)) {
 				// Returning false breaks the loop
 				if(callback(node) === false) {
 					break;

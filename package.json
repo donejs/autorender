@@ -52,7 +52,7 @@
     "can-route": "^4.0.0",
     "can-stache": "^4.1.5",
     "can-stache-ast": "^1.1.0",
-    "can-stache-bindings": "^4.4.0",
+    "can-stache-bindings": "^4.6.1",
     "can-symbol": "^1.5.0",
     "can-util": "^3.10.18",
     "can-view-import": "^4.0.1",

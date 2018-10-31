@@ -58,7 +58,7 @@
     "can-view-import": "^4.0.1",
     "can-view-model": "^4.0.0",
     "can-view-scope": "^4.3.2",
-    "can-zone": "^0.6.0",
+    "can-zone": "^0.6.0 || ^1.0.0",
     "full-url": "^1.0.0",
     "steal-config-utils": "^1.0.0",
     "steal-stache": "^4.0.0"

@@ -479,7 +479,7 @@ define(<%= imports %>, function(<%= args %>){
 
 		var viewModelParams = {
 			env: Object.assign({}, process.env),
-			request: !isH2 && requestOrHeaders
+			request: requestOrHeaders
 		};
 
 		if(!routeDataProp) {

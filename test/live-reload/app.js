@@ -45,6 +45,18 @@ const MyApp = DefineMap.extend("MyApp", {
 
 	setPage: function(page) {
 		this.page = page;
+	},
+
+	pageComponent: {
+		get: function() {
+			return steal.import("~/test/live-reload/other-page").then(function(fn) {
+				return fn();
+			});
+		}
+	},
+
+	reloadOtherPage: function() {
+		window.LOAD_OTHER();
 	}
 });
 

@@ -6,8 +6,20 @@ window.ONRUNNING = function(){
 	debugger;
 }
 
-loader.normalize("~/test/live-reload/app").then(function(name){
-	reloadAll([name]).then(function(){
-		//console.log("reloaded");
+function reloadName(moduleName) {
+	return loader.normalize(moduleName).then(function(name){
+		return reloadAll([name]).then(function(){
+
+		});
 	});
-});
+}
+
+var reloadApp = reloadName.bind(null, "~/test/live-reload/app");
+var reloadOther = reloadName.bind(null, "~/test/live-reload/other-page");
+
+
+reloadApp();
+
+window.LOAD_OTHER = function() {
+	reloadOther();
+};

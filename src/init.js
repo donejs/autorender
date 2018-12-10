@@ -13,6 +13,7 @@ define([
 
 		var isNode = typeof process === "object" &&
 			{}.toString.call(process) === "[object process]";
+		var hasDynamicImports = true;
 
 		if(!isNode) {
 			steal.done().then(setup);
@@ -36,7 +37,11 @@ define([
 					reload(function(){
 						if(shouldRerender) {
 							document.documentElement.removeAttribute("data-attached");
-							main.renderAndAttach();
+							if(hasDynamicImports) {
+								main.renderAndAttach();
+							} else {
+								main.connectViewModelAndAttach();
+							}
 						}
 						shouldRerender = true;
 					});
@@ -84,6 +89,9 @@ define([
 				Array.prototype.push.apply(toMap, result.rawImports);
 				Array.prototype.push.apply(toMap, result.dynamicImports);
 			}
+
+			// For live-reload, determine if we should reload the viewModel
+			hasDynamicImports = result.dynamicImports.length > 0;
 
 			return Promise.all([
 				addBundles(result.dynamicImports, load.name),

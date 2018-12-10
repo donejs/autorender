@@ -12,5 +12,9 @@
 
 	<button id="go-to-cart" on:click="setPage('cart')">Go to Cart</button>
 	<div>Current page: <span id="current-page">{{currentPage}}</span></div>
+
+	<div id="the-page">{{pageComponent.value}}</div>
+
+	<button id="load-other-page" on:click="reloadOtherPage()">Reload other page</button>
 </body>
 </html>

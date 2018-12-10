@@ -183,6 +183,12 @@ QUnit.test("The new ViewModel is bound to the route", function() {
 	});
 });
 
+QUnit.test("pageComponent style reload works", function() {
+	F("#the-page").text("2");
+	F("#load-other-page").click();
+	F("#the-page").text("3", "Updated due to live-reload reloading the page component");
+});
+
 QUnit.module("optimized builds");
 
 QUnit.test("autorender with optimized builds", function(assert) {

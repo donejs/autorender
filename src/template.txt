@@ -191,20 +191,7 @@ define(<%= imports %>, function(<%= args %>){
 			return;
 		}
 
-		var head = document.head;
-		var body = document.body;
-
-		// Move elements from the fragment's head to the document head.
-		eachChild(head, remove);
-
-		var fragHead = frag.querySelector("head");
-		eachChild(fragHead, appendTo(head));
-
-		// Move elements from the fragment's body to the document body.
-		eachChild(body, remove);
-
-		var fragBody = frag.querySelector("body");
-		eachChild(fragBody, appendTo(body));
+		moveToDocument(frag, document, true);
 		document.documentElement.setAttribute("data-attached", "");
 
 		if(viewModel && viewModel.connectedCallback) {
@@ -214,6 +201,30 @@ define(<%= imports %>, function(<%= args %>){
 				domMutate.onNodeRemoval(document.documentElement, dispose);
 			}
 		}
+	}
+
+	/**
+	 * Move content from a fragment into a document.
+	**/
+	function moveToDocument(frag, document, removeExistingNodes) {
+		var head = document.head;
+		var body = document.body;
+
+		// Move elements from the fragment's head to the document head.
+		if(removeExistingNodes) {
+			eachChild(head, remove);
+		}
+
+		var fragHead = frag.querySelector("head");
+		eachChild(fragHead, appendTo(head));
+
+		// Move elements from the fragment's body to the document body.
+		if(removeExistingNodes) {
+			eachChild(body, remove);
+		}
+
+		var fragBody = frag.querySelector("body");
+		eachChild(fragBody, appendTo(body));
 	}
 
 
@@ -324,6 +335,9 @@ define(<%= imports %>, function(<%= args %>){
 	function renderIntoDocument(document, viewModel) {
 		var frag = render(viewModel, {});
 
+		moveToDocument(frag, document, false);
+
+		/*
 		var firstChild = frag.firstChild;
 		var documentElement = document.documentElement;
 
@@ -334,6 +348,7 @@ define(<%= imports %>, function(<%= args %>){
 		} else {
 			domMutateNode.appendChild.call(documentElement, frag);
 		}
+		*/
 
 		// Set the can-automount=false attribute
 		document.documentElement.setAttribute("data-can-automount", "false");

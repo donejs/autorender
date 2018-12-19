@@ -1,0 +1,17 @@
+<html>
+	<head>
+
+	</head>
+	<body>
+		<can-import from="test/portal/app" export-as="viewModel"/>
+
+		{{#switch(env.NODE_ENV)}}
+			{{#case "production"}}
+				<script src="../../node_modules/steal/steal.production.js"></script>
+			{{/case}}
+			{{#default}}
+				<script src="../../node_modules/steal/steal.js"></script>
+			{{/default}}
+		{{/switch}}
+	</body>
+</html>

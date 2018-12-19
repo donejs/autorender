@@ -89,6 +89,42 @@ QUnit.test("renders with h2", function(assert){
 	assert.equal(automount, "false", "Renders with <html can-automount=\"false\"");
 });
 
+QUnit.module("SSR Render with portals", {
+	setup: function(assert){
+		var done = assert.async();
+
+		var test = this;
+
+		loader.config({
+			autorenderAutostart: false
+		});
+		loader["import"]("test/portal/index.stache!done-autorender")
+		.then(function(render){
+			test.render = render;
+		})
+		.then(done, function(e){
+			assert.ok(false, e);
+			done();
+		});
+	}
+});
+
+QUnit.test("Doesn't override local modifications to the document", function(assert){
+	var render = this.render;
+	var doc = makeDoc();
+	doc.head.removeChild(doc.querySelector("title"));
+	var context = makeContextForDocument(render, doc);
+	var request = new Request("/");
+
+	// Modify the document
+	var title = doc.createElement("title");
+	title.appendChild(doc.createTextNode("My page"));
+	doc.head.appendChild(title);
+
+	render.call(context, request);
+	assert.ok(doc.querySelector("title"), "title was appended");
+});
+
 QUnit.module("SSR Render with route-data attribute", {
 	setup: function(assert){
 		var done = assert.async();

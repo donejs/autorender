@@ -92,8 +92,10 @@ QUnit.test("renders with h2", function(assert){
 QUnit.module("SSR Render with portals", {
 	setup: function(assert){
 		var done = assert.async();
-
 		var test = this;
+
+		test.querySelector = DocumentFragment.prototype.querySelector;
+		DocumentFragment.prototype.querySelector = null;
 
 		loader.config({
 			autorenderAutostart: false
@@ -106,6 +108,9 @@ QUnit.module("SSR Render with portals", {
 			assert.ok(false, e);
 			done();
 		});
+	},
+	teardown: function() {
+		DocumentFragment.prototype.querySelector = this.querySelector;
 	}
 });
 
@@ -122,7 +127,7 @@ QUnit.test("Doesn't override local modifications to the document", function(asse
 	doc.head.appendChild(title);
 
 	render.call(context, request);
-	assert.ok(doc.querySelector("title"), "title was appended");
+	assert.ok(doc.getElementsByTagName("title")[0], "title was appended");
 });
 
 QUnit.module("SSR Render with route-data attribute", {

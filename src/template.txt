@@ -232,16 +232,20 @@ define(<%= imports %>, function(<%= args %>){
 			fragBody = fragBody.nextSibling;
 		}
 
-		//var fragHead = findTag(frag, "HEAD");
-		eachChild(fragHead, appendTo(head));
+		if(head && fragHead) {
+			eachChild(fragHead, appendTo(head));
+		}
+
 
 		// Move elements from the fragment's body to the document body.
 		if(removeExistingNodes) {
 			eachChild(body, remove);
 		}
 
-		//var fragBody = findTag(frag, "BODY");
-		eachChild(fragBody, appendTo(body));
+		if(body && fragBody) {
+			eachChild(fragBody, appendTo(body));
+		}
+
 	}
 
 

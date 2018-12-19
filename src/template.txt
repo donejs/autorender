@@ -121,7 +121,7 @@ define(<%= imports %>, function(<%= args %>){
 	 * Call a callback for each child Node within a parent, skipping
 	 * elements that should not be touched because of their side-effects.
 	 */
-	function eachChild(parent, callback){
+	function eachChild(parent, callback, noSkipping){
 		var nodes = Array.prototype.slice.call(childNodes(parent)),
 			i = 0, len = nodes.length,
 			node, ignoreTag;
@@ -129,7 +129,7 @@ define(<%= imports %>, function(<%= args %>){
 		for(; i < len; i++) {
 			node = nodes[i];
 			ignoreTag = tagsToIgnore[node.nodeName];
-			if(!ignoreTag && !isKeepNode(node)) {
+			if(noSkipping || (!ignoreTag && !isKeepNode(node))) {
 				// Returning false breaks the loop
 				if(callback(node) === false) {
 					break;
@@ -233,7 +233,7 @@ define(<%= imports %>, function(<%= args %>){
 		}
 
 		if(head && fragHead) {
-			eachChild(fragHead, appendTo(head));
+			eachChild(fragHead, appendTo(head), !removeExistingNodes);
 		}
 
 
@@ -243,7 +243,7 @@ define(<%= imports %>, function(<%= args %>){
 		}
 
 		if(body && fragBody) {
-			eachChild(fragBody, appendTo(body));
+			eachChild(fragBody, appendTo(body), !removeExistingNodes);
 		}
 
 	}

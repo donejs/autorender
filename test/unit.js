@@ -128,6 +128,7 @@ QUnit.test("Doesn't override local modifications to the document", function(asse
 
 	render.call(context, request);
 	assert.ok(doc.getElementsByTagName("title")[0], "title was appended");
+	assert.ok(doc.querySelector("script"), "scripts are added");
 });
 
 QUnit.test("Works if there is no head element", function(assert) {

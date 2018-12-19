@@ -130,6 +130,28 @@ QUnit.test("Doesn't override local modifications to the document", function(asse
 	assert.ok(doc.getElementsByTagName("title")[0], "title was appended");
 });
 
+QUnit.test("Works if there is no head element", function(assert) {
+	var render = this.render;
+	var doc = makeDoc();
+	Object.defineProperty(doc, "head", { value: null });
+	var context = makeContextForDocument(render, doc);
+	var request = new Request("/");
+
+	render.call(context, request);
+	assert.ok(true, "did not throw");
+});
+
+QUnit.test("Works if there is no body element", function(assert) {
+	var render = this.render;
+	var doc = makeDoc();
+	Object.defineProperty(doc, "body", { value: null });
+	var context = makeContextForDocument(render, doc);
+	var request = new Request("/");
+
+	render.call(context, request);
+	assert.ok(true, "did not throw");
+});
+
 QUnit.module("SSR Render with route-data attribute", {
 	setup: function(assert){
 		var done = assert.async();

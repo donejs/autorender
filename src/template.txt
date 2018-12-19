@@ -215,7 +215,24 @@ define(<%= imports %>, function(<%= args %>){
 			eachChild(head, remove);
 		}
 
-		var fragHead = frag.querySelector("head");
+		var top = frag.firstChild;
+
+		if(top.nodeType !== 1) {
+			top = top.nextSibling;
+		}
+
+		var fragHead = top;
+		var fragBody = top.firstChild;
+
+		while(fragHead.tagName !== "HEAD") {
+			fragHead = fragHead.firstChild || fragHead.nextSibling;
+		}
+
+		while(fragBody.tagName !== "BODY") {
+			fragBody = fragBody.nextSibling;
+		}
+
+		//var fragHead = findTag(frag, "HEAD");
 		eachChild(fragHead, appendTo(head));
 
 		// Move elements from the fragment's body to the document body.
@@ -223,7 +240,7 @@ define(<%= imports %>, function(<%= args %>){
 			eachChild(body, remove);
 		}
 
-		var fragBody = frag.querySelector("body");
+		//var fragBody = findTag(frag, "BODY");
 		eachChild(fragBody, appendTo(body));
 	}
 
@@ -336,19 +353,6 @@ define(<%= imports %>, function(<%= args %>){
 		var frag = render(viewModel, {});
 
 		moveToDocument(frag, document, false);
-
-		/*
-		var firstChild = frag.firstChild;
-		var documentElement = document.documentElement;
-
-		// If there is an <html> element, which there usually is,
-		// replace the existing documentElement, otherwise just append the fragment
-		if(firstChild && firstChild.nodeName === "HTML") {
-			domMutateNode.replaceChild.call(document, firstChild, documentElement);
-		} else {
-			domMutateNode.appendChild.call(documentElement, frag);
-		}
-		*/
 
 		// Set the can-automount=false attribute
 		document.documentElement.setAttribute("data-can-automount", "false");

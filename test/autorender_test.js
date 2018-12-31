@@ -53,6 +53,12 @@ QUnit.test("elements marked with data-keep are left in the DOM", function(){
 	})
 });
 
+QUnit.test("portal() items are left in the DOM", function(){
+	F("[charset='utf-8']").exists("Portaled content");
+	F("#hello").exists("template rendered");
+	F("[charset='utf-8']").exists("Portaled content remains");
+});
+
 QUnit.module("tags to ignore from head", {
 	setup: function setup() {
 		F.open("//ignore/index.html");

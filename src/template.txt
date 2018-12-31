@@ -113,8 +113,13 @@ define(<%= imports %>, function(<%= args %>){
 		return node.nodeType === 8 && node.nodeValue.indexOf("autorender-keep") === 0;
 	}
 
+	var keepNodeSymbol = canSymbol.for("done.keepNode");
+	function hasKeepSymbol(node) {
+		return node[keepNodeSymbol];
+	}
+
 	function isKeepNode(node) {
-		return hasDataKeepAttr(node) || isKeepComment(node);
+		return hasDataKeepAttr(node) || isKeepComment(node) || hasKeepSymbol(node);
 	}
 
 	/**

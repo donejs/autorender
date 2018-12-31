@@ -28,5 +28,9 @@
 				<script src="../../node_modules/steal/steal.js"></script>
 			{{/default}}
 		{{/switch}}
+
+		{{#portal(head)}}
+			<meta charset="utf-8">
+		{{/portal}}
 	</body>
 </html>

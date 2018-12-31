@@ -11,6 +11,10 @@ define([
 		param: "string",
 		hello: function(){
 			return "world";
+		},
+		head: {
+			default: () => document.head,
+			serialize: false
 		}
 	});
 

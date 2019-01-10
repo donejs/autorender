@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "can-component": "^4.0.0",
-    "can-define": "^2.0.0",
+    "can-define": "^2.7.8",
     "can-globals": "^1.2.0",
     "can-route": "^4.1.0",
     "can-route-pushstate": ">=4.0.0 <6.0.0",

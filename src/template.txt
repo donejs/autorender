@@ -496,7 +496,7 @@ define(<%= imports %>, function(<%= args %>){
 		if (isDevelopment) {
 			if(isEmptyObject(route.routes)) {
 				var msg = "done-autorender didn't receive route definitions." +
-							"For Server-Side-Rendering you have to provide and initialized can-route." +
+							"For Server-Side-Rendering you have to provide an initialized can-route." +
 							"See the guide for information. " +
 							"https://canjs.com/doc/can-route.html and https://donejs.com/Apis.html#can-route"
 				canDev.warn(msg);

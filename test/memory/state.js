@@ -39,7 +39,7 @@ define([
 	var count = 50;
 
 	function inner(){
-		document.documentElement.innerHTML = "<head></head><body></body>";
+
 		AUTO_MAIN.renderAndAttach();
 
 		count--;
@@ -52,19 +52,13 @@ define([
 	}
 
 	function cycle(){
-		/*var div = document.querySelector("div");
-
-		domMutate.onNodeRemoval(div, function () {
-			console.log("REMOVED!!");
-		});
-		//window.REPLACED = true;*/
-		// canNodeList.unregister( window.BIG_NODE_LIST );
+		canNodeList.unregister( AUTO_MAIN.nodeList );
 		domMutate.node.replaceChild.call(document, document.createElement("html"), document.documentElement);
+		document.documentElement.innerHTML = "<head></head><body></body>";
 
-		//setTimeout(inner, 30);
+		setTimeout(inner, 30);
 	}
 	setTimeout(cycle, 500);
-	window.canNodeList = canNodeList;
 
 	return AppViewModel;
 });

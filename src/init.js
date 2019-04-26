@@ -68,6 +68,7 @@ define([
 		}
 		//!steal-remove-end
 
+		// Takes the stache template and translates it to JS.
 		function translate(load){
 			var filename;
 			//!steal-remove-start

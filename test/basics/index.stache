@@ -8,6 +8,7 @@
 		<span id="hello">Hello {{hello()}}!</span>
 
 		{{#if statusCode}}
+			STATUS CODE
 			<span id="status-code">{{statusCode}}</span>
 
 			{{^eq(statusCode, 200)}}

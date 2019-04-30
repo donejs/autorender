@@ -21,9 +21,6 @@ define([
 
 		function setup(){
 			loader.import(loader.main).then(function(r){
-				// TODO: REMOVE THIS
-				window.AUTO_MAIN = r;
-				console.log("AUTO_MAIN ... remove later ....",r);
 				main = r;
 				liveReload();
 			});

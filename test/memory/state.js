@@ -5,6 +5,7 @@ define([
 	"can-dom-mutate",
 	"can-view-nodelist"
 ], function(DefineMap, route, Component, domMutate, canNodeList){
+	var autoMain;
 	window.domMutate = domMutate;
 	const Foo = Component.extend({
 		tag: "my-foo",
@@ -36,29 +37,35 @@ define([
 	route.register("{page}", { page: "home" });
 
 
-	var count = 50;
+	var count = 5;
 
 	function inner(){
 
-		AUTO_MAIN.renderAndAttach();
+		autoMain.renderAndAttach();
 
 		count--;
 		if(count > 0) {
 			setTimeout(cycle, 30);
 		} else {
-			AUTO_MAIN = null;
-			console.log("done");
+			var nodeList = autoMain.nodeList;
+			document.querySelector("#root").textContent = (!!nodeList).toString();
+
+			autoMain = null;
 		}
 	}
 
 	function cycle(){
-		canNodeList.unregister( AUTO_MAIN.nodeList );
+		canNodeList.unregister( autoMain.nodeList );
 		domMutate.node.replaceChild.call(document, document.createElement("html"), document.documentElement);
-		document.documentElement.innerHTML = "<head></head><body></body>";
+		document.documentElement.innerHTML = "<head></head><body><div id='root' data-keep></div></body>";
 
 		setTimeout(inner, 30);
 	}
-	setTimeout(cycle, 500);
+
+	steal.import("test/memory/index.stache!done-autorender").then(function(main) {
+		autoMain = main;
+		setTimeout(cycle, 500);
+	});
 
 	return AppViewModel;
 });

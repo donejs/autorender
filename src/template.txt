@@ -33,7 +33,8 @@ define(<%= imports %>, function(<%= args %>){
 		var fragment = renderer(new Scope(viewModel, null, { viewModel: true }), options, nodeList);
 		canNodeList.update( nodeList, childNodes(fragment) );
 
-		context.nodeList = nodeList;
+		// Provide the nodeList for external use.
+		getContext(this).nodeList = nodeList;
 
 		return {fragment: fragment, nodeList: nodeList};
 	}
@@ -368,7 +369,7 @@ define(<%= imports %>, function(<%= args %>){
 	 * @param {Object} viewModel
 	**/
 	function renderIntoDocument(document, viewModel) {
-		var renderData = render(viewModel, {});;
+		var renderData = render.call(this, viewModel, {});;
 		var frag = renderData.fragment;
 
 		var firstChild = frag.firstChild;
@@ -560,7 +561,7 @@ define(<%= imports %>, function(<%= args %>){
 
 		route.start();
 
-		renderIntoDocument(document, viewModel);
+		renderIntoDocument.call(ctx, document, viewModel);
 
 		return createViewModelAndRender;
 	}

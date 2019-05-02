@@ -211,3 +211,13 @@ QUnit.test("Can be used to listen to events in the DOM", function() {
 	F("#increment").exists().click();
 	F("#count").text("1", "connectedCallback wired up this change");
 });
+
+QUnit.module("Memory leaks", {
+	setup: function(assert) {
+		F.open("//memory/index.html");
+	}
+});
+
+QUnit.test("Exposes the nodeList", function() {
+	F("#root").text("true", "Exposed");
+});

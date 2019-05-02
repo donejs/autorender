@@ -1,0 +1,17 @@
+<html>
+	<head>
+		<title>Hello page</title>
+	</head>
+	<body>
+		<can-import from="test/memory/state" as="viewModel"/>
+
+		{{#switch(env.NODE_ENV)}}
+			{{#case "production"}}
+				<div id="hi-prod">Prod</div>
+			{{/case}}
+			{{#default}}
+				<div id="hi-dev">Dev</div>
+			{{/default}}
+		{{/switch}}
+	</body>
+</html>

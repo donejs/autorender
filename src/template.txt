@@ -23,11 +23,20 @@ define(<%= imports %>, function(<%= args %>){
 	 * @return {DocumentFragment} The result of calling a can-stache renderer,
 	 * a document fragment.
 	 */
-	function render(context, options){
+	function render(viewModel, options){
 		var moduleOptions = { module: module };
 		options = (options && options.add) ? options.add(moduleOptions) :
 			moduleOptions;
-		return renderer(new Scope(context, null, { viewModel: true }), options);
+
+		var nodeList = canNodeList.register([], null, true);
+		nodeList.expression = "DONE-AUTO-RENDER";
+		var fragment = renderer(new Scope(viewModel, null, { viewModel: true }), options, nodeList);
+		canNodeList.update( nodeList, childNodes(fragment) );
+
+		// Provide the nodeList for external use.
+		getContext(this).nodeList = nodeList;
+
+		return {fragment: fragment, nodeList: nodeList};
 	}
 
 	/**
@@ -307,15 +316,16 @@ define(<%= imports %>, function(<%= args %>){
 			}
 		}
 
-		var fragment;
+		var renderData;
 		var zone = new Zone({
 			plugins: getZonePlugins()
 		});
 		var zonePromise = zone.run(function(){
-			fragment = render(viewModel, {});
+			renderData = render(viewModel, {});
 		}).then(function(zoneData){
 			return {
-				fragment: fragment,
+				nodeList: renderData.nodeList,
+				fragment: renderData.fragment,
 				zoneData: zoneData,
 				viewModel: viewModel
 			};
@@ -332,7 +342,6 @@ define(<%= imports %>, function(<%= args %>){
 
 		return {
 			promise: zonePromise,
-			fragment: fragment,
 			zoneData: zone.data
 		};
 	}
@@ -346,8 +355,8 @@ define(<%= imports %>, function(<%= args %>){
 	 * @return {RenderResult} the promise that resolves immediately with a fragment.
 	 */
 	function renderNoZone(viewModel){
-		var fragment = render(viewModel, {});
-		return Promise.resolve({ fragment: fragment });
+		var renderData = render(viewModel, {});
+		return Promise.resolve(renderData);
 	}
 
 	/**
@@ -360,7 +369,8 @@ define(<%= imports %>, function(<%= args %>){
 	 * @param {Object} viewModel
 	**/
 	function renderIntoDocument(document, viewModel) {
-		var frag = render(viewModel, {});
+		var renderData = render.call(this, viewModel, {});;
+		var frag = renderData.fragment;
 
 		var firstChild = frag.firstChild;
 		var documentElement = document.documentElement;
@@ -494,7 +504,7 @@ define(<%= imports %>, function(<%= args %>){
 
 		//!steal-remove-start
 		if (isDevelopment) {
-			if(isEmptyObject(route.routes)) {
+			if(canReflect.size(route.routes) === 0) {
 				var msg = "done-autorender didn't receive route definitions." +
 							"For Server-Side-Rendering you have to provide an initialized can-route." +
 							"See the guide for information. " +
@@ -534,7 +544,7 @@ define(<%= imports %>, function(<%= args %>){
 
 		var viewModel = new ViewModel(viewModelParams);
 
-		if(!canReflect.getKeyValue(viewModel, "statusCode") && !isEmptyObject(route.routes)) {
+		if(!canReflect.getKeyValue(viewModel, "statusCode") && canReflect.size(route.routes) !== 0) {
 			if(hasMatchingRoute) {
 				canReflect.setKeyValue(viewModel, "statusCode", 200);
 			} else {
@@ -551,7 +561,9 @@ define(<%= imports %>, function(<%= args %>){
 
 		route.start();
 
-		renderIntoDocument(document, viewModel);
+		renderIntoDocument.call(ctx, document, viewModel);
+
+		return createViewModelAndRender;
 	}
 
 	Object.setPrototypeOf(createViewModelAndRender, context);

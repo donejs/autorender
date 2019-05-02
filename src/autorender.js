@@ -12,6 +12,5 @@ define([
 		timeout: Number(l.autorenderTimeout || 5000),
 		debugBrk: isDevelopment && l.autorenderDebugBreak
 	};
-
 	return autorenderInit(zoneOpts, isDevelopment);
 });

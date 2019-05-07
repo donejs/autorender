@@ -5,7 +5,7 @@ define([
 	"can-dom-mutate",
 	"can-view-nodelist"
 ], function(DefineMap, route, Component, domMutate, canNodeList){
-	var autoMain;
+	var autoMain, zoneData;
 	window.domMutate = domMutate;
 	const Foo = Component.extend({
 		tag: "my-foo",
@@ -41,13 +41,15 @@ define([
 
 	function inner(){
 
-		autoMain.renderAndAttach();
+		autoMain.renderAndAttach().then(function(r){
+			zoneData = r.zoneData;
+		});
 
 		count--;
 		if(count > 0) {
 			setTimeout(cycle, 30);
 		} else {
-			var nodeList = autoMain.nodeList;
+			var nodeList = zoneData.nodeList;
 			document.querySelector("#root").textContent = (!!nodeList).toString();
 
 			autoMain = null;
@@ -55,7 +57,10 @@ define([
 	}
 
 	function cycle(){
-		canNodeList.unregister( autoMain.nodeList );
+		if(zoneData) {
+			canNodeList.unregister( zoneData.nodeList );
+		}
+
 		domMutate.node.replaceChild.call(document, document.createElement("html"), document.documentElement);
 		document.documentElement.innerHTML = "<head></head><body><div id='root' data-keep></div></body>";
 

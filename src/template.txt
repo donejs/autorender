@@ -34,7 +34,9 @@ define(<%= imports %>, function(<%= args %>){
 		canNodeList.update( nodeList, childNodes(fragment) );
 
 		// Provide the nodeList for external use.
-		getContext(this).nodeList = nodeList;
+		if(useZones && Zone.current) {
+			Zone.current.data.nodeList = nodeList;
+		}
 
 		return {fragment: fragment, nodeList: nodeList};
 	}
@@ -215,6 +217,7 @@ define(<%= imports %>, function(<%= args %>){
 				domMutate.onNodeRemoval(document.documentElement, dispose);
 			}
 		}
+		return result;
 	}
 
 	/**

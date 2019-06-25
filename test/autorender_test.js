@@ -221,3 +221,13 @@ QUnit.module("Memory leaks", {
 QUnit.test("Exposes the nodeList", function() {
 	F("#root").text("true", "Exposed");
 });
+
+QUnit.module("Incremental rendering", {
+	setup: function(assert) {
+		F.open("//incremental/index.html");
+	}
+});
+
+QUnit.test("Reattaches immediately", function() {
+	F("h1").exists("Rendered immediately");
+});

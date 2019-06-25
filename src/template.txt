@@ -344,7 +344,9 @@ define(<%= imports %>, function(<%= args %>){
 		});
 
 		return {
+			fragment: renderData.fragment,
 			promise: zonePromise,
+			viewModel: viewModel,
 			zoneData: zone.data
 		};
 	}

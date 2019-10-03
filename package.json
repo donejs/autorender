@@ -50,7 +50,7 @@
     "can-log": "^1.0.0",
     "can-namespace": "^1.0.0",
     "can-reflect": "^1.17.9",
-    "can-route": "^4.0.0",
+    "can-route": "^5.0.0",
     "can-stache": "^4.17.3",
     "can-stache-ast": "^1.1.0",
     "can-stache-bindings": "^4.4.0",

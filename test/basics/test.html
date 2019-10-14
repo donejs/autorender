@@ -27,7 +27,7 @@
 			var vm = canViewModel(document.documentElement);
 
 			if(window.QUnit) {
-				QUnit.ok(vm instanceof AppViewModel, "got the appstate");
+				QUnit.assert.ok(vm instanceof AppViewModel, "got the appstate");
 				removeMyself();
 			} else {
 				console.log("Got viewModel", vm);

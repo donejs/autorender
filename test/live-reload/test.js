@@ -9,7 +9,7 @@ window.ONRUNNING = function(){
 function reloadName(moduleName) {
 	return loader.normalize(moduleName).then(function(name){
 		return reloadAll([name]).then(function(){
-
+			// A placeholder for debugging if needed
 		});
 	});
 }

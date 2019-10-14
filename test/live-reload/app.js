@@ -3,7 +3,10 @@ import timeout from "can-zone/timeout";
 import Zone from "can-zone";
 import DefineMap from "can-define/map/map";
 import route from "can-route";
-import "can-stache-bindings";
+import stacheBindings from "can-stache-bindings";
+import stache from "can-stache";
+
+stache.addBindings(stacheBindings.bindings);
 
 const d = dep();
 

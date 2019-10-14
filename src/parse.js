@@ -69,7 +69,6 @@ define([
 			[n("full-url/index"), "fullUrl"],
 			[n("can-symbol"), "canSymbol"],
 			[n("can-log/dev/dev"), "canDev"],
-			[n("can-view-nodelist"),"canNodeList"],
 			["module", "module"],
 			["@loader", "loader"],
 			["@steal", "steal"]

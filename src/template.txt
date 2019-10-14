@@ -28,17 +28,9 @@ define(<%= imports %>, function(<%= args %>){
 		options = (options && options.add) ? options.add(moduleOptions) :
 			moduleOptions;
 
-		var nodeList = canNodeList.register([], null, true);
-		nodeList.expression = "DONE-AUTO-RENDER";
-		var fragment = renderer(new Scope(viewModel, null, { viewModel: true }), options, nodeList);
-		canNodeList.update( nodeList, childNodes(fragment) );
+		var fragment = renderer(new Scope(viewModel, null, { viewModel: true }), options);
 
-		// Provide the nodeList for external use.
-		if(useZones && typeof CanZone !== "undefined" && CanZone.current) {
-			CanZone.current.data.nodeList = nodeList;
-		}
-
-		return {fragment: fragment, nodeList: nodeList};
+		return {fragment: fragment};
 	}
 
 	/**
@@ -327,7 +319,6 @@ define(<%= imports %>, function(<%= args %>){
 			renderData = render(viewModel, {});
 		}).then(function(zoneData){
 			return {
-				nodeList: renderData.nodeList,
 				fragment: renderData.fragment,
 				zoneData: zoneData,
 				viewModel: viewModel

@@ -20,21 +20,21 @@ var makeIframe = function makeIframe(src, assert) {
 };
 
 QUnit.module("done-autorender",{
-	setup: function(){
+	beforeEach: function(){
 	   F.open("//basics/index.html");
 	}
 });
 
-QUnit.test("basics works", function(){
+QUnit.test("basics works", function(assert){
 	F("#hello").exists("Content rendered");
 	F("#hello").text(/Hello world/, "Correct text");
 	F(function(){
 		var doc = F.win.document;
-		QUnit.equal(doc.documentElement.getAttribute("data-attached"), "");
+		assert.equal(doc.documentElement.getAttribute("data-attached"), "");
 	});
 });
 
-QUnit.test("elements marked with data-keep are left in the DOM", function(){
+QUnit.test("elements marked with data-keep are left in the DOM", function(assert){
 	F("[name='custom-meta']").exists("meta tag left in");
 	F(function() {
 		var hasComment = false;
@@ -49,7 +49,7 @@ QUnit.test("elements marked with data-keep are left in the DOM", function(){
 			}
 			child = child.nextSibling;
 		}
-		QUnit.equal(hasComment, true, "Comments with autorender-keep are left in.");
+		assert.equal(hasComment, true, "Comments with autorender-keep are left in.");
 	})
 });
 
@@ -60,7 +60,7 @@ QUnit.test("portal() items are left in the DOM", function(){
 });
 
 QUnit.module("tags to ignore from head", {
-	setup: function setup() {
+	beforeEach: function setup() {
 		F.open("//ignore/index.html");
 	}
 });
@@ -74,7 +74,7 @@ QUnit.test("<base>", function(assert) {
 });
 
 QUnit.module("done-autorender-no-zone",{
-	setup: function(){
+	beforeEach: function(){
 	   F.open("//basics/index-no-zone.html");
 	}
 });
@@ -92,7 +92,7 @@ QUnit.test("the appState is available as the html viewModel", function(assert) {
 
 // Fixes the case when can.route is not available (#5)
 QUnit.module("no-route", {
-	setup: function() {
+	beforeEach: function() {
 		F.open("//no_route/index.html");
 	}
 });
@@ -103,7 +103,7 @@ QUnit.test("not using can.route works", function() {
 });
 
 QUnit.module("progressive", {
-	setup: function(){
+	beforeEach: function(){
 		F.open("//progressive/index.html");
 	}
 });
@@ -114,15 +114,15 @@ QUnit.test("are added to the bundle array", function(){
 });
 
 QUnit.module("async rendering", {
-	setup: function(){
+	beforeEach: function(){
 		F.open("//async/index.html");
 	}
 });
 
-QUnit.test("Everything is rendered up front", function(){
+QUnit.test("Everything is rendered up front", function(assert){
 	F("home-page").exists(function(){
 		var thingRendered = F("#thing").size();
-		QUnit.ok(thingRendered, "the #thing was added in a setTimeout but was rendered at the same time as the app because we wait for it");
+		assert.ok(thingRendered, "the #thing was added in a setTimeout but was rendered at the same time as the app because we wait for it");
 	});
 
 	F("other-page").exists();
@@ -130,7 +130,7 @@ QUnit.test("Everything is rendered up front", function(){
 });
 
 QUnit.module("Using the xhrZone plugin", {
-	setup: function(){
+	beforeEach: function(){
 		F.open("//xhr/index.html");
 	}
 });
@@ -140,7 +140,7 @@ QUnit.test("Requests are intercepted", function(){
 });
 
 QUnit.module("When no ViewModel is exported", {
-	setup: function(){
+	beforeEach: function(){
 		var harness = this;
 		F.open("//no-vm/index.html", function(){
 			var console = F.win.console;
@@ -153,13 +153,13 @@ QUnit.module("When no ViewModel is exported", {
 	}
 });
 
-QUnit.test("Receive a clear error message", function(){
+QUnit.test("Receive a clear error message", function(assert){
 	var message = this.errors[0][0];
-	QUnit.ok(/cannot start without a ViewModel/.test(message), "Received a useful error message");
+	assert.ok(/cannot start without a ViewModel/.test(message), "Received a useful error message");
 });
 
 QUnit.module("Running in Electron", {
-	setup: function(){
+	beforeEach: function(){
 		F.open("//electron/index.html");
 	}
 });
@@ -169,7 +169,7 @@ QUnit.test("It was able to load", function(){
 });
 
 QUnit.module("Using live-reload", {
-	setup: function(){
+	beforeEach: function(){
 		F.open("//live-reload/page.html");
 		F.wait(100);
 	}
@@ -179,13 +179,13 @@ QUnit.test("live-reload doesn't cause double renders", function() {
 	F("#result").text("worked", "Loaded without timing out");
 });
 
-QUnit.test("The new ViewModel is bound to the route", function() {
+QUnit.test("The new ViewModel is bound to the route", function(assert) {
 	F("#current-page").text("home", "Start on the home page");
 	F("#go-to-cart").click();
 	F("#current-page").text("cart", "Changed to the cart");
 	F(function(){
 		var hash = F.win.location.hash;
-		QUnit.equal(hash, "#!cart", "now on the cart page");
+		assert.equal(hash, "#!cart", "now on the cart page");
 	});
 });
 
@@ -202,7 +202,7 @@ QUnit.test("autorender with optimized builds", function(assert) {
 });
 
 QUnit.module("connectedCallback", {
-	setup: function(assert) {
+	beforeEach: function(assert) {
 		F.open("//connected/index.html");
 	}
 });
@@ -212,18 +212,8 @@ QUnit.test("Can be used to listen to events in the DOM", function() {
 	F("#count").text("1", "connectedCallback wired up this change");
 });
 
-QUnit.module("Memory leaks", {
-	setup: function(assert) {
-		F.open("//memory/index.html");
-	}
-});
-
-QUnit.test("Exposes the nodeList", function() {
-	F("#root").text("true", "Exposed");
-});
-
 QUnit.module("Incremental rendering", {
-	setup: function(assert) {
+	beforeEach: function(assert) {
 		F.open("//incremental/index.html");
 	}
 });

@@ -13,12 +13,12 @@
 	<script>
 		if (window.QUnit) {
 			setTimeout(function() {
-				QUnit.equal(
+				QUnit.assert.equal(
 					document.getElementsByTagName("h1")[0].innerHTML,
 					"Hello world!",
 					"should render correctly"
 				);
-				QUnit.ok(
+				QUnit.assert.ok(
 					window.steal.map["test/basics-optimized/state"],
 					"can-import modules should be registered"
 				);

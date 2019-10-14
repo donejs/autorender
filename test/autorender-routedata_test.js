@@ -4,7 +4,7 @@ var F = require("funcunit");
 F.attach(QUnit);
 
 QUnit.module("route-data attribute - default route.data", {
-	setup: function(){
+	beforeEach: function(){
 	   F.open("//routedata/index.html");
 	}
 });
@@ -16,7 +16,7 @@ QUnit.test("Attaches to the route", function() {
 
 
 QUnit.module("route-data attribute - custom type", {
-	setup: function(){
+	beforeEach: function(){
 	   F.open("//routedata-type/index.html");
 	}
 });

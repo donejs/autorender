@@ -59,7 +59,7 @@ QUnit.test("portal() items are left in the DOM", function(){
 	F("[charset='utf-8']").exists("Portaled content remains");
 });
 
-QUnit.only("Process JSON inside portal", function(){
+QUnit.test("Process JSON inside portal", function(){
 	var seoSchema = `{
 		"@context": "https://schema.org",
 		"@type": "Article",

@@ -59,6 +59,33 @@ QUnit.test("portal() items are left in the DOM", function(){
 	F("[charset='utf-8']").exists("Portaled content remains");
 });
 
+QUnit.only("Process JSON inside portal", function(){
+	var seoSchema = `{
+		"@context": "https://schema.org",
+		"@type": "Article",
+		"headline": "A Headline",
+		"image": "",  
+		"author": {
+			"@type": "",
+			"name": "Cherif"
+		},  
+		"publisher": {
+			"@type": "Organization",
+			"name": "Cherif",
+			"logo": {
+			"@type": "ImageObject",
+			"url": "",
+			"width": ,
+			"height": 
+			}
+		},
+		"datePublished": ""
+	}`;
+
+	F("[type='application/ld+json']").exists("application/ld+json exists");
+	QUnit.equal(F("[type='application/ld+json']").text(), seoSchema);
+});
+
 QUnit.module("tags to ignore from head", {
 	setup: function setup() {
 		F.open("//ignore/index.html");

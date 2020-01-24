@@ -15,6 +15,29 @@ define([
 		head: {
 			default: () => document.head,
 			serialize: false
+		},
+		seoSchema: {
+			default: `{
+				"@context": "https://schema.org",
+				"@type": "Article",
+				"headline": "A Headline",
+				"image": "",  
+				"author": {
+					"@type": "",
+					"name": "Cherif"
+				},  
+				"publisher": {
+					"@type": "Organization",
+					"name": "Cherif",
+					"logo": {
+					"@type": "ImageObject",
+					"url": "",
+					"width": ,
+					"height": 
+					}
+				},
+				"datePublished": ""
+			}`
 		}
 	});
 
